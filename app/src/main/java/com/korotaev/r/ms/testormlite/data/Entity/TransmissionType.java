@@ -1,7 +1,6 @@
 package com.korotaev.r.ms.testormlite.data.Entity;
 
 
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -11,6 +10,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -35,7 +35,7 @@ public class TransmissionType implements Serializable {
     private Byte isDeleted;
     @JsonIgnore
     @ForeignCollectionField
-    private ForeignCollection<Auto> autosById;
+    private Collection<Auto> autosById;
 
     public TransmissionType() {
     }
@@ -94,11 +94,11 @@ public class TransmissionType implements Serializable {
 
     @OneToMany(mappedBy = "transmissionTypeByTransmissionType")
     @JsonIgnore
-    public ForeignCollection<Auto> getAutosById() {
+    public Collection<Auto> getAutosById() {
         return autosById;
     }
 
-    public void setAutosById(ForeignCollection<Auto> autosById) {
+    public void setAutosById(Collection<Auto> autosById) {
         this.autosById = autosById;
     }
 }

@@ -1,6 +1,5 @@
 package com.korotaev.r.ms.testormlite.data.Entity;
 
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -10,6 +9,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -43,7 +43,7 @@ public class Requesttype implements Serializable {
 
     @JsonIgnore
     @ForeignCollectionField
-    private ForeignCollection<Request> requestsById;
+    private Collection<Request> requestsById;
 
     public Requesttype() {
     }
@@ -102,11 +102,11 @@ public class Requesttype implements Serializable {
 
     @OneToMany(mappedBy = "requesttypeByType")
     @JsonIgnore
-    public ForeignCollection<Request> getRequestsById() {
+    public Collection<Request> getRequestsById() {
         return requestsById;
     }
 
-    public void setRequestsById(ForeignCollection<Request> requestsById) {
+    public void setRequestsById(Collection<Request> requestsById) {
         this.requestsById = requestsById;
     }
 }

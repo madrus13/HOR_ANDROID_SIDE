@@ -1,6 +1,5 @@
 package com.korotaev.r.ms.testormlite.data.Entity;
 
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -10,6 +9,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -39,7 +39,7 @@ public class Userstatus implements Serializable {
 
     @JsonIgnore
     @ForeignCollectionField
-    private ForeignCollection<User> usersById;
+    private Collection<User> usersById;
 
     public Userstatus() {
     }
@@ -98,11 +98,11 @@ public class Userstatus implements Serializable {
 
     @OneToMany(mappedBy = "userstatusByStatus")
     @JsonIgnore
-    public ForeignCollection<User> getUsersById() {
+    public Collection<User> getUsersById() {
         return usersById;
     }
 
-    public void setUsersById(ForeignCollection<User> usersById) {
+    public void setUsersById(Collection<User> usersById) {
         this.usersById = usersById;
     }
 }

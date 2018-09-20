@@ -1,6 +1,5 @@
 package com.korotaev.r.ms.testormlite.data.Entity;
 
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -10,6 +9,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -36,7 +36,7 @@ public class Achievmenttype implements Serializable {
     private Byte isDeleted;
     @JsonIgnore
     @ForeignCollectionField
-    private ForeignCollection<Achievement> achievementsById;
+    private Collection<Achievement> achievementsById;
 
     public Achievmenttype() {
     }
@@ -96,11 +96,11 @@ public class Achievmenttype implements Serializable {
 
     @OneToMany(mappedBy = "achievmenttypeByType")
     @JsonIgnore
-    public ForeignCollection<Achievement> getAchievementsById() {
+    public Collection<Achievement> getAchievementsById() {
         return achievementsById;
     }
 
-    public void setAchievementsById(ForeignCollection<Achievement> achievementsById) {
+    public void setAchievementsById(Collection<Achievement> achievementsById) {
         this.achievementsById = achievementsById;
     }
 }

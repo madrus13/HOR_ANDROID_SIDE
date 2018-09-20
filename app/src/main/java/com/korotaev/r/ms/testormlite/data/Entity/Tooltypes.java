@@ -1,6 +1,5 @@
 package com.korotaev.r.ms.testormlite.data.Entity;
 
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -37,7 +36,7 @@ public class Tooltypes implements Serializable {
     private Byte isDeleted;
     @JsonIgnore
     @ForeignCollectionField
-    private ForeignCollection<Tool> toolsById;
+    private Collection<Tool> toolsById;
 
     public Tooltypes() {
     }
@@ -97,11 +96,11 @@ public class Tooltypes implements Serializable {
 
     @OneToMany(mappedBy = "tooltypesByType")
     @JsonIgnore
-    public ForeignCollection<Tool> getToolsById() {
+    public Collection<Tool> getToolsById() {
         return toolsById;
     }
 
-    public void setToolsById(ForeignCollection<Tool> toolsById) {
+    public void setToolsById(Collection<Tool> toolsById) {
         this.toolsById = toolsById;
     }
 }

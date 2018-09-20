@@ -1,6 +1,5 @@
 package com.korotaev.r.ms.testormlite.data.Entity;
 
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -64,7 +63,7 @@ public class Request implements Serializable {
     private Long region;
     @JsonIgnore
     @ForeignCollectionField
-    private ForeignCollection<Message> messagesById;
+    private Collection<Message> messagesById;
     @DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh = true)
     private User userByResolvedByUser;
     @DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh = true)
@@ -294,7 +293,7 @@ public class Request implements Serializable {
         return messagesById;
     }
 
-    public void setMessagesById(ForeignCollection<Message> messagesById) {
+    public void setMessagesById(Collection<Message> messagesById) {
         this.messagesById = messagesById;
     }
 

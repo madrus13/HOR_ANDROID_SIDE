@@ -1,6 +1,5 @@
 package com.korotaev.r.ms.testormlite.data.Entity;
 
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -10,6 +9,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -35,10 +35,10 @@ public class Region implements Serializable  {
 
     @JsonIgnore
     @ForeignCollectionField
-    private ForeignCollection<Message> messagesById;
+    private Collection<Message> messagesById;
     @JsonIgnore
     @ForeignCollectionField
-    private  ForeignCollection<User> usersById;
+    private  Collection<User> usersById;
 
     public Region() {
     }
@@ -97,20 +97,20 @@ public class Region implements Serializable  {
 
     @OneToMany(mappedBy = "regionByRegion")
     @JsonIgnore
-    public ForeignCollection<Message> getMessagesById() {
+    public Collection<Message> getMessagesById() {
         return messagesById;
     }
-    public void setMessagesById(ForeignCollection<Message> messagesById) {
+    public void setMessagesById(Collection<Message> messagesById) {
         this.messagesById = messagesById;
     }
 
     @OneToMany(mappedBy = "regionByRegion")
     @JsonIgnore
-    public ForeignCollection<User> getUsersById() {
+    public Collection<User> getUsersById() {
         return usersById;
     }
 
-    public void setUsersById(ForeignCollection<User> usersById) {
+    public void setUsersById(Collection<User> usersById) {
         this.usersById = usersById;
     }
 }
