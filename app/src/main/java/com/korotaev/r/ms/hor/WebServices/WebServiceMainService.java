@@ -31,7 +31,7 @@ public class WebServiceMainService {
     public String NAMESPACE ="http://Service.ru/";
     public String url="http://185.246.154.49:8080/samplejpa-10/ws?wsdl"; //?wsdl
     public String PREFIX_SERVICE  = "";
-    public int timeOut = 60000;
+    public int timeOut = 1000;
     public IWsdl2CodeEvents eventHandler;
     public WS_Enums.SoapProtocolVersion soapVersion;
     
@@ -1248,6 +1248,7 @@ public class WebServiceMainService {
     public serviceResult getAllRegions(String sessionToken,List<HeaderProperty> headers){
         SoapSerializationEnvelope soapEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
         soapEnvelope.implicitTypes = true;
+
         //soapEnvelope.dotNet = true;
         SoapObject soapReq = new SoapObject("http://Service.ru/","getAllRegions");
         soapReq.addProperty("sessionToken",sessionToken);

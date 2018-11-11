@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.korotaev.r.ms.hor.WebServices.WebServiceMainService;
 import com.korotaev.r.ms.hor.WebServices.serviceResult;
@@ -32,13 +33,15 @@ public class WSTestActivity extends AppCompatActivity {
     private static WebServiceMainService service = null;
     private static Session currentSession;
     public static int testIterationCounter = 0;
-
+    public TextView textResult = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wstest);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        textResult = (TextView) findViewById(R.id.textResult);
+        textResult.setText("");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +56,17 @@ public class WSTestActivity extends AppCompatActivity {
         mTestTask = new WSTestActivity.TestTask();
         mTestTask.execute((Void) null);
     }
+    public  void myLogger (final String prefix,final String str)
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(prefix, str);
+                textResult.append(str + "\r\n" );
+            }
+        });
 
+    }
 
     public class TestTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -67,7 +80,7 @@ public class WSTestActivity extends AppCompatActivity {
             serviceResult result;
             Boolean resOut = false;
             result = service.getSessionToken(name,pass);
-            if (result.isSuccess) {
+            if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     currentSession = mapper.readValue(result.resultObjectJSON, Session.class);
@@ -79,10 +92,10 @@ public class WSTestActivity extends AppCompatActivity {
                 }
             }
             if (resOut == correctResult) {
-                Log.i(TEST, testIterationCounter + ") testToken:: Pass");
+                myLogger(TEST, testIterationCounter + ") testToken:: Pass");
             }
             else {
-                Log.i(TEST, testIterationCounter + ") testToken:: Fail");
+                myLogger(TEST, testIterationCounter + ") testToken:: Fail");
             }
             testIterationCounter++;
         }
@@ -92,7 +105,7 @@ public class WSTestActivity extends AppCompatActivity {
             serviceResult result;
             Boolean resOut = false;
             result = service.getAllMessageTypes(token);
-            if (result.isSuccess) {
+            if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     List<Messagetype> msgTypesList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Messagetype[].class));
@@ -105,10 +118,10 @@ public class WSTestActivity extends AppCompatActivity {
                 }
             }
             if (resOut == correctResult) {
-                Log.i(TEST, testIterationCounter + ") testMessageType:: Pass");
+                myLogger(TEST, testIterationCounter + ") testMessageType:: Pass");
             }
             else {
-                Log.i(TEST, testIterationCounter + ") testMessageType:: Fail");
+                myLogger(TEST, testIterationCounter + ") testMessageType:: Fail");
             }
             testIterationCounter++;
         }
@@ -118,7 +131,7 @@ public class WSTestActivity extends AppCompatActivity {
             serviceResult result;
             Boolean resOut = false;
             result = service.getAllRegions(token);
-            if (result.isSuccess) {
+            if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     List<Region> msgTypesList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Region[].class));
@@ -131,10 +144,10 @@ public class WSTestActivity extends AppCompatActivity {
                 }
             }
             if (resOut == correctResult) {
-                Log.i(TEST, testIterationCounter + ") testRegions:: Pass");
+                myLogger(TEST, testIterationCounter + ") testRegions:: Pass");
             }
             else {
-                Log.i(TEST, testIterationCounter + ") testRegions:: Fail");
+                myLogger(TEST, testIterationCounter + ") testRegions:: Fail");
             }
             testIterationCounter++;
         }
@@ -143,7 +156,7 @@ public class WSTestActivity extends AppCompatActivity {
             serviceResult result;
             Boolean resOut = false;
             result = service.getAllAchievmenttype(token);
-            if (result.isSuccess) {
+            if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     List<Achievmenttype> msgTypesList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Achievmenttype[].class));
@@ -156,10 +169,10 @@ public class WSTestActivity extends AppCompatActivity {
                 }
             }
             if (resOut == correctResult) {
-                Log.i(TEST, testIterationCounter + ") testAchievmenttype:: Pass");
+                myLogger(TEST, testIterationCounter + ") testAchievmenttype:: Pass");
             }
             else {
-                Log.i(TEST, testIterationCounter + ") testAchievmenttype:: Fail");
+                myLogger(TEST, testIterationCounter + ") testAchievmenttype:: Fail");
             }
             testIterationCounter++;
         }
@@ -168,7 +181,7 @@ public class WSTestActivity extends AppCompatActivity {
             serviceResult result;
             Boolean resOut = false;
             result = service.getAllRequestType(token);
-            if (result.isSuccess) {
+            if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     List<Requesttype> msgTypesList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Requesttype[].class));
@@ -181,10 +194,10 @@ public class WSTestActivity extends AppCompatActivity {
                 }
             }
             if (resOut == correctResult) {
-                Log.i(TEST, testIterationCounter + ") testRequestType:: Pass");
+                myLogger(TEST, testIterationCounter + ") testRequestType:: Pass");
             }
             else {
-                Log.i(TEST, testIterationCounter + ") testRequestType:: Fail");
+                myLogger(TEST, testIterationCounter + ") testRequestType:: Fail");
             }
             testIterationCounter++;
         }
@@ -193,7 +206,7 @@ public class WSTestActivity extends AppCompatActivity {
             serviceResult result;
             Boolean resOut = false;
             result = service.getAllToolType(token);
-            if (result.isSuccess) {
+            if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     List<Tooltypes> msgTypesList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Tooltypes[].class));
@@ -206,10 +219,10 @@ public class WSTestActivity extends AppCompatActivity {
                 }
             }
             if (resOut == correctResult) {
-                Log.i(TEST, testIterationCounter + ") testToolType:: Pass");
+                myLogger(TEST, testIterationCounter + ") testToolType:: Pass");
             }
             else {
-                Log.i(TEST, testIterationCounter + ") testToolType:: Fail");
+                myLogger(TEST, testIterationCounter + ") testToolType:: Fail");
             }
             testIterationCounter++;
         }
@@ -218,7 +231,7 @@ public class WSTestActivity extends AppCompatActivity {
             serviceResult result;
             Boolean resOut = false;
             result = service.getAllTransmissionType(token);
-            if (result.isSuccess) {
+            if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     List<TransmissionType> msgTypesList = Arrays.asList(mapper.readValue(result.resultObjectJSON, TransmissionType[].class));
@@ -231,10 +244,10 @@ public class WSTestActivity extends AppCompatActivity {
                 }
             }
             if (resOut == correctResult) {
-                Log.i(TEST, testIterationCounter + ") testTransmissionType:: Pass");
+                myLogger(TEST, testIterationCounter + ") testTransmissionType:: Pass");
             }
             else {
-                Log.i(TEST, testIterationCounter + ") testTransmissionType:: Fail");
+                myLogger(TEST, testIterationCounter + ") testTransmissionType:: Fail");
             }
             testIterationCounter++;
         }
@@ -244,28 +257,31 @@ public class WSTestActivity extends AppCompatActivity {
 
             Boolean resOut = false;
 
-            testToken("mad@bad1.ru", "pass1234", true);
             testToken("mad@bad1.ru", "pass12345", false);
             testToken("mad@bad21.ru", "pass12345", false);
             testToken("mad@bad2.ru", "pass1234", false);
+            testToken("mad@bad1.ru", "pass1234", true);
 
-            testMessageType(currentSession.getToken(), true);
-            testMessageType("INVALID_TOKEN", false);
+            if (currentSession!=null) {
+                testMessageType(currentSession.getToken(), true);
+                testMessageType("INVALID_TOKEN", false);
 
-            testRegions(currentSession.getToken(), true);
-            testRegions("INVALID_TOKEN", false);
+                testRegions(currentSession.getToken(), true);
+                testRegions("INVALID_TOKEN", false);
 
-            testAchievmenttype(currentSession.getToken(), true);
-            testAchievmenttype("INVALID_TOKEN", false);
+                testAchievmenttype(currentSession.getToken(), true);
+                testAchievmenttype("INVALID_TOKEN", false);
 
-            testRequestType(currentSession.getToken(), true);
-            testRequestType("INVALID_TOKEN", false);
+                testRequestType(currentSession.getToken(), true);
+                testRequestType("INVALID_TOKEN", false);
 
-            testToolType(currentSession.getToken(), true);
-            testToolType("INVALID_TOKEN", false);
+                testToolType(currentSession.getToken(), true);
+                testToolType("INVALID_TOKEN", false);
 
-            testTransmissionType(currentSession.getToken(), true);
-            testTransmissionType("INVALID_TOKEN", false);
+                testTransmissionType(currentSession.getToken(), true);
+                testTransmissionType("INVALID_TOKEN", false);
+            }
+
 
 
            return resOut;

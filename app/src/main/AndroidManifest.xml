@@ -18,22 +18,23 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login">
-
-        </activity>
-        <activity
-            android:name=".WSTestActivity"
-            android:label="@string/title_activity_wstest"
-            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".WSTestActivity"
+            android:label="@string/title_activity_wstest"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".RegistrationActivity"
+            android:label="@string/title_activity_registration"></activity>
     </application>
 
 </manifest>
