@@ -24,7 +24,7 @@
     <string name="textview">TextView</string>
     <string name="title_activity_registration">Registration</string>
     <string name="action_registration">Registration</string>
-    <string name="prompt_login_name">login_name</string>
+    <string name="prompt_login_name">Login</string>
     <string name="prompt_phone">Phone number</string>
     <string name="phone">Phone</string>
 </resources>
