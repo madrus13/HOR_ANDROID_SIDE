@@ -31,7 +31,7 @@ public class WebServiceMainService {
     public String NAMESPACE ="http://Service.ru/";
     public String url="http://185.246.154.49:8080/samplejpa-10/ws?wsdl"; //?wsdl
     public String PREFIX_SERVICE  = "";
-    public int timeOut = 1000;
+    public int timeOut = 20000;
     public IWsdl2CodeEvents eventHandler;
     public WS_Enums.SoapProtocolVersion soapVersion;
     
@@ -1566,7 +1566,7 @@ public class WebServiceMainService {
         SoapObject soapReq = new SoapObject("http://Service.ru/","insertUser");
         soapReq.addProperty("name",name);
         soapReq.addProperty("region",region);
-        soapReq.addProperty("regionSpecified",regionSpecified);
+        //soapReq.addProperty("regionSpecified",regionSpecified);
         soapReq.addProperty("password",password);
         soapReq.addProperty("email",email);
         soapReq.addProperty("phone",phone);
