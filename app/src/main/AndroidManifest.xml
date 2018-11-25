@@ -35,6 +35,9 @@
         <activity
             android:name=".RegistrationActivity"
             android:label="@string/title_activity_registration"></activity>
+        <activity
+            android:name=".Preferences.Preferences"
+            android:label="@string/title_preference"></activity>
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -29,9 +30,12 @@ import android.widget.TextView;
 
 import com.korotaev.r.ms.hor.WebServices.WebServiceMainService;
 import com.korotaev.r.ms.hor.WebServices.serviceResult;
+import com.korotaev.r.ms.testormlite.data.Entity.Session;
+import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +47,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class RegistrationActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     private static WebServiceMainService service = null;
+    Session currentSession = null;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -331,22 +336,54 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             mPhone = phone;
             mLoginName = login;
         }
-        public  void userRegistrationService()
+        public  Boolean userRegistrationService()
         {
+            User currentUser;
             serviceResult result;
             Boolean resOut = false;
-            result = service.insertUser(this.mLoginName,1, false,this.mPassword,this.mEmail,this.mPhone );
+            result = service.insertUser(this.mLoginName,0, false,this.mPassword,this.mEmail,this.mPhone );
             if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
-//                try {
-//                    currentSession = mapper.readValue(result.resultObjectJSON, Session.class);
-//                    if (!currentSession.getToken().isEmpty()) {
-//                        resOut =  true;
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    currentUser = mapper.readValue(result.resultObjectJSON, User.class);
+                    if (
+                            currentUser.getId() > 0 &&
+                            currentUser.getEmail().equals(this.mEmail) &&
+                            currentUser.getPhone().equals(this.mPhone) &&
+                            currentUser.getName().equals(this.mLoginName)
+                            ) {
+                       currentSession =  userGetToken(mLoginName, mPassword);
+                        if (currentSession!=null && !currentSession.getToken().isEmpty()) {
+                            Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                        resOut =  true;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+            return resOut;
+        }
+
+        public  Session userGetToken(String login, String password)
+        {
+
+            serviceResult result;
+            Boolean resOut = false;
+            result = service.getSessionToken(login,password );
+            if (result!=null && result.isSuccess) {
+                ObjectMapper mapper = new ObjectMapper();
+                try {
+                    currentSession = mapper.readValue(result.resultObjectJSON, Session.class);
+                    if (!currentSession.getToken().isEmpty()) {
+                        resOut =  true;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return currentSession;
         }
 
         @Override

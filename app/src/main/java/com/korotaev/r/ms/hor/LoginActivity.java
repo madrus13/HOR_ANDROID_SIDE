@@ -28,14 +28,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.WebServices.WebServiceMainService;
 import com.korotaev.r.ms.hor.WebServices.serviceResult;
+import com.korotaev.r.ms.testormlite.data.Entity.Region;
 import com.korotaev.r.ms.testormlite.data.Entity.Session;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -50,6 +53,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
+
+    private  static  WebServiceMainService service = new WebServiceMainService();
+
+
+
     /**
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
@@ -63,6 +71,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+    private GetRegionsTask mGetRegionTask = null;
+
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -74,6 +84,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -102,6 +116,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mRegistrationButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                mGetRegionTask = new GetRegionsTask();
+                mGetRegionTask.execute((Void) null);
                 Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
                 startActivity(intent);
             }
@@ -307,7 +323,45 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
-    /**
+
+
+
+    public class GetRegionsTask extends AsyncTask<Void, Void, Boolean> {
+
+        public GetRegionsTask() {
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            serviceResult result;
+            result = service.getAllRegions("");
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                List<Region> regionList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Region[].class));
+                Preferences myPrefs = new Preferences();
+               String regionsPrev =  myPrefs.loadRegions();
+               if (!regionsPrev.equals(result.resultObjectJSON)) {
+                   myPrefs.saveRegions(result.resultObjectJSON);
+               }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(final Boolean success) {
+
+        }
+
+        @Override
+        protected void onCancelled() {
+
+        }
+    }
+
+
+        /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
@@ -325,9 +379,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            // Simulate network access.
-            //Thread.sleep(2000);
-            WebServiceMainService service = new WebServiceMainService();
             serviceResult result;
             result = service.getSessionToken(mEmail,mPassword);
 
@@ -337,6 +388,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     currentSession = mapper.readValue(result.resultObjectJSON, Session.class);
+                    if (currentSession!=null && !currentSession.getToken().isEmpty()) {
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
