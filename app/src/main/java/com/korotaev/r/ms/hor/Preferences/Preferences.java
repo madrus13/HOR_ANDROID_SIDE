@@ -1,24 +1,25 @@
 package com.korotaev.r.ms.hor.Preferences;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
+import static android.content.Context.MODE_PRIVATE;
 
 
-public  class Preferences extends Activity {
+public   class Preferences {
 
-    private  final String SAVED_REGIONS = "SAVED_REGIONS";
+    private  static String SAVED_REGIONS = "SAVED_REGIONS";
 
-    public  void saveRegions(String jsonRegions) {
+    public static  void saveRegions(Context context, String jsonRegions) {
         SharedPreferences sPref;
-        sPref = getSharedPreferences("myPrefs",MODE_PRIVATE);
+        sPref = context.getSharedPreferences("myPrefs",MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
         ed.putString(SAVED_REGIONS, jsonRegions.toString());
         ed.commit();
     }
 
-    public String loadRegions() {
+    public static String loadRegions(Context context) {
         SharedPreferences sPref;
-        sPref = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        sPref = context.getSharedPreferences("myPrefs", MODE_PRIVATE);
         return sPref.getString(SAVED_REGIONS, "");
     }
 }

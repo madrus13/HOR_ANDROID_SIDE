@@ -76,6 +76,13 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <Spinner
+                android:id="@+id/regionList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/region_list"
+                android:spinnerMode="dialog" />
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -105,4 +112,6 @@
 
         </LinearLayout>
     </ScrollView>
+
+
 </LinearLayout>

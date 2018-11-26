@@ -26,10 +26,13 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.WebServices.WebServiceMainService;
 import com.korotaev.r.ms.hor.WebServices.serviceResult;
+import com.korotaev.r.ms.testormlite.data.Entity.Region;
 import com.korotaev.r.ms.testormlite.data.Entity.Session;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
@@ -37,6 +40,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -48,18 +52,13 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
 
     private static WebServiceMainService service = null;
     Session currentSession = null;
+    ArrayList<String> dataRegions = new ArrayList<String>();
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -73,6 +72,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
 
     private View mProgressView;
     private View mLoginFormView;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +108,36 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
 
         mLoginFormView = findViewById(R.id.registration_form);
         mProgressView = findViewById(R.id.login_progress);
+        spinner = (Spinner) findViewById(R.id.regionList);
+
+        String regionsPrev =  Preferences.loadRegions(RegistrationActivity.this);
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            List<Region> regionList = Arrays.asList(mapper.readValue(regionsPrev, Region[].class));
+
+            for (Region item: regionList
+                 ) {
+                dataRegions.add(item.getName());
+            }
+
+            // адаптер
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dataRegions);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            Spinner spinner = (Spinner) findViewById(R.id.regionList);
+            spinner.setAdapter(adapter);
+            // заголовок
+            spinner.setPrompt("Regions");
+            // выделяем элемент
+            spinner.setSelection(0);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
     }
 
     private void populateAutoComplete() {
