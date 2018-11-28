@@ -7,19 +7,26 @@ import static android.content.Context.MODE_PRIVATE;
 
 public   class Preferences {
 
-    private  static String SAVED_REGIONS = "SAVED_REGIONS";
+    public  static String SAVED_Region              = "Region";
+    public  static String SAVED_MessageType         = "MessageType";
+    public  static String SAVED_Achievmenttype      = "Achievmenttype";
+    public  static String SAVED_RequestType         = "RequestType";
+    public  static String SAVED_ToolType            = "ToolType";
+    public  static String SAVED_TransmissionType    = "TransmissionType";
+    public  static String SAVED_Login               = "Login";
 
-    public static  void saveRegions(Context context, String jsonRegions) {
+
+    public static  void saveObjInPrefs(Context context,String objectName, String jsonRegions) {
         SharedPreferences sPref;
         sPref = context.getSharedPreferences("myPrefs",MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
-        ed.putString(SAVED_REGIONS, jsonRegions.toString());
+        ed.putString(objectName, jsonRegions.toString());
         ed.commit();
     }
 
-    public static String loadRegions(Context context) {
+    public static String loadObjInPrefs(Context context, String objectName) {
         SharedPreferences sPref;
         sPref = context.getSharedPreferences("myPrefs", MODE_PRIVATE);
-        return sPref.getString(SAVED_REGIONS, "");
+        return sPref.getString(objectName, "");
     }
 }

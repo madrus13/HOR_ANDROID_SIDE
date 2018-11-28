@@ -110,7 +110,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         mProgressView = findViewById(R.id.login_progress);
         spinner = (Spinner) findViewById(R.id.regionList);
 
-        String regionsPrev =  Preferences.loadRegions(RegistrationActivity.this);
+        String regionsPrev =  Preferences.loadObjInPrefs(RegistrationActivity.this, Preferences.SAVED_REGION);
 
         ObjectMapper mapper = new ObjectMapper();
         try {

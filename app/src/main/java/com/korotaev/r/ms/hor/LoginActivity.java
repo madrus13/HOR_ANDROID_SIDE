@@ -340,9 +340,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             try {
                 List<Region> regionList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Region[].class));
 
-               String regionsPrev =  Preferences.loadRegions(LoginActivity.this);
+               String regionsPrev =  Preferences.loadObjInPrefs(LoginActivity.this, Preferences.SAVED_Region);
                if (!regionsPrev.equals(result.resultObjectJSON)) {
-                   Preferences.saveRegions(LoginActivity.this, result.resultObjectJSON);
+                   Preferences.saveObjInPrefs(LoginActivity.this, Preferences.SAVED_Region, result.resultObjectJSON);
                }
             } catch (IOException e) {
                 e.printStackTrace();
