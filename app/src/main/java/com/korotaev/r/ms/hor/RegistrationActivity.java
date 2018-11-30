@@ -22,12 +22,14 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.WebServices.WebServiceMainService;
@@ -53,6 +55,8 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
     private static WebServiceMainService service = null;
     Session currentSession = null;
     ArrayList<String> dataRegions = new ArrayList<String>();
+    List<Region> regionList = null;
+    Region selectedRegion = null;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -72,7 +76,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
 
     private View mProgressView;
     private View mLoginFormView;
-    private Spinner spinner;
+    private Spinner mRegion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,13 +112,13 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
 
         mLoginFormView = findViewById(R.id.registration_form);
         mProgressView = findViewById(R.id.login_progress);
-        spinner = (Spinner) findViewById(R.id.regionList);
+        mRegion = (Spinner) findViewById(R.id.regionList);
 
-        String regionsPrev =  Preferences.loadObjInPrefs(RegistrationActivity.this, Preferences.SAVED_REGION);
+        String regionsPrev =  Preferences.loadObjInPrefs(RegistrationActivity.this, Preferences.SAVED_Region);
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            List<Region> regionList = Arrays.asList(mapper.readValue(regionsPrev, Region[].class));
+            regionList = Arrays.asList(mapper.readValue(regionsPrev, Region[].class));
 
             for (Region item: regionList
                  ) {
@@ -128,16 +132,26 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             Spinner spinner = (Spinner) findViewById(R.id.regionList);
             spinner.setAdapter(adapter);
             // заголовок
-            spinner.setPrompt("Regions");
+            spinner.setPrompt(getString(R.string.regionSpinnerTitle));
             // выделяем элемент
             spinner.setSelection(0);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (regionList.size() >= mRegion.getSelectedItemId()) {
+                        selectedRegion = regionList.get((int) mRegion.getSelectedItemId());
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     private void populateAutoComplete() {
@@ -204,6 +218,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         String password = mPasswordView.getText().toString();
         String phone = mPhoneView.getText().toString();
         String login = mLoginView.getText().toString();
+        long regionId = 0;
 
         boolean cancel = false;
         View focusView = null;
@@ -236,6 +251,23 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             cancel = true;
         }
 
+        /*
+        if (mRegion!=null) {
+            Toast.makeText(this, "mRegion = " + String.valueOf(mRegion.getSelectedItemId()) ,Toast.LENGTH_LONG).show();
+        }
+        */
+
+
+        if (selectedRegion!=null && selectedRegion.getId() >= 0)
+        {
+            regionId = selectedRegion.getId();
+        }
+        else {
+            cancel = true;
+            focusView = mRegion;
+        }
+
+
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -244,7 +276,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserRegistrationTask(login, phone, email, password);
+            mAuthTask = new UserRegistrationTask(login, regionId, phone, email, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -256,7 +288,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 6;
     }
 
     /**
@@ -359,19 +391,21 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         private final String mPassword;
         private final String mPhone;
         private final String mLoginName;
+        private final long   mRegionId;
 
-        UserRegistrationTask(String login,String phone, String email, String password) {
+        UserRegistrationTask(String login,long regionId, String phone, String email, String password) {
             mEmail = email;
             mPassword = password;
             mPhone = phone;
             mLoginName = login;
+            mRegionId = regionId;
         }
         public  Boolean userRegistrationService()
         {
             User currentUser;
             serviceResult result;
             Boolean resOut = false;
-            result = service.insertUser(this.mLoginName,0, false,this.mPassword,this.mEmail,this.mPhone );
+            result = service.insertUser(this.mLoginName,this.mRegionId, false,this.mPassword,this.mEmail,this.mPhone );
             if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
@@ -407,6 +441,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
                 try {
                     currentSession = mapper.readValue(result.resultObjectJSON, Session.class);
                     if (!currentSession.getToken().isEmpty()) {
+                        Preferences.saveObjInPrefs(RegistrationActivity.this, Preferences.SAVED_Session, currentSession.getToken());
                         resOut =  true;
                     }
                 } catch (IOException e) {

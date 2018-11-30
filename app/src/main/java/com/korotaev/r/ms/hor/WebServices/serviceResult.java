@@ -25,6 +25,7 @@ public class serviceResult implements KvmSerializable {
     public long errorCode;
     public boolean errorCodeSpecified;
     public String errorMessage;
+    public String timingMessage;
     
     public serviceResult(){}
     
@@ -82,6 +83,16 @@ public class serviceResult implements KvmSerializable {
                 errorMessage = (String) obj;
             }
         }
+        if (soapObject.hasProperty("timingMessage"))
+        {
+            Object obj = soapObject.getProperty("timingMessage");
+            if (obj != null && obj.getClass().equals(SoapPrimitive.class)){
+                SoapPrimitive j =(SoapPrimitive) obj;
+                timingMessage = j.toString();
+            }else if (obj!= null && obj instanceof String){
+                timingMessage = (String) obj;
+            }
+        }
     }
     @Override
     public Object getProperty(int arg0) {
@@ -96,6 +107,8 @@ public class serviceResult implements KvmSerializable {
                 return errorCodeSpecified;
             case 4:
                 return errorMessage;
+            case 5:
+                return timingMessage;
         }
         return null;
     }
@@ -128,6 +141,11 @@ public class serviceResult implements KvmSerializable {
                 info.type = PropertyInfo.STRING_CLASS;
                 info.name = "errorMessage";
                 break;
+            case 5:
+                info.type = PropertyInfo.STRING_CLASS;
+                info.name = "timingMessage";
+                break;
+
         }
     }
     

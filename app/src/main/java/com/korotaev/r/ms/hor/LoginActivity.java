@@ -25,6 +25,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -79,16 +80,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private CheckBox mAutoSignCheckBox;
+
+    /// Инициализация настроек по входу в систему
+    private void initLogonInfoFromSavedPrefs()
+    {
+        String autoSignIn = Preferences.loadObjInPrefs(LoginActivity.this, Preferences.SAVED_AutoSignInState);
+
+        mAutoSignCheckBox.setChecked(false);
+        if (!autoSignIn.isEmpty() && autoSignIn.equals("1"))
+        {
+            mAutoSignCheckBox.setChecked(true);
+        }
+
+        if (mAutoSignCheckBox.isChecked()) {
+            String login = Preferences.loadObjInPrefs(LoginActivity.this, Preferences.SAVED_Login);
+            String pass = Preferences.loadObjInPrefs(LoginActivity.this, Preferences.SAVED_Pass);
+            if (!login.isEmpty() && !pass.isEmpty()) {
+                mEmailView.setText(login);
+                mPasswordView.setText(pass);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
-
-
         // Set up the login form.
+        mAutoSignCheckBox = (CheckBox) findViewById(R.id.autoSignCheckBox);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
@@ -104,11 +125,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        initLogonInfoFromSavedPrefs();
+
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+        mAutoSignCheckBox.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String autoSignState = "0";
+                if (mAutoSignCheckBox.isChecked()) {
+                    autoSignState = "1";
+                }
+                else {
+                    mPasswordView.setText("");
+                    Preferences.saveObjInPrefs(LoginActivity.this, Preferences.SAVED_Pass, mPasswordView.getText().toString());
+                }
+
+                Preferences.saveObjInPrefs(LoginActivity.this, Preferences.SAVED_AutoSignInState, autoSignState);
             }
         });
 
@@ -188,6 +226,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+
+        if (mAutoSignCheckBox.isEnabled() && !email.isEmpty() && !password.isEmpty()) {
+            Preferences.saveObjInPrefs(LoginActivity.this, Preferences.SAVED_Login, email);
+            Preferences.saveObjInPrefs(LoginActivity.this, Preferences.SAVED_Pass, password);
+        }
 
         boolean cancel = false;
         View focusView = null;
@@ -389,6 +432,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 try {
                     currentSession = mapper.readValue(result.resultObjectJSON, Session.class);
                     if (currentSession!=null && !currentSession.getToken().isEmpty()) {
+                        Preferences.saveObjInPrefs(LoginActivity.this, Preferences.SAVED_Session, currentSession.getToken());
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
@@ -397,7 +441,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     e.printStackTrace();
                 }
             }
-
             // TODO: register the new account here.
             return false;
         }

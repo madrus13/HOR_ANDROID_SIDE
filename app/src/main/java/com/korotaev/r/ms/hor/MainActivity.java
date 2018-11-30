@@ -1,8 +1,21 @@
 package com.korotaev.r.ms.hor;
 
+import android.app.LoaderManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.Loader;
+import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,14 +25,89 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.korotaev.r.ms.hor.IntentService.CmdService;
+import com.korotaev.r.ms.hor.IntentService.SrvCmd;
+import com.korotaev.r.ms.hor.Preferences.Preferences;
+import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
+
+import java.util.List;
+
+import static com.korotaev.r.ms.hor.WebServices.ServiceObjectHelper.getRequestTypes;
+import static com.korotaev.r.ms.hor.IntentService.SrvCmd.APP_TAG_CODE;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor>,ServiceConnection, View.OnClickListener {
+
+
+    /** Messenger for communicating with service. */
+    Messenger mService = null;
+    /** Flag indicating whether we have called bind on the service. */
+    boolean mIsBound;
+    /**Target we publish for clients to send messages to IncomingHandler */
+    final Messenger mMessenger = new Messenger(new IncomingHandler());
+
+
+    /**
+     * Handler of incoming messages from service.
+     */
+    class IncomingHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+
+            Log.e("test", "main->handleMessage->");
+
+            msg.getData();
+
+            switch (msg.what) {
+
+                case SrvCmd.CMD_EntitySyncResp:
+                    Log.e("test", "main->handleMessage->Received from service: response" );
+                    Bundle data = msg.getData();
+                    //data.setClassLoader(ElmaResponseAuthorise.class.getClassLoader());
+                    //ElmaResponseAuthorise info = (ElmaResponseAuthorise)data.getParcelable(String.valueOf(SrvCmd.Auth_Response));
+                    //Log.e("test", "LastMessage: " + info.getLastMessage() + ", AuthToken: " + info.getAuthToken());
+
+                    Toast.makeText(MainActivity.this, "Authorise success!",
+                            Toast.LENGTH_SHORT).show();
+
+                    break;
+
+                default:
+                    super.handleMessage(msg);
+            }
+        }
+    }
+    private String currentToken = "";
+    private List<Requesttype> requesttypeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        currentToken = Preferences.loadObjInPrefs(this,Preferences.SAVED_Session);
+
+        Toast.makeText(this, "currentToken = " + currentToken ,Toast.LENGTH_LONG).show();
+
+        Intent i = new Intent(this, CmdService.class);
+        bindService(i,  MainActivity.this, Context.BIND_AUTO_CREATE);
+
+        if (!currentToken.isEmpty()) {
+            requesttypeList = getRequestTypes(this,currentToken);
+            if (requesttypeList!=null) {
+                Toast.makeText(this, "requesttypeList size = " + requesttypeList.size() ,Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(this, "requesttypeList is null!"  ,Toast.LENGTH_LONG).show();
+            }
+        }
+        else {
+            Toast.makeText(this, "currentToken is empty", Toast.LENGTH_LONG).show();
+        }
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -97,5 +185,52 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder service) {
+        // TODO Auto-generated method stub
+        Log.e(APP_TAG_CODE, "main->onServiceConnected" );
+        if (service!=null) {
+            Log.e(APP_TAG_CODE, "main->onServiceConnected->" + service.toString()  );
+            mService = new Messenger(service);
+
+        }
+
+        // We want to monitor the service for as long as we are
+        // connected to it.
+        try {
+            Message msg = Message.obtain(null, SrvCmd.CMD_RegisterIntentServiceClientReq);
+            msg.replyTo = mMessenger;
+            mService.send(msg);
+        } catch (RemoteException e) {
+            Toast.makeText(MainActivity.this, R.string.remote_service_crashed,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+
     }
 }

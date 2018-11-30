@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HOR</string>
+    <string name="app_name">RoadHelp</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -29,4 +29,8 @@
     <string name="phone">Phone</string>
     <string name="title_preference">Preferences</string>
     <string name="region_list">Regions</string>
+    <string name="auto_sign">Auto sign</string>
+    <string name="regionSpinnerTitle">Regions</string>
+    <string name="remote_service_started">remote_service_started</string>
+    <string name="remote_service_crashed">remote_service_crashed</string>
 </resources>
