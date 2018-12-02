@@ -1,0 +1,45 @@
+Этап регистрации в системе
+	insertUpdateUser
+Если это регистрация то Token и Id не нужен
+
+Этап авторизации в системе
+	getSessionToken
+
+Этап Загрузка приложения, синхронизация основных справочников
+	getAllRequestType
+	getAllMessageTypes
+	getAllTransmissionType
+	getAllToolType
+	getAllAchievmenttype
+	getAllRegions
+	getAllAchievmentByUser
+	getAllToolByUser
+	getAllAutoByUser
+	getActiveRequestByCreationUser
+
+Этап основного меню
+
+	Региональный чат
+		insertMessage
+		getUserInfo	
+		getMessageByRegionAndIdGreater (периодическая загрузка данных в локальную БД)
+		
+	Сообщить о проблеме на дороге \ Перейти к своему активному запросу
+		insertUpdateRequest
+		insertMessage
+		getActiveRequestByCreationUser
+	
+	Посмотреть все активные запросы по региону
+		getAllOpenRequestByRegion
+		insertMessage	
+	
+	
+	Статистика текущего пользователя
+		getAllRequestByCreationUser
+		findRequestResolvedByCurrentUserWithTypeFilter
+		getUserInfo
+		
+	Посмотреть запросы на карте
+
+
+

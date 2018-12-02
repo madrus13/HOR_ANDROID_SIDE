@@ -4,7 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.os.Bundle;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -14,27 +14,63 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.MainActivity;
+import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
+import com.korotaev.r.ms.hor.WebServices.ServiceObjectHelper;
+import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
+import com.korotaev.r.ms.testormlite.data.Entity.Messagetype;
+import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
+import com.korotaev.r.ms.testormlite.data.Entity.Tooltypes;
+import com.korotaev.r.ms.testormlite.data.Entity.TransmissionType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.APP_TAG_CODE;
 
 
 public class CmdService extends IntentService {
 
+    private SyncTask mTestTask = null;
     /** For showing and hiding our notification. */
     NotificationManager mNM;
     /** Keeps track of all current registered clients. */
     ArrayList<Messenger> mClients = new ArrayList<Messenger>();
     /** Holds last value set by a client. */
     int mValue = 0;
+    String  currentToken;
+    private List<Requesttype> requesttypeList;
+    private List<Messagetype> messagetypeList;
+    private List<TransmissionType> transmissionTypeList;
+    private List<Tooltypes> tooltypesList;
+    private List<Achievmenttype> achievmenttypeList;
 
+/*
+    public ServiceResult getAllAchievmentByUser
+    public ServiceResult getAllToolByUser
+    public ServiceResult getAllAutoByUser
+*/
+    public  void  sendMsgToServiceClients(Message msg, int command){
+        Message answerMsg = Message.obtain(null, command);
+        answerMsg.replyTo = msg.replyTo;
+
+        for (Messenger item : mClients) {
+            try {
+                item.send(answerMsg);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * Handler of incoming messages from clients.
      */
-    class IncomingHandler extends Handler {
+    class IncomingHandler extends Handler
+    {
+
+
         @Override
         public void handleMessage(Message msg) {
             Log.e(APP_TAG_CODE, "Service->IncomingHandler->handleMessage : " + msg.what);
@@ -43,25 +79,16 @@ public class CmdService extends IntentService {
             switch (msg.what) {
                 case SrvCmd.CMD_RegisterIntentServiceClientReq:
                     mClients.add(msg.replyTo);
-                    Message answerMsg = Message.obtain(null, SrvCmd.CMD_RegisterIntentServiceClientResp);
-                    answerMsg.replyTo = msg.replyTo;
-
-                    for (Messenger item : mClients) {
-                        try {
-                            item.send(answerMsg);
-                        } catch (RemoteException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
+                    sendMsgToServiceClients(msg, SrvCmd.CMD_RegisterIntentServiceClientResp);
                     break;
                 case SrvCmd.CMD_UnregisterIntentServiceClientReq:
                     mClients.remove(msg.replyTo);
                     break;
                 case SrvCmd.CMD_EntitySyncReq:
-                    Log.e(APP_TAG_CODE, "Service->IncomingHandler->handleMessage : Auth_Request");
+                    Log.e(APP_TAG_CODE, "Service->IncomingHandler->handleMessage : CMD_EntitySyncReq");
+                    mTestTask = new SyncTask(msg );
+                    mTestTask.execute((Void) null);
 
-                    Bundle data = msg.getData();
                     //data.setClassLoader(Auth_Request.class.getClassLoader());
                     //Auth_Request info = (Auth_Request)data.getParcelable(String.valueOf(SrvCmd.CMD_Auth_Request));
                     //Log.e(APP_TAG_CODE, "Service->IncomingHandler->handleMessage : email | pass" + info.Email + " | " + info.Password);
@@ -78,6 +105,37 @@ public class CmdService extends IntentService {
      */
     final Messenger mMessenger = new Messenger(new IncomingHandler());
 
+
+    public class SyncTask extends AsyncTask<Void, Void, Boolean> {
+        Message msg;
+        public SyncTask(Message msg) {
+            this.msg = msg;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            //Bundle data = msg.getData();
+            currentToken = Preferences.loadObjInPrefs(CmdService.this,Preferences.SAVED_Session);
+
+            requesttypeList = ServiceObjectHelper.getRequestTypes(CmdService.this,currentToken);
+            messagetypeList = ServiceObjectHelper.getMessageType(CmdService.this,currentToken);
+            achievmenttypeList = ServiceObjectHelper.getAchievmenttype(CmdService.this,currentToken);
+            tooltypesList = ServiceObjectHelper.getTooltypes(CmdService.this,currentToken);
+            transmissionTypeList = ServiceObjectHelper.getTransmissionType(CmdService.this,currentToken);
+            /*
+            if (requesttypeList!=null) {
+                Log.e(APP_TAG_CODE, "Service->IncomingHandler->CMD_EntitySyncReq requesttypeList count " + requesttypeList.size());
+            }
+            else {
+                Log.e(APP_TAG_CODE, "Service->IncomingHandler->CMD_EntitySyncReq requesttypeList == null");
+            }
+            */
+
+
+            sendMsgToServiceClients(msg, SrvCmd.CMD_EntitySyncResp);
+            return null;
+        }
+    }
 
     public CmdService() {
         super("CmdService");

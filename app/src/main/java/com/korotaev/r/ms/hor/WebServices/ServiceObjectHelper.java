@@ -34,10 +34,120 @@ public class ServiceObjectHelper {
     private static List<TransmissionType> transmissionTypeList;
 
 
+    public static List<Messagetype> getMessageType(Context context, String currentToken)
+    {
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.getAllMessageTypes(currentToken);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+
+                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                    messagetypeList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Messagetype[].class));
+                    Preferences.saveObjInPrefs(context, Preferences.SAVED_MessageType,result.resultObjectJSON);
+                    return messagetypeList;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static List<Achievmenttype> getAchievmenttype(Context context, String currentToken)
+    {
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.getAllAchievmenttype(currentToken);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+
+                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                    achievmenttypeList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Achievmenttype[].class));
+                    Preferences.saveObjInPrefs(context, Preferences.SAVED_Achievmenttype,result.resultObjectJSON);
+                    return achievmenttypeList;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static List<Tooltypes> getTooltypes(Context context, String currentToken)
+    {
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.getAllToolType(currentToken);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+
+                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                    tooltypesList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Tooltypes[].class));
+                    Preferences.saveObjInPrefs(context, Preferences.SAVED_ToolType,result.resultObjectJSON);
+                    return tooltypesList;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static List<TransmissionType> getTransmissionType(Context context, String currentToken)
+    {
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.getAllTransmissionType(currentToken);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+
+                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                    transmissionTypeList = Arrays.asList(mapper.readValue(result.resultObjectJSON, TransmissionType[].class));
+                    Preferences.saveObjInPrefs(context, Preferences.SAVED_TransmissionType,result.resultObjectJSON);
+                    return transmissionTypeList;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     public static List<Requesttype> getRequestTypes(Context context, String currentToken)
     {
+        serviceResult result = new serviceResult();
         if (!currentToken.isEmpty()) {
-            serviceResult result = service.getAllRequestType(currentToken);
+
+            try {
+                result = service.getAllRequestType(currentToken);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             ObjectMapper mapper = new ObjectMapper();
             try {
 

@@ -260,7 +260,7 @@ public class WSTestActivity extends AppCompatActivity {
             testToken("mad@bad1.ru", "pass12345", false);
             testToken("mad@bad21.ru", "pass12345", false);
             testToken("mad@bad2.ru", "pass1234", false);
-            testToken("mad@bad1.ru", "pass1234", true);
+            testToken("madruskor@gmail.com", "000000", true);
 
             if (currentSession!=null) {
                 testMessageType(currentSession.getToken(), true);

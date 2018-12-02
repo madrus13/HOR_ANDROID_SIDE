@@ -14,17 +14,17 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.IntentService.CmdService;
@@ -34,7 +34,6 @@ import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
 
 import java.util.List;
 
-import static com.korotaev.r.ms.hor.WebServices.ServiceObjectHelper.getRequestTypes;
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.APP_TAG_CODE;
 
 public class MainActivity extends AppCompatActivity
@@ -61,17 +60,15 @@ public class MainActivity extends AppCompatActivity
             msg.getData();
 
             switch (msg.what) {
+                case SrvCmd.CMD_RegisterIntentServiceClientResp:
+                    Toast.makeText(MainActivity.this, "Инициация синхронизации", Toast.LENGTH_SHORT).show();
+                    sendComandToIntentService(SrvCmd.CMD_EntitySyncReq);
 
                 case SrvCmd.CMD_EntitySyncResp:
-                    Log.e("test", "main->handleMessage->Received from service: response" );
                     Bundle data = msg.getData();
                     //data.setClassLoader(ElmaResponseAuthorise.class.getClassLoader());
                     //ElmaResponseAuthorise info = (ElmaResponseAuthorise)data.getParcelable(String.valueOf(SrvCmd.Auth_Response));
-                    //Log.e("test", "LastMessage: " + info.getLastMessage() + ", AuthToken: " + info.getAuthToken());
-
-                    Toast.makeText(MainActivity.this, "Authorise success!",
-                            Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(MainActivity.this, "Обновление завершено", Toast.LENGTH_SHORT).show();
                     break;
 
                 default:
@@ -87,26 +84,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        currentToken = Preferences.loadObjInPrefs(this,Preferences.SAVED_Session);
 
-        Toast.makeText(this, "currentToken = " + currentToken ,Toast.LENGTH_LONG).show();
+
+        Toast.makeText(this, R.string.SuccessSignIn ,Toast.LENGTH_LONG).show();
 
         Intent i = new Intent(this, CmdService.class);
         bindService(i,  MainActivity.this, Context.BIND_AUTO_CREATE);
 
-        if (!currentToken.isEmpty()) {
-            requesttypeList = getRequestTypes(this,currentToken);
-            if (requesttypeList!=null) {
-                Toast.makeText(this, "requesttypeList size = " + requesttypeList.size() ,Toast.LENGTH_LONG).show();
-            }
-            else {
-                Toast.makeText(this, "requesttypeList is null!"  ,Toast.LENGTH_LONG).show();
-            }
-        }
-        else {
-            Toast.makeText(this, "currentToken is empty", Toast.LENGTH_LONG).show();
-        }
-
+        currentToken = Preferences.loadObjInPrefs(this,Preferences.SAVED_Session);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -168,17 +153,14 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_your_help) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_chat) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_settings) {
+            startActivity(new Intent(MainActivity.this, ActivitySettings.class));
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_requests) {
 
         }
 
@@ -196,17 +178,23 @@ public class MainActivity extends AppCompatActivity
             mService = new Messenger(service);
 
         }
+        sendComandToIntentService(SrvCmd.CMD_RegisterIntentServiceClientReq);
 
+
+    }
+    public void sendComandToIntentService(int command)
+    {
         // We want to monitor the service for as long as we are
         // connected to it.
         try {
-            Message msg = Message.obtain(null, SrvCmd.CMD_RegisterIntentServiceClientReq);
+            Message msg = Message.obtain(null, command);
             msg.replyTo = mMessenger;
             mService.send(msg);
         } catch (RemoteException e) {
             Toast.makeText(MainActivity.this, R.string.remote_service_crashed,
                     Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override

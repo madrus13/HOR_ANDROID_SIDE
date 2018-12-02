@@ -31,12 +31,17 @@
         <activity
             android:name=".WSTestActivity"
             android:label="@string/title_activity_wstest"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".RegistrationActivity"
-            android:label="@string/title_activity_registration"></activity>
+            android:label="@string/title_activity_registration" />
 
         <service android:name=".IntentService.CmdService" />
+
+        <activity
+            android:name=".ActivitySettings"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
