@@ -1,5 +1,6 @@
 package com.korotaev.r.ms.hor;
 
+
 import android.app.LoaderManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,6 +17,8 @@ import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -30,6 +33,12 @@ import android.widget.Toast;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
+import com.korotaev.r.ms.hor.fragment.ui.about.AboutFragment;
+import com.korotaev.r.ms.hor.fragment.ui.achievment.AchievmentFragment;
+import com.korotaev.r.ms.hor.fragment.ui.chat.ChatFragment;
+import com.korotaev.r.ms.hor.fragment.ui.help.HelpFragment;
+import com.korotaev.r.ms.hor.fragment.ui.request.RequestFragment;
+import com.korotaev.r.ms.hor.fragment.ui.settings.SettingsFragment;
 import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
 
 import java.util.List;
@@ -151,18 +160,45 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        // Создадим новый фрагмент
+        Fragment fragment = null;
+        Class fragmentClass = null;
+
         int id = item.getItemId();
 
         if (id == R.id.nav_your_help) {
-            // Handle the camera action
+            fragmentClass = HelpFragment.class;
         } else if (id == R.id.nav_chat) {
-
+            fragmentClass = ChatFragment.class;
         } else if (id == R.id.nav_settings) {
-            startActivity(new Intent(MainActivity.this, ActivitySettings.class));
-
+           // startActivity(new Intent(MainActivity.this, SettingActivity.class));
+            fragmentClass = SettingsFragment.class;
         } else if (id == R.id.nav_requests) {
-
+            fragmentClass = RequestFragment.class;
+        } else if (id == R.id.nav_achievments) {
+            fragmentClass = AchievmentFragment.class;
+        }  else if (id == R.id.nav_about_program) {
+            fragmentClass = AboutFragment.class;
         }
+
+
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (fragment!=null)
+        {
+            // Вставляем фрагмент, заменяя текущий фрагмент
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+            // Выделяем выбранный пункт меню в шторке
+            item.setChecked(true);
+            // Выводим выбранный пункт в заголовке
+            setTitle(item.getTitle());
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

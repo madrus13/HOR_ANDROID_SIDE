@@ -38,10 +38,12 @@
 
         <service android:name=".IntentService.CmdService" />
 
-        <activity
-            android:name=".ActivitySettings"
-            android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".fragment.ui.settings.SettingsActivity" />
+        <activity android:name=".fragment.ui.request.RequestActivity" />
+        <activity android:name=".fragment.ui.help.HelpActivity" />
+        <activity android:name=".fragment.ui.chat.ChatActivity" />
+        <activity android:name=".fragment.ui.about.AboutActivity" />
+        <activity android:name=".fragment.ui.achievment.AchievmentActivity"></activity>
     </application>
 
 </manifest>
