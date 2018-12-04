@@ -17,11 +17,15 @@ import com.korotaev.r.ms.hor.MainActivity;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.WebServices.ServiceObjectHelper;
+import com.korotaev.r.ms.testormlite.data.Entity.Achievement;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
+import com.korotaev.r.ms.testormlite.data.Entity.Auto;
 import com.korotaev.r.ms.testormlite.data.Entity.Messagetype;
 import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
+import com.korotaev.r.ms.testormlite.data.Entity.Tool;
 import com.korotaev.r.ms.testormlite.data.Entity.Tooltypes;
 import com.korotaev.r.ms.testormlite.data.Entity.TransmissionType;
+import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +49,11 @@ public class CmdService extends IntentService {
     private List<Tooltypes> tooltypesList;
     private List<Achievmenttype> achievmenttypeList;
 
-/*
-    public ServiceResult getAllAchievmentByUser
-    public ServiceResult getAllToolByUser
-    public ServiceResult getAllAutoByUser
-*/
+    private List<Achievement> achievements;
+    private List<Tool> tools;
+    private List<Auto> autos;
+
+
     public  void  sendMsgToServiceClients(Message msg, int command){
         Message answerMsg = Message.obtain(null, command);
         answerMsg.replyTo = msg.replyTo;
@@ -115,6 +119,9 @@ public class CmdService extends IntentService {
         @Override
         protected Boolean doInBackground(Void... voids) {
             //Bundle data = msg.getData();
+            long userId = 0;
+            boolean userSpecified = false;
+
             currentToken = Preferences.loadObjInPrefs(CmdService.this,Preferences.SAVED_Session);
 
             requesttypeList = ServiceObjectHelper.getRequestTypes(CmdService.this,currentToken);
@@ -122,15 +129,16 @@ public class CmdService extends IntentService {
             achievmenttypeList = ServiceObjectHelper.getAchievmenttype(CmdService.this,currentToken);
             tooltypesList = ServiceObjectHelper.getTooltypes(CmdService.this,currentToken);
             transmissionTypeList = ServiceObjectHelper.getTransmissionType(CmdService.this,currentToken);
-            /*
-            if (requesttypeList!=null) {
-                Log.e(APP_TAG_CODE, "Service->IncomingHandler->CMD_EntitySyncReq requesttypeList count " + requesttypeList.size());
-            }
-            else {
-                Log.e(APP_TAG_CODE, "Service->IncomingHandler->CMD_EntitySyncReq requesttypeList == null");
-            }
-            */
 
+            User currentUser = ServiceObjectHelper.getCurrentUserInfo(CmdService.this, currentToken);
+
+            if (currentUser != null && currentUser.getId() > 0) {
+                userId = currentUser.getId();
+                userSpecified = true;
+            }
+            autos = ServiceObjectHelper.getAllAutoByUser(CmdService.this,currentToken, userId, userSpecified);
+            tools = ServiceObjectHelper.getAllToolByUser(CmdService.this,currentToken, userId, userSpecified);
+            achievements = ServiceObjectHelper.getAllAchievmentByUser(CmdService.this,currentToken,userId, userSpecified);
 
             sendMsgToServiceClients(msg, SrvCmd.CMD_EntitySyncResp);
             return null;
@@ -192,7 +200,7 @@ public class CmdService extends IntentService {
         Log.e(APP_TAG_CODE, "Service->onDestroy" );
 
         // Tell the user we stopped.
-        Toast.makeText(this, "Destroyed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Завершено", Toast.LENGTH_SHORT).show();
 
     }
     @Override

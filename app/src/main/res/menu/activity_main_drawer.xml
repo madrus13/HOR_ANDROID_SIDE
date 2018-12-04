@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
@@ -11,28 +12,28 @@
         <item
             android:id="@+id/nav_requests"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Запросы" />
+            android:title="@string/Requests" />
         <item
             android:id="@+id/nav_chat"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Общий чат" />
+            android:title="@string/CommonChat" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Настройки" />
-    </group>
+            android:title="@string/Settings" />
 
-    <item android:title="Communicate">
+
+    <item android:title="@string/communicate">
         <menu>
             <item
                 android:id="@+id/nav_about_program"
                 android:icon="@drawable/ic_menu_share"
-                android:title="О программе" />
+                android:title="@string/AboutProgram" />
             <item
                 android:id="@+id/nav_achievments"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Достижения" />
+                android:title="@string/Achievments" />
         </menu>
     </item>
-
+    </group>
 </menu>

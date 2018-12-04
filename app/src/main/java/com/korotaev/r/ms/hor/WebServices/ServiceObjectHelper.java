@@ -3,11 +3,15 @@ package com.korotaev.r.ms.hor.WebServices;
 import android.content.Context;
 
 import com.korotaev.r.ms.hor.Preferences.Preferences;
+import com.korotaev.r.ms.testormlite.data.Entity.Achievement;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
+import com.korotaev.r.ms.testormlite.data.Entity.Auto;
 import com.korotaev.r.ms.testormlite.data.Entity.Messagetype;
 import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
+import com.korotaev.r.ms.testormlite.data.Entity.Tool;
 import com.korotaev.r.ms.testormlite.data.Entity.Tooltypes;
 import com.korotaev.r.ms.testormlite.data.Entity.TransmissionType;
+import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -77,6 +81,114 @@ public class ServiceObjectHelper {
                     achievmenttypeList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Achievmenttype[].class));
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_Achievmenttype,result.resultObjectJSON);
                     return achievmenttypeList;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static User getCurrentUserInfo(Context context, String currentToken)
+    {
+        User currentUser = null;
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.getUserInfo(currentToken);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+
+                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                    currentUser = mapper.readValue(result.resultObjectJSON, User.class);
+                    Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserInfo,result.resultObjectJSON);
+                    return currentUser;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static List<Achievement>  getAllAchievmentByUser(Context context, String currentToken, long userId, boolean userSpecified)
+    {
+        List<Achievement> achievements = null;
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.getAllAchievmentByUser(currentToken, userId, userSpecified);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+
+                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                    achievements =  Arrays.asList(mapper.readValue(result.resultObjectJSON, Achievement[].class));
+                    Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserAchievs,result.resultObjectJSON);
+                    return achievements;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static List<Tool>  getAllToolByUser(Context context, String currentToken, long userId, boolean userSpecified)
+    {
+        List<Tool> tools = null;
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.getAllToolByUser(currentToken, userId, userSpecified);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+
+                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                    tools =  Arrays.asList(mapper.readValue(result.resultObjectJSON, Tool[].class));
+                    Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserTools,result.resultObjectJSON);
+                    return tools;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static List<Auto>  getAllAutoByUser(Context context, String currentToken, long userId, boolean userSpecified)
+    {
+        List<Auto> autos = null;
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.getAllAutoByUser(currentToken, userId, userSpecified);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+
+                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                    autos =  Arrays.asList(mapper.readValue(result.resultObjectJSON, Auto[].class));
+                    Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserAutos,result.resultObjectJSON);
+                    return autos;
                 }
 
             } catch (IOException e) {

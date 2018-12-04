@@ -17,7 +17,10 @@ public   class Preferences {
     public  static String SAVED_Login               = "Login";
     public  static String SAVED_Pass                = "Pass";
     public  static String SAVED_AutoSignInState     = "AutoSignInState";
-
+    public  static String SAVED_CurrentUserInfo     = "CurrentUserInfo";
+    public  static String SAVED_CurrentUserAchievs  = "CurrentUserAchievs";
+    public  static String SAVED_CurrentUserAutos     = "CurrentUserAutos";
+    public  static String SAVED_CurrentUserTools     = "CurrentUserTools";
 
     public static  void saveObjInPrefs(Context context,String objectName, String str) {
         SharedPreferences sPref;
