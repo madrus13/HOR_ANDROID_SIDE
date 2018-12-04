@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity
 
             switch (msg.what) {
                 case SrvCmd.CMD_RegisterIntentServiceClientResp:
-                    Toast.makeText(MainActivity.this, "Инициация синхронизации", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Инициация синхронизации", Toast.LENGTH_SHORT).show();
                     sendComandToIntentService(SrvCmd.CMD_EntitySyncReq);
 
                 case SrvCmd.CMD_EntitySyncResp:

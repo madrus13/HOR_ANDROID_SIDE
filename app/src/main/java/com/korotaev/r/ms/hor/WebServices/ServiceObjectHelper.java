@@ -15,7 +15,6 @@ import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,6 +37,12 @@ public class ServiceObjectHelper {
     private static List<TransmissionType> transmissionTypeList;
 
 
+    public static boolean isValidResult(serviceResult result)
+    {
+        return (result!=null && !result.resultObjectJSON.isEmpty() &&
+                !result.resultObjectJSON.toUpperCase().contains("NULL"));
+    }
+
     public static List<Messagetype> getMessageType(Context context, String currentToken)
     {
         serviceResult result = new serviceResult();
@@ -51,18 +56,20 @@ public class ServiceObjectHelper {
             ObjectMapper mapper = new ObjectMapper();
             try {
 
-                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                if (isValidResult(result)) {
                     messagetypeList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Messagetype[].class));
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_MessageType,result.resultObjectJSON);
                     return messagetypeList;
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return null;
     }
+
+
 
     public static List<Achievmenttype> getAchievmenttype(Context context, String currentToken)
     {
@@ -77,13 +84,13 @@ public class ServiceObjectHelper {
             ObjectMapper mapper = new ObjectMapper();
             try {
 
-                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                if (isValidResult(result)) {
                     achievmenttypeList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Achievmenttype[].class));
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_Achievmenttype,result.resultObjectJSON);
                     return achievmenttypeList;
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -92,7 +99,7 @@ public class ServiceObjectHelper {
 
     public static User getCurrentUserInfo(Context context, String currentToken)
     {
-        User currentUser = null;
+        User currentUser;
         serviceResult result = new serviceResult();
         if (!currentToken.isEmpty()) {
 
@@ -104,13 +111,14 @@ public class ServiceObjectHelper {
             ObjectMapper mapper = new ObjectMapper();
             try {
 
-                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                if (isValidResult(result))
+                {
                     currentUser = mapper.readValue(result.resultObjectJSON, User.class);
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserInfo,result.resultObjectJSON);
                     return currentUser;
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -119,7 +127,7 @@ public class ServiceObjectHelper {
 
     public static List<Achievement>  getAllAchievmentByUser(Context context, String currentToken, long userId, boolean userSpecified)
     {
-        List<Achievement> achievements = null;
+        List<Achievement> achievements;
         serviceResult result = new serviceResult();
         if (!currentToken.isEmpty()) {
 
@@ -131,13 +139,14 @@ public class ServiceObjectHelper {
             ObjectMapper mapper = new ObjectMapper();
             try {
 
-                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                if (isValidResult(result))
+                {
                     achievements =  Arrays.asList(mapper.readValue(result.resultObjectJSON, Achievement[].class));
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserAchievs,result.resultObjectJSON);
                     return achievements;
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -146,7 +155,7 @@ public class ServiceObjectHelper {
 
     public static List<Tool>  getAllToolByUser(Context context, String currentToken, long userId, boolean userSpecified)
     {
-        List<Tool> tools = null;
+        List<Tool> tools;
         serviceResult result = new serviceResult();
         if (!currentToken.isEmpty()) {
 
@@ -158,13 +167,14 @@ public class ServiceObjectHelper {
             ObjectMapper mapper = new ObjectMapper();
             try {
 
-                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                if (isValidResult(result))
+                {
                     tools =  Arrays.asList(mapper.readValue(result.resultObjectJSON, Tool[].class));
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserTools,result.resultObjectJSON);
                     return tools;
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -173,7 +183,7 @@ public class ServiceObjectHelper {
 
     public static List<Auto>  getAllAutoByUser(Context context, String currentToken, long userId, boolean userSpecified)
     {
-        List<Auto> autos = null;
+        List<Auto> autos;
         serviceResult result = new serviceResult();
         if (!currentToken.isEmpty()) {
 
@@ -185,13 +195,13 @@ public class ServiceObjectHelper {
             ObjectMapper mapper = new ObjectMapper();
             try {
 
-                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                if (isValidResult(result)) {
                     autos =  Arrays.asList(mapper.readValue(result.resultObjectJSON, Auto[].class));
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserAutos,result.resultObjectJSON);
                     return autos;
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -211,13 +221,14 @@ public class ServiceObjectHelper {
             ObjectMapper mapper = new ObjectMapper();
             try {
 
-                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                if (isValidResult(result))
+                {
                     tooltypesList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Tooltypes[].class));
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_ToolType,result.resultObjectJSON);
                     return tooltypesList;
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -237,13 +248,13 @@ public class ServiceObjectHelper {
             ObjectMapper mapper = new ObjectMapper();
             try {
 
-                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                if (isValidResult(result)) {
                     transmissionTypeList = Arrays.asList(mapper.readValue(result.resultObjectJSON, TransmissionType[].class));
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_TransmissionType,result.resultObjectJSON);
                     return transmissionTypeList;
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -263,13 +274,14 @@ public class ServiceObjectHelper {
             ObjectMapper mapper = new ObjectMapper();
             try {
 
-                if (result!=null && !result.resultObjectJSON.isEmpty()) {
+                if (isValidResult(result))
+                {
                     requesttypeList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Requesttype[].class));
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_RequestType,result.resultObjectJSON);
                     return requesttypeList;
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
