@@ -9,17 +9,13 @@
 
     <ImageView
         android:id="@+id/UserImageView"
-        android:layout_width="146dp"
+        android:layout_width="wrap_content"
         android:layout_height="141dp"
         android:layout_gravity="center"
         android:clickable="true"
+        android:contentDescription="@string/no_photo"
+        android:focusable="true"
         android:maxHeight="200dp"
-        android:src="@drawable/ic_menu_gallery"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.067"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.043" />
+        android:src="@drawable/no_photo_icon" />
 
 </android.support.constraint.ConstraintLayout>
