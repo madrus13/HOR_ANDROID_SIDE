@@ -92,11 +92,6 @@ public class CmdService extends IntentService {
                     Log.e(APP_TAG_CODE, "Service->IncomingHandler->handleMessage : CMD_EntitySyncReq");
                     mTestTask = new SyncTask(msg );
                     mTestTask.execute((Void) null);
-
-                    //data.setClassLoader(Auth_Request.class.getClassLoader());
-                    //Auth_Request info = (Auth_Request)data.getParcelable(String.valueOf(SrvCmd.CMD_Auth_Request));
-                    //Log.e(APP_TAG_CODE, "Service->IncomingHandler->handleMessage : email | pass" + info.Email + " | " + info.Password);
-
                     break;
                 default:
                     super.handleMessage(msg);

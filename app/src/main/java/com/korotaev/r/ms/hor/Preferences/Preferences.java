@@ -2,6 +2,13 @@ package com.korotaev.r.ms.hor.Preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import com.korotaev.r.ms.testormlite.data.Entity.User;
+
+import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.IOException;
+
 import static android.content.Context.MODE_PRIVATE;
 
 
@@ -34,5 +41,20 @@ public   class Preferences {
         SharedPreferences sPref;
         sPref = context.getSharedPreferences("myPrefs", MODE_PRIVATE);
         return sPref.getString(objectName, "");
+    }
+
+    public static User loadCurrentUserInfo(Context context) {
+        SharedPreferences sPref;
+        User currentUser = null;
+        sPref = context.getSharedPreferences("myPrefs", MODE_PRIVATE);
+        String userInfo = sPref.getString(SAVED_CurrentUserInfo, "");
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            currentUser = mapper.readValue(userInfo, User.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return currentUser;
     }
 }
