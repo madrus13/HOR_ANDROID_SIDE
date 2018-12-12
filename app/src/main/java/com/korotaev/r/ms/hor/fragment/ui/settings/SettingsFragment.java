@@ -1,8 +1,12 @@
 package com.korotaev.r.ms.hor.fragment.ui.settings;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,6 +42,8 @@ public class SettingsFragment extends Fragment {
     private TextView phoneView;
     private TextView emailView;
 
+    private View mProgressView;
+    private View mMainView;
 
     ArrayList<String> dataRegions = new ArrayList<String>();
     List<Region> regionList = null;
@@ -59,7 +65,10 @@ public class SettingsFragment extends Fragment {
         emailView = (TextView) v.findViewById(R.id.EmailVal);
         phoneView = (TextView) v.findViewById(R.id.PhoneVal);
         mRegion = (Spinner) v.findViewById(R.id.RegionValSpinner);
+        mProgressView = (View) v.findViewById(R.id.main_activity_progress);
+        mMainView = (View) v.findViewById(R.id.main_layout);
 
+       // showProgress(true);
         String regionsPrev =  Preferences.loadObjInPrefs(this.getContext(), Preferences.SAVED_Region);
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -118,8 +127,46 @@ public class SettingsFragment extends Fragment {
 
 
 
+
         return v;
     }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mMainView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mMainView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mMainView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mMainView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

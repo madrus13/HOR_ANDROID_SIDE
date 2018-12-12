@@ -1,6 +1,9 @@
 package com.korotaev.r.ms.hor;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,6 +11,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -56,6 +60,8 @@ public class MainActivity extends AppCompatActivity
     /**Target we publish for clients to send messages to IncomingHandler */
     final Messenger mMessenger = new Messenger(new IncomingHandler());
 
+    private View mProgressView;
+    private View mMainView;
 
     /**
      * Handler of incoming messages from service.
@@ -70,6 +76,7 @@ public class MainActivity extends AppCompatActivity
 
             switch (msg.what) {
                 case SrvCmd.CMD_RegisterIntentServiceClientResp:
+                    showProgress(true);
                     //Toast.makeText(MainActivity.this, "Инициация синхронизации", Toast.LENGTH_SHORT).show();
                     sendComandToIntentService(SrvCmd.CMD_EntitySyncReq);
 
@@ -77,7 +84,9 @@ public class MainActivity extends AppCompatActivity
                     Bundle data = msg.getData();
                     //data.setClassLoader(ElmaResponseAuthorise.class.getClassLoader());
                     //ElmaResponseAuthorise info = (ElmaResponseAuthorise)data.getParcelable(String.valueOf(SrvCmd.Auth_Response));
+
                     Toast.makeText(MainActivity.this, "Обновление завершено", Toast.LENGTH_SHORT).show();
+                    showProgress(false);
                     break;
 
                 default:
@@ -93,7 +102,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        mProgressView = (View) findViewById(R.id.main_activity_progress);
+        mMainView = (View) findViewById(R.id.main_layout);
 
         Toast.makeText(this, R.string.SuccessSignIn ,Toast.LENGTH_LONG).show();
 
@@ -205,6 +215,42 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mMainView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mMainView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mMainView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mMainView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
         // TODO Auto-generated method stub
@@ -229,13 +275,14 @@ public class MainActivity extends AppCompatActivity
         } catch (RemoteException e) {
             Toast.makeText(MainActivity.this, R.string.remote_service_crashed,
                     Toast.LENGTH_SHORT).show();
+            showProgress(false);
         }
 
     }
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
-
+       // showProgress(false);
     }
 
     @Override
