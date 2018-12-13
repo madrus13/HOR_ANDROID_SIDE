@@ -29,7 +29,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.WebServices.WebServiceMainService;
@@ -405,6 +404,8 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             User currentUser;
             serviceResult result;
             Boolean resOut = false;
+            showProgress(true);
+
             result = service.insertUser(this.mLoginName,this.mRegionId, false,this.mPassword,this.mEmail,this.mPhone );
             if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
@@ -425,6 +426,9 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+                finally {
+                    showProgress(false);
                 }
             }
             return resOut;
