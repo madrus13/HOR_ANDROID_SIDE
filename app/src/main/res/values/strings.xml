@@ -113,8 +113,9 @@
     <string name="Settings">Настройки</string>
     <string name="AboutProgram">О программе</string>
     <string name="Achievments">Достижения</string>
-    <string name="communicate">Communicate</string>
+    <string name="communicate"></string>
     <string name="aboutfragment">О сервисе Road helper</string>
     <string name="point_1">Сервис создан для того, чтобы водители помогали друг другу в сложных ситуациях</string>
     <string name="no_photo">No photo</string>
+    <string name="SignOff">Выход</string>
 </resources>

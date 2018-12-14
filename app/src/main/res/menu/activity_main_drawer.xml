@@ -4,36 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
+
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_your_help"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_menu_help"
             android:title="@string/Your_help" />
         <item
             android:id="@+id/nav_requests"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_menu_request"
             android:title="@string/Requests" />
         <item
             android:id="@+id/nav_chat"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_menu_chat"
             android:title="@string/CommonChat" />
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_menu_setting"
             android:title="@string/Settings" />
-
-
-    <item android:title="@string/communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_about_program"
-                android:icon="@drawable/ic_menu_share"
-                android:title="@string/AboutProgram" />
-            <item
-                android:id="@+id/nav_achievments"
-                android:icon="@drawable/ic_menu_send"
-                android:title="@string/Achievments" />
-        </menu>
-    </item>
+        <item
+            android:id="@+id/nav_about_program"
+            android:icon="@drawable/ic_menu_about"
+            android:title="@string/AboutProgram" />
+        <item
+            android:id="@+id/nav_achievments"
+            android:icon="@drawable/ic_menu_achiev"
+            android:title="@string/Achievments" />
+        <item
+            android:id="@+id/nav_signoff"
+            android:icon="@drawable/ic_menu_signOff"
+            android:title="@string/SignOff" />
     </group>
 </menu>

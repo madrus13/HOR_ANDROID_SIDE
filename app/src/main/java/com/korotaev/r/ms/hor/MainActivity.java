@@ -190,6 +190,12 @@ public class MainActivity extends AppCompatActivity
         }  else if (id == R.id.nav_about_program) {
             fragmentClass = AboutFragment.class;
         }
+        else if (id == R.id.nav_signoff) {
+            Preferences.saveObjInPrefs(MainActivity.this, Preferences.SAVED_AutoSignInState, "0");
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            showProgress(false);
+        }
 
 
         try {
