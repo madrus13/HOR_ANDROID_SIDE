@@ -125,6 +125,48 @@ public class ServiceObjectHelper {
         return null;
     }
 
+    public static User setCurrentUserInfo(Context context,
+                                          String currentToken,
+                                          long region,
+                                          boolean regionSpecified,
+                                          String password,
+                                          String fileName,
+                                          VectorByte fileImage)
+    {
+        User currentUser;
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.updateUser( currentToken,
+                                             region,
+                                             regionSpecified,
+                                             password,
+                                             fileName,
+                                             fileImage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+
+                if (isValidResult(result))
+                {
+                    currentUser = getCurrentUserInfo(context,currentToken);
+                    if (currentUser!=null) {
+                        currentUser = mapper.readValue(result.resultObjectJSON, User.class);
+                        Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserInfo,result.resultObjectJSON);
+                        return currentUser;
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     public static List<Achievement>  getAllAchievmentByUser(Context context, String currentToken, long userId, boolean userSpecified)
     {
         List<Achievement> achievements;

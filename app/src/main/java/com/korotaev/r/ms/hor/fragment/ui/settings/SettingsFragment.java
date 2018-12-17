@@ -3,25 +3,47 @@ package com.korotaev.r.ms.hor.fragment.ui.settings;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.LoaderManager;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
+import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.korotaev.r.ms.hor.IntentService.CmdService;
+import com.korotaev.r.ms.hor.IntentService.SrvCmd;
+import com.korotaev.r.ms.hor.MainActivity;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
+import com.korotaev.r.ms.hor.WebServices.VectorByte;
 import com.korotaev.r.ms.testormlite.data.Entity.Region;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
@@ -33,15 +55,24 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static com.korotaev.r.ms.hor.IntentService.SrvCmd.APP_TAG_CODE;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment
+        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor>,ServiceConnection, View.OnClickListener  {
+
+    /** Messenger for communicating with service. */
+    Messenger mService = null;
+    /** Flag indicating whether we have called bind on the service. */
+    boolean mIsBound;
+    /**Target we publish for clients to send messages to IncomingHandler */
+    final Messenger mMessenger = new Messenger(new IncomingHandler());
 
     private SettingsViewModel mViewModel;
     private ImageView imageView;
     private TextView loginView;
     private TextView phoneView;
     private TextView emailView;
-
+    private EditText passwordEdit;
     private View mProgressView;
     private View mMainView;
 
@@ -55,20 +86,137 @@ public class SettingsFragment extends Fragment {
         return new SettingsFragment();
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+
+    }
+
+    /**
+     * Handler of incoming messages from service.
+     */
+    class IncomingHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            Log.e("test", "main->handleMessage->");
+            msg.getData();
+
+            switch (msg.what) {
+                case SrvCmd.CMD_RegisterIntentServiceClientResp:
+                    showProgress(false);
+                    break;
+                case SrvCmd.CMD_EntitySyncResp:
+                    //Bundle data = msg.getData();
+                    //Toast.makeText(SettingsFragment.this.getContext(), "GetUserInfoReq success", Toast.LENGTH_SHORT).show();
+                    showProgress(false);
+                    break;
+
+                case SrvCmd.CMD_EntitySetUserInfoResp:
+                    showProgress(false);
+                    Toast.makeText(SettingsFragment.this.getContext(), "Save success", Toast.LENGTH_SHORT).show();
+                    break;
+
+                default:
+                    showProgress(false);
+                    super.handleMessage(msg);
+            }
+        }
+    }
+
+    public void sendComandToIntentService(int command)
+    {
+        // We want to monitor the service for as long as we are
+        // connected to it.
+        try {
+            if (mService!=null) {
+                Message msg = Message.obtain(null, command);
+                msg.replyTo = mMessenger;
+                mService.send(msg);
+            }
+        } catch (RemoteException e) {
+            Toast.makeText(SettingsFragment.this.getContext(), R.string.remote_service_crashed,
+                    Toast.LENGTH_SHORT).show();
+            showProgress(false);
+        }
+    }
+
+
+    public void sendSetUserInfoComandToIntentService(int command, long regionId, String password, String fileName)
+    {
+        // We want to monitor the service for as long as we are
+        // connected to it.
+        try {
+            if (mService!=null) {
+                Message msg = Message.obtain(null, command);
+                msg.replyTo = mMessenger;
+                Bundle b = new Bundle();
+                b.putLong("region", regionId );
+                b.putString("password", password);
+                b.putString("fileName", fileName);
+                msg.setData(b);
+                mService.send(msg);
+            }
+
+        } catch (RemoteException e) {
+            Toast.makeText(SettingsFragment.this.getContext(), R.string.remote_service_crashed,
+                    Toast.LENGTH_SHORT).show();
+            showProgress(false);
+        }
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_save) {
+            sendSetUserInfoComandToIntentService(
+                                                    SrvCmd.CMD_EntitySetUserInfoReq,
+                                                    selectedRegion.getId(),
+                                                    passwordEdit.getText().toString(),
+                                                     "filename"   );
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.settings_fragment, container, false);
-
+        setHasOptionsMenu(true);
         loginView = (TextView) v.findViewById(R.id.LoginVal);
         emailView = (TextView) v.findViewById(R.id.EmailVal);
         phoneView = (TextView) v.findViewById(R.id.PhoneVal);
+        passwordEdit = (EditText) v.findViewById(R.id.PasswordVal);
+
         mRegion = (Spinner) v.findViewById(R.id.RegionValSpinner);
         mProgressView = (View) v.findViewById(R.id.main_activity_progress);
         mMainView = (View) v.findViewById(R.id.main_layout);
 
-       // showProgress(true);
+
         String regionsPrev =  Preferences.loadObjInPrefs(this.getContext(), Preferences.SAVED_Region);
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -125,8 +273,8 @@ public class SettingsFragment extends Fragment {
             });
         }
 
-
-
+        Intent i = new Intent(SettingsFragment.this.getContext(), CmdService.class);
+        getActivity().bindService(i,  SettingsFragment.this, Context.BIND_AUTO_CREATE);
 
         return v;
     }
@@ -194,4 +342,27 @@ public class SettingsFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.toolbar_menu_activity_main, menu);
+
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder service) {
+        // TODO Auto-generated method stub
+        Log.e(APP_TAG_CODE, "main->onServiceConnected" );
+        if (service!=null) {
+            Log.e(APP_TAG_CODE, "main->onServiceConnected->" + service.toString()  );
+            mService = new Messenger(service);
+            sendComandToIntentService(SrvCmd.CMD_RegisterIntentServiceClientReq);
+        }
+
+
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+
+    }
 }

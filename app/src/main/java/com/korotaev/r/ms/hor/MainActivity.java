@@ -44,6 +44,7 @@ import com.korotaev.r.ms.hor.fragment.ui.help.HelpFragment;
 import com.korotaev.r.ms.hor.fragment.ui.request.RequestFragment;
 import com.korotaev.r.ms.hor.fragment.ui.settings.SettingsFragment;
 import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
+import com.korotaev.r.ms.testormlite.data.myDBLogger.MyDBLogger;
 
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity
 
     private View mProgressView;
     private View mMainView;
-
+    private MyDBLogger myDBLogger = new MyDBLogger();
     /**
      * Handler of incoming messages from service.
      */
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void handleMessage(Message msg) {
 
-            Log.e("test", "main->handleMessage->");
+            myDBLogger.addLog ("test", "main->handleMessage->");
 
             msg.getData();
 
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity
                     showProgress(true);
                     //Toast.makeText(MainActivity.this, "Инициация синхронизации", Toast.LENGTH_SHORT).show();
                     sendComandToIntentService(SrvCmd.CMD_EntitySyncReq);
-
+                    break;
                 case SrvCmd.CMD_EntitySyncResp:
                     Bundle data = msg.getData();
                     //data.setClassLoader(ElmaResponseAuthorise.class.getClassLoader());
@@ -148,6 +149,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
         return true;
     }
 
@@ -260,9 +262,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
         // TODO Auto-generated method stub
-        Log.e(APP_TAG_CODE, "main->onServiceConnected" );
+        myDBLogger.addLog (APP_TAG_CODE, "main->onServiceConnected" );
         if (service!=null) {
-            Log.e(APP_TAG_CODE, "main->onServiceConnected->" + service.toString()  );
+            myDBLogger.addLog (APP_TAG_CODE, "main->onServiceConnected->" + service.toString()  );
             mService = new Messenger(service);
 
         }

@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -17,6 +18,7 @@ import com.korotaev.r.ms.hor.MainActivity;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.WebServices.ServiceObjectHelper;
+import com.korotaev.r.ms.hor.WebServices.VectorByte;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievement;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
@@ -35,7 +37,11 @@ import static com.korotaev.r.ms.hor.IntentService.SrvCmd.APP_TAG_CODE;
 
 public class CmdService extends IntentService {
 
-    private SyncTask mTestTask = null;
+    private static  User user = null;
+
+    private SyncTask mSyncTask = null;
+    private SetUserInfoTask mSetUserInfoTask = null;
+
     /** For showing and hiding our notification. */
     NotificationManager mNM;
     /** Keeps track of all current registered clients. */
@@ -89,9 +95,22 @@ public class CmdService extends IntentService {
                     mClients.remove(msg.replyTo);
                     break;
                 case SrvCmd.CMD_EntitySyncReq:
-                    Log.e(APP_TAG_CODE, "Service->IncomingHandler->handleMessage : CMD_EntitySyncReq");
-                    mTestTask = new SyncTask(msg );
-                    mTestTask.execute((Void) null);
+                    mSyncTask = new SyncTask(msg );
+                    mSyncTask.execute((Void) null);
+                    break;
+                case SrvCmd.CMD_EntityGetUserInfoReq:
+                    break;
+                case SrvCmd.CMD_EntitySetUserInfoReq:
+                    Bundle data = msg.getData();
+                    long regionId = (long) data.get("region");
+                    String password = (String) data.get("password");
+                    String filename = (String) data.get("filename");
+
+                    mSetUserInfoTask = new SetUserInfoTask(msg,
+                            regionId,true,
+                            password,
+                            "filename",null);
+                    mSetUserInfoTask.execute((Void) null);
                     break;
                 default:
                     super.handleMessage(msg);
@@ -134,11 +153,65 @@ public class CmdService extends IntentService {
             autos = ServiceObjectHelper.getAllAutoByUser(CmdService.this,currentToken, userId, userSpecified);
             tools = ServiceObjectHelper.getAllToolByUser(CmdService.this,currentToken, userId, userSpecified);
             achievements = ServiceObjectHelper.getAllAchievmentByUser(CmdService.this,currentToken,userId, userSpecified);
-
+            user         = ServiceObjectHelper.getCurrentUserInfo(CmdService.this,currentToken);
             sendMsgToServiceClients(msg, SrvCmd.CMD_EntitySyncResp);
             return null;
         }
     }
+
+    public class SetUserInfoTask extends AsyncTask<Void, Void, Boolean> {
+        Message msg;
+        private final long region;
+        private final boolean regionSpecified;
+        private final String password;
+        private final String fileName;
+        private final VectorByte fileImage;
+
+        public SetUserInfoTask(Message msg,
+                               long region,
+                               boolean regionSpecified,
+                               String password,
+                               String fileName,
+                               VectorByte fileImage) {
+            this.msg = msg;
+            this.region = region;
+            this.regionSpecified = regionSpecified;
+            this.password = password;
+            this.fileName = fileName;
+            this.fileImage = fileImage;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            //Bundle data = msg.getData();
+            long userId = 0;
+            boolean userSpecified = false;
+
+            currentToken = Preferences.loadObjInPrefs(CmdService.this,Preferences.SAVED_Session);
+
+
+
+            User currentUser = ServiceObjectHelper.setCurrentUserInfo(CmdService.this,
+                    currentToken,
+                    this.region,
+                    this.regionSpecified,
+                    this.password,
+                    this.fileName,
+                    this.fileImage
+                    );
+
+            if (currentUser != null && currentUser.getId() > 0) {
+                userId = currentUser.getId();
+                userSpecified = true;
+            }
+
+            sendMsgToServiceClients(msg, SrvCmd.CMD_EntitySetUserInfoResp);
+            return null;
+        }
+    }
+
+
+
 
     public CmdService() {
         super("CmdService");

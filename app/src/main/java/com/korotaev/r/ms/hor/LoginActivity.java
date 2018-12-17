@@ -385,12 +385,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             result = service.getAllRegions("");
             ObjectMapper mapper = new ObjectMapper();
             try {
-                List<Region> regionList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Region[].class));
+                if (!result.resultObjectJSON.isEmpty()) {
+                    List<Region> regionList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Region[].class));
 
-               String regionsPrev =  Preferences.loadObjInPrefs(LoginActivity.this, Preferences.SAVED_Region);
-               if (!regionsPrev.equals(result.resultObjectJSON)) {
-                   Preferences.saveObjInPrefs(LoginActivity.this, Preferences.SAVED_Region, result.resultObjectJSON);
-               }
+                    String regionsPrev =  Preferences.loadObjInPrefs(LoginActivity.this, Preferences.SAVED_Region);
+                    if (!regionsPrev.equals(result.resultObjectJSON)) {
+                        Preferences.saveObjInPrefs(LoginActivity.this, Preferences.SAVED_Region, result.resultObjectJSON);
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -429,7 +431,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             serviceResult result;
             result = service.getSessionToken(mEmail,mPassword);
 
-            if (result.isSuccess) {
+            if (result!=null && result.isSuccess) {
                 //Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
                 //Session newMyObj = gson.fromJson(result.resultObjectJSON, Session.class);
                 ObjectMapper mapper = new ObjectMapper();

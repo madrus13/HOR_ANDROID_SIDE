@@ -57,5 +57,4 @@ dependencies {
     implementation files('libs/jackson-mapper-asl-1.8.2.jar')
     implementation files('libs/jackson-core-asl-1.8.2.jar')
     implementation files('libs/hibernate-jpa-2.1-api-1.0.0.Final.jar')
-    implementation 'com.google.android.gms:play-services-maps:16.0.0'
 }

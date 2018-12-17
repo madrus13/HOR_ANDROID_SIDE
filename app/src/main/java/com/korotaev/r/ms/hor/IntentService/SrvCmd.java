@@ -7,6 +7,10 @@ public class SrvCmd {
     public  static final int	CMD_UnregisterIntentServiceClientResp = 4;
     public  static final int	CMD_EntitySyncReq              = 5;
     public  static final int	CMD_EntitySyncResp             = 6;
+    public  static final int	CMD_EntityGetUserInfoReq       = 7;
+    public  static final int	CMD_EntityGetUserInfoResp      = 8;
+    public  static final int	CMD_EntitySetUserInfoReq       = 9;
+    public  static final int	CMD_EntitySetUserInfoResp      = 10;
 
     public  static String APP_TAG_CODE = "HOD_APP";
 }
