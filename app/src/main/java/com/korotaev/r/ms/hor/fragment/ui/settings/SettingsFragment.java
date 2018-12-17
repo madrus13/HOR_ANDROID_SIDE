@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,15 +42,14 @@ import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
-import com.korotaev.r.ms.hor.MainActivity;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
-import com.korotaev.r.ms.hor.WebServices.VectorByte;
 import com.korotaev.r.ms.testormlite.data.Entity.Region;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -160,7 +161,7 @@ public class SettingsFragment extends Fragment
     }
 
 
-    public void sendSetUserInfoComandToIntentService(int command, long regionId, String password, String fileName)
+    public void sendSetUserInfoComandToIntentService(int command, long regionId, String password, String fileName, String file)
     {
         // We want to monitor the service for as long as we are
         // connected to it.
@@ -172,6 +173,7 @@ public class SettingsFragment extends Fragment
                 b.putLong("region", regionId );
                 b.putString("password", password);
                 b.putString("fileName", fileName);
+                b.putString("file", file);
                 msg.setData(b);
                 mService.send(msg);
             }
@@ -190,11 +192,19 @@ public class SettingsFragment extends Fragment
         int id = item.getItemId();
 
         if (id == R.id.action_save) {
+
+            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] imageInByte = baos.toByteArray();
+
             sendSetUserInfoComandToIntentService(
                                                     SrvCmd.CMD_EntitySetUserInfoReq,
                                                     selectedRegion.getId(),
                                                     passwordEdit.getText().toString(),
-                                                     "filename"   );
+                                                    "filename" ,
+                                                    imageInByte.toString()
+                    );
             return true;
         }
 
@@ -340,6 +350,12 @@ public class SettingsFragment extends Fragment
         mViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
         // TODO: Use the ViewModel
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unbindService(SettingsFragment.this);
     }
 
     @Override

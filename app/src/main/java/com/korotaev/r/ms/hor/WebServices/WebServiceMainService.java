@@ -31,7 +31,7 @@ public class WebServiceMainService {
     public String NAMESPACE ="http://Service.ru/";
     public String url="http://185.246.154.49:8080/samplejpa-22/ws?wsdl"; //?wsdl
     public String PREFIX_SERVICE  = "";
-    public int timeOut = 40000;
+    public int timeOut = 20000;
     public IWsdl2CodeEvents eventHandler;
     public WS_Enums.SoapProtocolVersion soapVersion;
     
@@ -1602,13 +1602,13 @@ public class WebServiceMainService {
         return null;
     }
     
-    public void updateUserAsync(String sessionToken,long region,boolean regionSpecified,String password,String fileName,VectorByte fileImage) throws Exception{
+    public void updateUserAsync(String sessionToken,long region,boolean regionSpecified,String password,String fileName,String fileImage) throws Exception{
         if (this.eventHandler == null)
             throw new Exception("Async Methods Requires IWsdl2CodeEvents");
         updateUserAsync(sessionToken, region, regionSpecified, password, fileName, fileImage, null);
     }
     
-    public void updateUserAsync(final String sessionToken,final long region,final boolean regionSpecified,final String password,final String fileName,final VectorByte fileImage,final List<HeaderProperty> headers) throws Exception{
+    public void updateUserAsync(final String sessionToken,final long region,final boolean regionSpecified,final String password,final String fileName,final String fileImage,final List<HeaderProperty> headers) throws Exception{
         
         new AsyncTask<Void, Void, serviceResult>(){
             @Override
@@ -1630,11 +1630,11 @@ public class WebServiceMainService {
         }.execute();
     }
     
-    public serviceResult updateUser(String sessionToken,long region,boolean regionSpecified,String password,String fileName,VectorByte fileImage){
+    public serviceResult updateUser(String sessionToken,long region,boolean regionSpecified,String password,String fileName,String fileImage){
         return updateUser(sessionToken, region, regionSpecified, password, fileName, fileImage, null);
     }
     
-    public serviceResult updateUser(String sessionToken,long region,boolean regionSpecified,String password,String fileName,VectorByte fileImage,List<HeaderProperty> headers){
+    public serviceResult updateUser(String sessionToken,long region,boolean regionSpecified,String password,String fileName,String fileImage,List<HeaderProperty> headers){
         SoapSerializationEnvelope soapEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
         soapEnvelope.implicitTypes = true;
         //soapEnvelope.dotNet = true;
@@ -1644,7 +1644,7 @@ public class WebServiceMainService {
         soapReq.addProperty("regionSpecified",regionSpecified);
         soapReq.addProperty("password",password);
         soapReq.addProperty("fileName",fileName);
-        soapReq.addProperty("fileImage",fileImage.toString());
+        soapReq.addProperty("fileImage",!fileImage.isEmpty() ? fileImage.toString() : "");
         soapEnvelope.setOutputSoapObject(soapReq);
         HttpTransportSE httpTransport = new HttpTransportSE(url,timeOut);
         try{

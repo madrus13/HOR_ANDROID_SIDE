@@ -18,7 +18,6 @@ import com.korotaev.r.ms.hor.MainActivity;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.WebServices.ServiceObjectHelper;
-import com.korotaev.r.ms.hor.WebServices.VectorByte;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievement;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
@@ -61,11 +60,11 @@ public class CmdService extends IntentService {
 
 
     public  void  sendMsgToServiceClients(Message msg, int command){
-        Message answerMsg = Message.obtain(null, command);
-        answerMsg.replyTo = msg.replyTo;
 
         for (Messenger item : mClients) {
             try {
+                Message answerMsg = Message.obtain(null, command);
+                answerMsg.replyTo = msg.replyTo;
                 item.send(answerMsg);
             } catch (RemoteException e) {
                 // TODO Auto-generated catch block
@@ -105,11 +104,12 @@ public class CmdService extends IntentService {
                     long regionId = (long) data.get("region");
                     String password = (String) data.get("password");
                     String filename = (String) data.get("filename");
+                    String file = (String) data.get("file");
 
                     mSetUserInfoTask = new SetUserInfoTask(msg,
                             regionId,true,
                             password,
-                            "filename",null);
+                            "filename",file);
                     mSetUserInfoTask.execute((Void) null);
                     break;
                 default:
@@ -165,14 +165,14 @@ public class CmdService extends IntentService {
         private final boolean regionSpecified;
         private final String password;
         private final String fileName;
-        private final VectorByte fileImage;
+        private final String fileImage;
 
         public SetUserInfoTask(Message msg,
                                long region,
                                boolean regionSpecified,
                                String password,
                                String fileName,
-                               VectorByte fileImage) {
+                               String fileImage) {
             this.msg = msg;
             this.region = region;
             this.regionSpecified = regionSpecified;

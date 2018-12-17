@@ -131,7 +131,7 @@ public class ServiceObjectHelper {
                                           boolean regionSpecified,
                                           String password,
                                           String fileName,
-                                          VectorByte fileImage)
+                                          String fileImage)
     {
         User currentUser;
         serviceResult result = new serviceResult();

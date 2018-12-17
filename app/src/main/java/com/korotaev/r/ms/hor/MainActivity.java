@@ -28,7 +28,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,11 +43,8 @@ import com.korotaev.r.ms.hor.fragment.ui.help.HelpFragment;
 import com.korotaev.r.ms.hor.fragment.ui.request.RequestFragment;
 import com.korotaev.r.ms.hor.fragment.ui.settings.SettingsFragment;
 import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
-import com.korotaev.r.ms.testormlite.data.myDBLogger.MyDBLogger;
 
 import java.util.List;
-
-import static com.korotaev.r.ms.hor.IntentService.SrvCmd.APP_TAG_CODE;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor>,ServiceConnection, View.OnClickListener {
@@ -63,7 +59,7 @@ public class MainActivity extends AppCompatActivity
 
     private View mProgressView;
     private View mMainView;
-    private MyDBLogger myDBLogger = new MyDBLogger();
+
     /**
      * Handler of incoming messages from service.
      */
@@ -71,7 +67,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void handleMessage(Message msg) {
 
-            myDBLogger.addLog ("test", "main->handleMessage->");
+           // myDBLogger.addLog ("test", "main->handleMessage->");
 
             msg.getData();
 
@@ -103,6 +99,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //myDBLogger.addLog ("INFO", "main->start");
         mProgressView = (View) findViewById(R.id.main_activity_progress);
         mMainView = (View) findViewById(R.id.main_layout);
 
@@ -133,6 +130,12 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(MainActivity.this);
     }
 
     @Override
@@ -196,6 +199,7 @@ public class MainActivity extends AppCompatActivity
             Preferences.saveObjInPrefs(MainActivity.this, Preferences.SAVED_AutoSignInState, "0");
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
+
             showProgress(false);
         }
 
@@ -262,9 +266,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
         // TODO Auto-generated method stub
-        myDBLogger.addLog (APP_TAG_CODE, "main->onServiceConnected" );
+      //  myDBLogger.addLog (APP_TAG_CODE, "main->onServiceConnected" );
         if (service!=null) {
-            myDBLogger.addLog (APP_TAG_CODE, "main->onServiceConnected->" + service.toString()  );
+           // myDBLogger.addLog (APP_TAG_CODE, "main->onServiceConnected->" + service.toString()  );
             mService = new Messenger(service);
 
         }
