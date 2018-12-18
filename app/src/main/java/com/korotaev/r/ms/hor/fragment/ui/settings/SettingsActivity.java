@@ -14,6 +14,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, SettingsFragment.newInstance())
+                    .addToBackStack("myStack")
                     .commitNow();
         }
     }

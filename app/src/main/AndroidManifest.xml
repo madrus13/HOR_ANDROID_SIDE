@@ -25,9 +25,15 @@
             android:name=".LoginActivity"
             android:configChanges="orientation"
             android:label="@string/title_activity_login"
-            android:screenOrientation="portrait">
 
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
         <activity
             android:name=".WSTestActivity"
             android:configChanges="orientation"
@@ -66,14 +72,6 @@
             android:name=".fragment.ui.achievment.AchievmentActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity android:name="com.korotaev.r.ms.testormlite.data.myDBLogger.MyDBLogger" />
-        <activity android:name=".InitActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

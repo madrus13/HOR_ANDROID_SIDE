@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity
 
     private View mProgressView;
     private View mMainView;
+    private MyDBHelper myDBHelper = new MyDBHelper(this);
 
     /**
      * Handler of incoming messages from service.
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void handleMessage(Message msg) {
 
-           // myDBLogger.addLog ("test", "main->handleMessage->");
+            myDBHelper.getHelper().addLog ("test", "MA->handleMessage->" + msg.what);
 
             msg.getData();
 
@@ -79,9 +80,6 @@ public class MainActivity extends AppCompatActivity
                     break;
                 case SrvCmd.CMD_EntitySyncResp:
                     Bundle data = msg.getData();
-                    //data.setClassLoader(ElmaResponseAuthorise.class.getClassLoader());
-                    //ElmaResponseAuthorise info = (ElmaResponseAuthorise)data.getParcelable(String.valueOf(SrvCmd.Auth_Response));
-
                     Toast.makeText(MainActivity.this, "Обновление завершено", Toast.LENGTH_SHORT).show();
                     showProgress(false);
                     break;
@@ -266,7 +264,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
         // TODO Auto-generated method stub
-      //  myDBLogger.addLog (APP_TAG_CODE, "main->onServiceConnected" );
+        myDBHelper.getHelper().addLog ("INFO", "main->onServiceConnected" );
         if (service!=null) {
            // myDBLogger.addLog (APP_TAG_CODE, "main->onServiceConnected->" + service.toString()  );
             mService = new Messenger(service);

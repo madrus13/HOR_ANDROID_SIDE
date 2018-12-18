@@ -25,7 +25,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,6 +41,7 @@ import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
+import com.korotaev.r.ms.hor.MyDBHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.testormlite.data.Entity.Region;
@@ -56,7 +56,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
-import static com.korotaev.r.ms.hor.IntentService.SrvCmd.APP_TAG_CODE;
+import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 
 public class SettingsFragment extends Fragment
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor>,ServiceConnection, View.OnClickListener  {
@@ -82,6 +82,7 @@ public class SettingsFragment extends Fragment
     Region selectedRegion = null;
     private Spinner mRegion;
     private final int Pick_image = 1;
+    private MyDBHelper myDBHelper = new MyDBHelper(SettingsFragment.this.getContext());
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -118,21 +119,21 @@ public class SettingsFragment extends Fragment
     class IncomingHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            Log.e("test", "main->handleMessage->");
+            myDBHelper.getHelper().addLog ("test", "SF->handleMessage->");
             msg.getData();
 
             switch (msg.what) {
                 case SrvCmd.CMD_RegisterIntentServiceClientResp:
-                    showProgress(false);
+                    //showProgress(false);
                     break;
                 case SrvCmd.CMD_EntitySyncResp:
                     //Bundle data = msg.getData();
                     //Toast.makeText(SettingsFragment.this.getContext(), "GetUserInfoReq success", Toast.LENGTH_SHORT).show();
-                    showProgress(false);
+                   // showProgress(false);
                     break;
 
                 case SrvCmd.CMD_EntitySetUserInfoResp:
-                    showProgress(false);
+                   // showProgress(false);
                     Toast.makeText(SettingsFragment.this.getContext(), "Save success", Toast.LENGTH_SHORT).show();
                     break;
 
@@ -353,9 +354,34 @@ public class SettingsFragment extends Fragment
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        myDBHelper.getHelper().addLog (CODE_INFO, "SF->onResume->"  );
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        myDBHelper.getHelper().addLog (CODE_INFO, "SF->onPause->"  );
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        myDBHelper.getHelper().addLog (CODE_INFO, "SF->onStop->"  );
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         getActivity().unbindService(SettingsFragment.this);
+        myDBHelper.getHelper().addLog (CODE_INFO, "SF->onDestroy->"  );
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        myDBHelper.getHelper().addLog (CODE_INFO, "SF->onDetach->"  );
     }
 
     @Override
@@ -367,9 +393,9 @@ public class SettingsFragment extends Fragment
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
         // TODO Auto-generated method stub
-        Log.e(APP_TAG_CODE, "main->onServiceConnected" );
+        myDBHelper.getHelper().addLog (CODE_INFO, "SF->onServiceConnected" );
         if (service!=null) {
-            Log.e(APP_TAG_CODE, "main->onServiceConnected->" + service.toString()  );
+            myDBHelper.getHelper().addLog (CODE_INFO, "SF->onServiceConnected->" + service.toString()  );
             mService = new Messenger(service);
             sendComandToIntentService(SrvCmd.CMD_RegisterIntentServiceClientReq);
         }
@@ -379,6 +405,6 @@ public class SettingsFragment extends Fragment
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
-
+        myDBHelper.getHelper().addLog (CODE_INFO, "SF->onServiceDisconnected->"  );
     }
 }

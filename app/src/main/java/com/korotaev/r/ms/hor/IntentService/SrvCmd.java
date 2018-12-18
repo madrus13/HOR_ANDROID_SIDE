@@ -12,5 +12,7 @@ public class SrvCmd {
     public  static final int	CMD_EntitySetUserInfoReq       = 9;
     public  static final int	CMD_EntitySetUserInfoResp      = 10;
 
-    public  static String APP_TAG_CODE = "HOD_APP";
+    public  static String CODE_INFO = "INF";
+    public  static String CODE_ERR  = "ERR";
+    public  static String CODE_WRN  = "WRN";
 }

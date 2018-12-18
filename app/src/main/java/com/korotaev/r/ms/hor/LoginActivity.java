@@ -82,6 +82,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     private CheckBox mAutoSignCheckBox;
 
+    private MyDBHelper myDBHelper = new MyDBHelper(this);
+
     /// Инициализация настроек по входу в систему
     private void initLogonInfoFromSavedPrefs()
     {
@@ -433,7 +435,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-
+            myDBHelper.getHelper().addLog("INFO", "LoginActivity START");
             serviceResult result;
             result = service.getSessionToken(mEmail,mPassword);
 
@@ -450,7 +452,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                     return true;
                 } catch (IOException e) {
-                    e.printStackTrace();
+
                 }
             }
             // TODO: register the new account here.

@@ -27,6 +27,7 @@ import com.korotaev.r.ms.testormlite.data.Entity.User;
 import com.korotaev.r.ms.testormlite.data.Entity.Userstatus;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * Database helper which creates and upgrades the database and provides the DAOs for the app.
@@ -39,8 +40,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      * Suggested Copy/Paste code. Everything from here to the done block.
      ************************************************/
 
-    private static final String DATABASE_NAME = "ormDB_20.db";
-    private static final int DATABASE_VERSION = 20;
+    private static final String DATABASE_NAME = "ormDB_21.db";
+    private static final int DATABASE_VERSION = 21;
 
 
 	private Dao<Tooltypes		 , Integer> TooltypesDao;
@@ -293,5 +294,35 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TLogDao = getDao(TLog.class);
 		}
 		return TLogDao;
+	}
+
+	static Dao<TLog, Integer> dao;
+	public void addLog(String type, String text)
+	{
+
+		try {
+			if (dao==null) {
+
+				dao = this.getTLogDao();
+			}
+			TLog tlog = new TLog();
+			tlog.setDate(new Date());
+			tlog.setName(text);
+			tlog.setType(type);
+			dao.create(tlog);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void clearLog()
+	{
+		try {
+			if (dao==null) {
+				dao = this.getTLogDao();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }
