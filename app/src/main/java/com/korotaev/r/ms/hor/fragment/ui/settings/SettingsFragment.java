@@ -129,7 +129,7 @@ public class SettingsFragment extends Fragment
                 case SrvCmd.CMD_EntitySyncResp:
                     //Bundle data = msg.getData();
                     //Toast.makeText(SettingsFragment.this.getContext(), "GetUserInfoReq success", Toast.LENGTH_SHORT).show();
-                   // showProgress(false);
+                   showProgress(false);
                     break;
 
                 case SrvCmd.CMD_EntitySetUserInfoResp:
@@ -138,7 +138,6 @@ public class SettingsFragment extends Fragment
                     break;
 
                 default:
-                    showProgress(false);
                     super.handleMessage(msg);
             }
         }
@@ -203,7 +202,7 @@ public class SettingsFragment extends Fragment
                                                     SrvCmd.CMD_EntitySetUserInfoReq,
                                                     selectedRegion.getId(),
                                                     passwordEdit.getText().toString(),
-                                                    "filename" ,
+                                                    "_fname.jpeg" ,
                                                     imageInByte.toString()
                     );
             return true;
@@ -287,6 +286,7 @@ public class SettingsFragment extends Fragment
         Intent i = new Intent(SettingsFragment.this.getContext(), CmdService.class);
         getActivity().bindService(i,  SettingsFragment.this, Context.BIND_AUTO_CREATE);
 
+        showProgress(true);
         return v;
     }
 
