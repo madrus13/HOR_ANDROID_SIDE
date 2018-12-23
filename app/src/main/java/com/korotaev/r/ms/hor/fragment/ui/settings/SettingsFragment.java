@@ -31,16 +31,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
+import com.korotaev.r.ms.hor.ListViewLoader;
 import com.korotaev.r.ms.hor.MyDBHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
@@ -80,7 +78,7 @@ public class SettingsFragment extends Fragment
     ArrayList<String> dataRegions = new ArrayList<String>();
     List<Region> regionList = null;
     Region selectedRegion = null;
-    private Spinner mRegion;
+    private TextView mRegion;
     private final int Pick_image = 1;
     private MyDBHelper myDBHelper = new MyDBHelper(SettingsFragment.this.getContext());
 
@@ -223,7 +221,7 @@ public class SettingsFragment extends Fragment
         phoneView = (TextView) v.findViewById(R.id.PhoneVal);
         passwordEdit = (EditText) v.findViewById(R.id.PasswordVal);
 
-        mRegion = (Spinner) v.findViewById(R.id.RegionValSpinner);
+        mRegion = (TextView) v.findViewById(R.id.RegionVal);
         mProgressView = (View) v.findViewById(R.id.main_activity_progress);
         mMainView = (View) v.findViewById(R.id.main_layout);
 
@@ -238,6 +236,15 @@ public class SettingsFragment extends Fragment
                 dataRegions.add(item.getName());
             }
 
+
+            mRegion.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(SettingsFragment.this.getContext(), ListViewLoader.class);
+                    startActivity(intent);
+                }
+            });
+            /*
             // адаптер
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_item, dataRegions);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -258,7 +265,7 @@ public class SettingsFragment extends Fragment
 
                 }
             });
-
+            */
         } catch (IOException e) {
             e.printStackTrace();
         }

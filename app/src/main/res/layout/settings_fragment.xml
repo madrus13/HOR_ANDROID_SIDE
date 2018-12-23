@@ -56,20 +56,23 @@
 
                     <TextView
                         android:id="@+id/Login"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Login" />
 
                     <TextView
                         android:id="@+id/LoginVal"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="LoginVal" />
 
                 </LinearLayout>
-
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -79,15 +82,16 @@
 
                     <TextView
                         android:id="@+id/Password"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Password" />
 
                     <EditText
                         android:id="@+id/PasswordVal"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:hint="@string/prompt_password"
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
@@ -95,7 +99,10 @@
                         android:singleLine="true" />
 
                 </LinearLayout>
-
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -105,19 +112,22 @@
 
                     <TextView
                         android:id="@+id/Email"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Email" />
 
                     <TextView
                         android:id="@+id/EmailVal"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="EmailVal" />
                 </LinearLayout>
-
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -127,20 +137,23 @@
 
                     <TextView
                         android:id="@+id/Phone"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Phone" />
 
                     <TextView
                         android:id="@+id/PhoneVal"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="PhoneVal" />
 
                 </LinearLayout>
-
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -150,16 +163,17 @@
 
                     <TextView
                         android:id="@+id/Region"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Region" />
 
-                    <Spinner
-                        android:id="@+id/RegionValSpinner"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <TextView
+                        android:id="@+id/RegionVal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Значение (изменить)" />
 
                 </LinearLayout>
 
