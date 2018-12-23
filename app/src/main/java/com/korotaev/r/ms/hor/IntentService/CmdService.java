@@ -82,7 +82,7 @@ public class CmdService extends IntentService {
 
         @Override
         public void handleMessage(Message msg) {
-            Log.e(CODE_INFO, "Service->IncomingHandler->handleMessage : " + msg.what);
+            Log.e(CODE_INFO, "Service->InHandle->handleMessage : " + msg.what);
 
 
             switch (msg.what) {
@@ -153,7 +153,7 @@ public class CmdService extends IntentService {
             autos = ServiceObjectHelper.getAllAutoByUser(CmdService.this,currentToken, userId, userSpecified);
             tools = ServiceObjectHelper.getAllToolByUser(CmdService.this,currentToken, userId, userSpecified);
             achievements = ServiceObjectHelper.getAllAchievmentByUser(CmdService.this,currentToken,userId, userSpecified);
-            user         = ServiceObjectHelper.getCurrentUserInfo(CmdService.this,currentToken);
+
             sendMsgToServiceClients(msg, SrvCmd.CMD_EntitySyncResp);
             return null;
         }
