@@ -1,58 +1,44 @@
 package com.korotaev.r.ms.hor;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
-import com.korotaev.r.ms.hor.Preferences.Preferences;
-import com.korotaev.r.ms.testormlite.data.Entity.Region;
+import com.korotaev.r.ms.testormlite.data.ActivityActions;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class ListViewLoader extends Activity implements View.OnClickListener
 
 {
 
    ListView lvMain;
-   String[] names;
-   SimpleCursorAdapter mAdapter;
-    ArrayList<String> dataRegions = new ArrayList<String>();
-    List<Region> regionList = null;
-    Region selectedRegion = null;
+    ArrayList<String> dataList = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view_loader);
+        lvMain = findViewById(R.id.object_list);
 
-        String regionsPrev =  Preferences.loadObjInPrefs(this, Preferences.SAVED_Region);
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            regionList = Arrays.asList(mapper.readValue(regionsPrev, Region[].class));
 
-        for (Region item: regionList
-                ) {
-            dataRegions.add(item.getName());
-        }
-        lvMain = (ListView) findViewById(R.id.object_list);
-        lvMain.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        Intent intent = getIntent();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.single_list_item, dataRegions);
+        String Title = intent.getStringExtra(ActivityActions.EXTRA_TITLE_LIST);
+        dataList = intent.getStringArrayListExtra(ActivityActions.EXTRA_DATA_LIST);
+        int selectType = intent.getIntExtra(ActivityActions.EXTRA_SELECT_MODE_CHOICE_TYPE, ListView.CHOICE_MODE_SINGLE );
+        lvMain.setChoiceMode(selectType);
 
+        setTitle(Title);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.single_list_item, dataList);
         lvMain.setAdapter(adapter);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-       // Button btnChecked = (Button) findViewById(R.id.btnChecked);
-       // btnChecked.setOnClickListener((View.OnClickListener) this);
+
+        Button btnChecked = (Button) findViewById(R.id.buttonChecked);
+        btnChecked.setOnClickListener((View.OnClickListener) this);
 
     }
 

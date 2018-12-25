@@ -33,9 +33,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.korotaev.r.ms.testormlite.data.ActivityActions;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.ListViewLoader;
@@ -54,6 +56,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_image;
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 
 public class SettingsFragment extends Fragment
@@ -79,7 +82,7 @@ public class SettingsFragment extends Fragment
     List<Region> regionList = null;
     Region selectedRegion = null;
     private TextView mRegion;
-    private final int Pick_image = 1;
+
     private MyDBHelper myDBHelper = new MyDBHelper(SettingsFragment.this.getContext());
 
     public static SettingsFragment newInstance() {
@@ -240,7 +243,10 @@ public class SettingsFragment extends Fragment
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(SettingsFragment.this.getContext(), ListViewLoader.class);
-                    startActivity(intent);
+                    intent.putExtra(ActivityActions.EXTRA_TITLE_LIST, R.string.SelectRegion);
+                    intent.putStringArrayListExtra(ActivityActions.EXTRA_DATA_LIST, dataRegions);
+                    intent.putExtra(ActivityActions.EXTRA_SELECT_MODE_CHOICE_TYPE, ListView.CHOICE_MODE_SINGLE);
+                    startActivityForResult(intent, ActivityActions.Pick_region);
                 }
             });
             /*
@@ -285,7 +291,7 @@ public class SettingsFragment extends Fragment
                     //Тип получаемых объектов - image:
                     photoPickerIntent.setType("image/*");
                     //Запускаем переход с ожиданием обратного результата в виде информации об изображении:
-                    startActivityForResult(photoPickerIntent, Pick_image);
+                    startActivityForResult(photoPickerIntent, ActivityActions.Pick_image);
                 }
             });
         }
