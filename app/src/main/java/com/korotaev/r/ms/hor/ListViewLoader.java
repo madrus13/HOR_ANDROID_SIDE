@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -17,6 +18,7 @@ public class ListViewLoader extends Activity implements View.OnClickListener
 {
 
    ListView lvMain;
+    public long selectedPos = -1;
     ArrayList<String> dataList = new ArrayList<String>();
 
     @Override
@@ -37,6 +39,13 @@ public class ListViewLoader extends Activity implements View.OnClickListener
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.single_list_item, dataList);
         lvMain.setAdapter(adapter);
 
+        lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedPos = i;
+            }
+        });
+
         Button btnChecked = (Button) findViewById(R.id.buttonChecked);
         btnChecked.setOnClickListener((View.OnClickListener) this);
 
@@ -45,6 +54,11 @@ public class ListViewLoader extends Activity implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-
+        if (selectedPos!=-1) {
+            Intent intent = new Intent();
+            intent.putExtra(ActivityActions.EXTRA_SELECTED_ID, selectedPos);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 }

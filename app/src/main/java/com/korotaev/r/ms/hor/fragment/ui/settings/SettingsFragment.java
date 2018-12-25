@@ -56,6 +56,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_One_Item;
 import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_image;
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 
@@ -246,31 +247,10 @@ public class SettingsFragment extends Fragment
                     intent.putExtra(ActivityActions.EXTRA_TITLE_LIST, R.string.SelectRegion);
                     intent.putStringArrayListExtra(ActivityActions.EXTRA_DATA_LIST, dataRegions);
                     intent.putExtra(ActivityActions.EXTRA_SELECT_MODE_CHOICE_TYPE, ListView.CHOICE_MODE_SINGLE);
-                    startActivityForResult(intent, ActivityActions.Pick_region);
+                    startActivityForResult(intent, ActivityActions.Pick_One_Item);
                 }
             });
-            /*
-            // адаптер
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_item, dataRegions);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-            mRegion.setAdapter(adapter);
-            mRegion.setPrompt(getString(R.string.regionSpinnerTitle));
-            mRegion.setSelection(0);
-            mRegion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if (regionList.size() >= mRegion.getSelectedItemId()) {
-                        selectedRegion = regionList.get((int) mRegion.getSelectedItemId());
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
-            */
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -280,6 +260,8 @@ public class SettingsFragment extends Fragment
             loginView.setText(user.getName());
             emailView.setText(user.getEmail());
             phoneView.setText(user.getPhone());
+            //selectedRegion = regionList.
+            mRegion.setText("Значение "  + getString(R.string.change_field));
         }
 
         imageView = (ImageView) v.findViewById(R.id.UserImageView);
@@ -353,6 +335,15 @@ public class SettingsFragment extends Fragment
 
                     } catch (Exception ex) {
                         ex.printStackTrace();
+                    }
+                }
+
+            case Pick_One_Item:
+                if (resultCode == RESULT_OK) {
+                    long  selectedId = data.getLongExtra(ActivityActions.EXTRA_SELECTED_ID,-1);
+                    if (selectedId!= -1) {
+                        selectedRegion = regionList.get((int)selectedId);
+                        mRegion.setText(selectedRegion.getName()  + getString(R.string.change_field));
                     }
                 }
                 }
