@@ -121,4 +121,6 @@
     <string name="SelectRegion">Select region</string>
     <string name="Select">Select</string>
     <string name="change_field">(изменить)</string>
+    <string name="view_app_logs">View app logs</string>
+    <string name="ClearLog">Clear log</string>
 </resources>

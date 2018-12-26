@@ -31,6 +31,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.IntentService.CmdService;
@@ -42,8 +43,11 @@ import com.korotaev.r.ms.hor.fragment.ui.chat.ChatFragment;
 import com.korotaev.r.ms.hor.fragment.ui.help.HelpFragment;
 import com.korotaev.r.ms.hor.fragment.ui.request.RequestFragment;
 import com.korotaev.r.ms.hor.fragment.ui.settings.SettingsFragment;
+import com.korotaev.r.ms.testormlite.data.ActivityActions;
 import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
+import com.korotaev.r.ms.testormlite.data.Entity.TLog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -200,7 +204,26 @@ public class MainActivity extends AppCompatActivity
 
             showProgress(false);
         }
+        else if (id == R.id.nav_view_app_logs) {
+            ArrayList<String> data = new ArrayList<String>();
 
+            List<TLog> tlogs = myDBHelper.getHelper().getAllTLog();
+
+            for (TLog el: tlogs
+                 ) {
+                data.add(el.getDate() +": " + el.getName() + el.getType() );
+            }
+
+            Intent intent = new Intent(MainActivity.this, ListViewLoader.class);
+            intent.putExtra(ActivityActions.EXTRA_TITLE_LIST, R.string.SelectRegion);
+            intent.putStringArrayListExtra(ActivityActions.EXTRA_DATA_LIST, data);
+            intent.putExtra(ActivityActions.EXTRA_SELECT_MODE_CHOICE_TYPE, ListView.CHOICE_MODE_SINGLE);
+            startActivityForResult(intent, ActivityActions.Pick_One_Item);
+        }
+
+        else if (id == R.id.nav_clear_log) {
+            myDBHelper.getHelper().clearLog();
+        }
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();

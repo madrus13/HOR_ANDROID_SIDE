@@ -243,13 +243,13 @@ public class SettingsFragment extends Fragment
             mRegion.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(SettingsFragment.this.getContext(), ListViewLoader.class);
-                    intent.putExtra(ActivityActions.EXTRA_TITLE_LIST, R.string.SelectRegion);
-                    intent.putStringArrayListExtra(ActivityActions.EXTRA_DATA_LIST, dataRegions);
-                    intent.putExtra(ActivityActions.EXTRA_SELECT_MODE_CHOICE_TYPE, ListView.CHOICE_MODE_SINGLE);
-                    startActivityForResult(intent, ActivityActions.Pick_One_Item);
+
                 }
-            });
+            });Intent intent = new Intent(SettingsFragment.this.getContext(), ListViewLoader.class);
+            intent.putExtra(ActivityActions.EXTRA_TITLE_LIST, R.string.SelectRegion);
+            intent.putStringArrayListExtra(ActivityActions.EXTRA_DATA_LIST, dataRegions);
+            intent.putExtra(ActivityActions.EXTRA_SELECT_MODE_CHOICE_TYPE, ListView.CHOICE_MODE_SINGLE);
+            startActivityForResult(intent, ActivityActions.Pick_One_Item);
 
         } catch (IOException e) {
             e.printStackTrace();

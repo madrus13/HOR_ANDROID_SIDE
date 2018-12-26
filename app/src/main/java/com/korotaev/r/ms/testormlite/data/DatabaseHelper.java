@@ -28,6 +28,7 @@ import com.korotaev.r.ms.testormlite.data.Entity.Userstatus;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Database helper which creates and upgrades the database and provides the DAOs for the app.
@@ -321,8 +322,22 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			if (dao==null) {
 				dao = this.getTLogDao();
 			}
+			TableUtils.clearTable(this.getConnectionSource(), TLog.class);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public List<TLog> getAllTLog()
+	{
+		try {
+			if (dao==null) {
+				dao = this.getTLogDao();
+			}
+			return dao.queryForAll();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

@@ -34,5 +34,14 @@
             android:id="@+id/nav_signoff"
             android:icon="@drawable/ic_menu_signOff"
             android:title="@string/SignOff" />
+        <item
+            android:id="@+id/nav_view_app_logs"
+            android:icon="@drawable/ic_menu_about"
+            android:title="@string/view_app_logs" />
+        <item
+            android:id="@+id/nav_clear_log"
+            android:icon="@drawable/ic_menu_about"
+            android:title="@string/ClearLog" />
+
     </group>
 </menu>
