@@ -22,6 +22,7 @@ import com.korotaev.r.ms.testormlite.data.Entity.Achievement;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
 import com.korotaev.r.ms.testormlite.data.Entity.Messagetype;
+import com.korotaev.r.ms.testormlite.data.Entity.Region;
 import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Tool;
 import com.korotaev.r.ms.testormlite.data.Entity.Tooltypes;
@@ -53,10 +54,11 @@ public class CmdService extends IntentService {
     private List<TransmissionType> transmissionTypeList;
     private List<Tooltypes> tooltypesList;
     private List<Achievmenttype> achievmenttypeList;
-
+    private List<Region> regionsList;
     private List<Achievement> achievements;
     private List<Tool> tools;
-    private List<Auto> autos;
+    private Auto autos;
+
 
 
     public  void  sendMsgToServiceClients(Message msg, int command){
@@ -153,6 +155,7 @@ public class CmdService extends IntentService {
             autos = ServiceObjectHelper.getAllAutoByUser(CmdService.this,currentToken, userId, userSpecified);
             tools = ServiceObjectHelper.getAllToolByUser(CmdService.this,currentToken, userId, userSpecified);
             achievements = ServiceObjectHelper.getAllAchievmentByUser(CmdService.this,currentToken,userId, userSpecified);
+            regionsList = ServiceObjectHelper.getAllRegions(CmdService.this, "");
 
             sendMsgToServiceClients(msg, SrvCmd.CMD_EntitySyncResp);
             return null;

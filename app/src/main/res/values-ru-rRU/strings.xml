@@ -13,7 +13,7 @@
     <string name="pref_description_social_recommendations">Recommendations for people to contact</string>
     <string name="pref_title_display_name">Display name</string>
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string name="pref_header_data_sync">Data &amp; sync</string>
+    <string name="pref_header_data_sync">Data and sync</string>
     <string name="pref_title_sync_frequency">Sync frequency</string>
     <string name="pref_title_system_sync_settings">System sync settings</string>
     <string name="pref_header_notifications">Notifications</string>
@@ -44,7 +44,7 @@
     <string name="title_activity_wstest">WSTestActivity</string>
     <string name="error_field_required">Поле обязательное</string>
     <string name="error_incorrect_password">Пароль неверен</string>
-    <string name="error_invalid_password">Пароль коротковат</string>
+    <string name="error_invalid_password">"Ошибка - длина пароля "</string>
     <string name="error_invalid_email">Почта не корректна</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_sign_in">Sign in</string>
@@ -58,4 +58,20 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="SelectRegion">Выбрать регион</string>
+    <string name="change_field">(изменить)</string>
+    <string name="view_app_logs">Просмотр логов</string>
+    <string name="ClearLog">Очистка логов</string>
+    <string name="SuccessSave">Успешно сохранено</string>
+    <string name="RefreshComplete">Обновление завершено</string>
+    <string name="prompt_repeat_new_password">Повторить новый пароль</string>
+    <string name="prompt_new_password">Новый пароль</string>
+    <string name="prompt_old_password">Предыдущий пароль</string>
+    <string name="change_password_button">Сменить пароль</string>
+    <string name="title_activity_change_password">Измение пароля</string>
+    <string name="trTypeSpinnerTitle">Типы трансмиссий</string>
+    <string name="selectToolTypes">Выберите инструменты в багажнике</string>
+    <string name="transmission_type">Коробка</string>
+    <string name="car_model">Модель авто</string>
+    <string name="tool_types">Что в багажнике полезного</string>
+    <string name="region">Регион</string>
 </resources>

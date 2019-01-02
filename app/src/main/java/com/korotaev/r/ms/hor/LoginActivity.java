@@ -30,16 +30,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.korotaev.r.ms.hor.Preferences.Preferences;
+import com.korotaev.r.ms.hor.WebServices.ServiceObjectHelper;
 import com.korotaev.r.ms.hor.WebServices.WebServiceMainService;
 import com.korotaev.r.ms.hor.WebServices.serviceResult;
-import com.korotaev.r.ms.testormlite.data.Entity.Region;
 import com.korotaev.r.ms.testormlite.data.Entity.Session;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -389,21 +388,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            serviceResult result;
-            result = service.getAllRegions("");
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                if (!result.resultObjectJSON.isEmpty()) {
-                    List<Region> regionList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Region[].class));
-
-                    String regionsPrev =  Preferences.loadObjInPrefs(LoginActivity.this, Preferences.SAVED_Region);
-                    if (!regionsPrev.equals(result.resultObjectJSON)) {
-                        Preferences.saveObjInPrefs(LoginActivity.this, Preferences.SAVED_Region, result.resultObjectJSON);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            ServiceObjectHelper.getAllRegions(LoginActivity.this, "");
             return null;
         }
         @Override

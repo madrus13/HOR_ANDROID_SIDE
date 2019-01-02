@@ -7,6 +7,7 @@ import com.korotaev.r.ms.testormlite.data.Entity.Achievement;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
 import com.korotaev.r.ms.testormlite.data.Entity.Messagetype;
+import com.korotaev.r.ms.testormlite.data.Entity.Region;
 import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Tool;
 import com.korotaev.r.ms.testormlite.data.Entity.Tooltypes;
@@ -33,14 +34,18 @@ public class ServiceObjectHelper {
     private String AllToolType = "";
     private static List<Tooltypes> tooltypesList;
 
+    private String AllRegions = "";
+    private static List<Region> regionsList;
+
+
     private String AllTransmissionType = "";
     private static List<TransmissionType> transmissionTypeList;
 
 
     public static boolean isValidResult(serviceResult result)
     {
-        return (result!=null && !result.resultObjectJSON.isEmpty() &&
-                !result.resultObjectJSON.toUpperCase().contains("NULL"));
+        return (result!=null && result.resultObjectJSON!=null && !result.resultObjectJSON.isEmpty() &&
+                !result.resultObjectJSON.toUpperCase().equals("NULL"));
     }
 
     public static List<Messagetype> getMessageType(Context context, String currentToken)
@@ -69,6 +74,29 @@ public class ServiceObjectHelper {
         return null;
     }
 
+    public static List<Region> getAllRegions(Context context, String currentToken)
+    {
+        serviceResult result = new serviceResult();
+         try {
+                result = service.getAllRegions(currentToken);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+
+                if (isValidResult(result)) {
+                    regionsList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Region[].class));
+                    Preferences.saveObjInPrefs(context, Preferences.SAVED_Region,result.resultObjectJSON);
+                    return regionsList;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        return null;
+    }
 
 
     public static List<Achievmenttype> getAchievmenttype(Context context, String currentToken)
@@ -195,6 +223,9 @@ public class ServiceObjectHelper {
         return null;
     }
 
+
+
+
     public static List<Tool>  getAllToolByUser(Context context, String currentToken, long userId, boolean userSpecified)
     {
         List<Tool> tools;
@@ -223,9 +254,9 @@ public class ServiceObjectHelper {
         return null;
     }
 
-    public static List<Auto>  getAllAutoByUser(Context context, String currentToken, long userId, boolean userSpecified)
+    public static Auto  getAllAutoByUser(Context context, String currentToken, long userId, boolean userSpecified)
     {
-        List<Auto> autos;
+        Auto autos;
         serviceResult result = new serviceResult();
         if (!currentToken.isEmpty()) {
 
@@ -238,7 +269,8 @@ public class ServiceObjectHelper {
             try {
 
                 if (isValidResult(result)) {
-                    autos =  Arrays.asList(mapper.readValue(result.resultObjectJSON, Auto[].class));
+                    autos =  mapper.readValue(result.resultObjectJSON, Auto.class);
+                    //Arrays.asList(mapper.readValue(result.resultObjectJSON, Auto[].class));
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserAutos,result.resultObjectJSON);
                     return autos;
                 }

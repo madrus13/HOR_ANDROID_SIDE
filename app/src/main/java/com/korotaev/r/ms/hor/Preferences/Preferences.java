@@ -3,11 +3,14 @@ package com.korotaev.r.ms.hor.Preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.korotaev.r.ms.testormlite.data.Entity.Auto;
+import com.korotaev.r.ms.testormlite.data.Entity.Tool;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -45,16 +48,45 @@ public   class Preferences {
 
     public static User loadCurrentUserInfo(Context context) {
         SharedPreferences sPref;
-        User currentUser = null;
+        User currentObj = null;
         sPref = context.getSharedPreferences("myPrefs", MODE_PRIVATE);
-        String userInfo = sPref.getString(SAVED_CurrentUserInfo, "");
+        String Info = sPref.getString(SAVED_CurrentUserInfo, "");
         ObjectMapper mapper = new ObjectMapper();
         try {
-            currentUser = mapper.readValue(userInfo, User.class);
+            currentObj = mapper.readValue(Info, User.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return currentUser;
+        return currentObj;
+    }
+
+
+    public static Auto loadCurrentUserAuto(Context context) {
+        SharedPreferences sPref;
+        Auto currentObj = null;
+        sPref = context.getSharedPreferences("myPrefs", MODE_PRIVATE);
+        String Info = sPref.getString(SAVED_CurrentUserAutos, "");
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            currentObj = mapper.readValue(Info, Auto.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return currentObj;
+    }
+
+    public static List<Tool> loadCurrentUserTools(Context context) {
+        SharedPreferences sPref;
+        List<Tool> currentObj = null;
+        sPref = context.getSharedPreferences("myPrefs", MODE_PRIVATE);
+        String Info = sPref.getString(SAVED_CurrentUserAutos, "");
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            currentObj = Arrays.asList(mapper.readValue(Info, Tool[].class));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return currentObj;
     }
 }

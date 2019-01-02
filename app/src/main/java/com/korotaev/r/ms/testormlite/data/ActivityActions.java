@@ -7,6 +7,7 @@ public  class ActivityActions {
     public static final int Pick_transmissionType = 4;
     public static final int Pick_One_Item = 5;
     public static final int Pick_Several_Item = 6;
+    public static final int Pick_Change_password = 7;
 
     public static final String EXTRA_SELECTED_ID = "EXTRA_SELECTED_ID";
     public static final String EXTRA_TITLE_LIST = "EXTRA_TITLE_LIST";

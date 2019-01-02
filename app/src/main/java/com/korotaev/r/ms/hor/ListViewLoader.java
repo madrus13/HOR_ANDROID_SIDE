@@ -3,6 +3,7 @@ package com.korotaev.r.ms.hor;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,7 +19,7 @@ public class ListViewLoader extends Activity implements View.OnClickListener
 {
 
    ListView lvMain;
-    public long selectedPos = -1;
+    public ArrayList<Integer> selectedPos = new ArrayList<Integer>(){};
     ArrayList<String> dataList = new ArrayList<String>();
 
     @Override
@@ -42,7 +43,7 @@ public class ListViewLoader extends Activity implements View.OnClickListener
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedPos = i;
+                //selectedPos = lvMain.getCheckedItemIds();
             }
         });
 
@@ -54,9 +55,19 @@ public class ListViewLoader extends Activity implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-        if (selectedPos!=-1) {
+
+        SparseBooleanArray checked = lvMain.getCheckedItemPositions();
+        for (int i = 0; i < lvMain.getAdapter().getCount(); i++)
+        {
+            if (checked.get(i))
+            {
+                selectedPos.add(i);
+            }
+        }
+
+        if (selectedPos!= null && selectedPos.size() > 0) {
             Intent intent = new Intent();
-            intent.putExtra(ActivityActions.EXTRA_SELECTED_ID, selectedPos);
+            intent.putIntegerArrayListExtra(ActivityActions.EXTRA_SELECTED_ID, selectedPos);
             setResult(RESULT_OK, intent);
             finish();
         }

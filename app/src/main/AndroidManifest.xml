@@ -70,7 +70,10 @@
             android:name=".fragment.ui.achievment.AchievmentActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity android:name=".ListViewLoader"></activity>
+        <activity android:name=".ListViewLoader" />
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:label="@string/title_activity_change_password"></activity>
     </application>
 
 </manifest>

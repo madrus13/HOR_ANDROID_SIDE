@@ -78,13 +78,21 @@ public class MainActivity extends AppCompatActivity
 
             switch (msg.what) {
                 case SrvCmd.CMD_RegisterIntentServiceClientResp:
-                    showProgress(true);
-                    //Toast.makeText(MainActivity.this, "Инициация синхронизации", Toast.LENGTH_SHORT).show();
-                    sendComandToIntentService(SrvCmd.CMD_EntitySyncReq);
+
+                    if (msg.replyTo == mMessenger)
+                    {
+                        showProgress(true);
+                        myDBHelper.getHelper().addLog ("test", "MA->handleMessage-> IS FROM THIS ACTIVITY REQ");
+                        sendComandToIntentService(SrvCmd.CMD_EntitySyncReq);
+                    }
+                    else {
+                        myDBHelper.getHelper().addLog ("test", "MA->handleMessage-> NOT FROM THIS ACTIVITY REQ");
+                    }
+
                     break;
                 case SrvCmd.CMD_EntitySyncResp:
                     Bundle data = msg.getData();
-                    Toast.makeText(MainActivity.this, "Обновление завершено", Toast.LENGTH_SHORT).show();
+                    myDBHelper.getHelper().addLog ("test", "MA->handleMessage->" + R.string.RefreshComplete);
                     showProgress(false);
                     break;
 
@@ -99,13 +107,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
-        //myDBLogger.addLog ("INFO", "main->start");
         mProgressView = (View) findViewById(R.id.main_activity_progress);
         mMainView = (View) findViewById(R.id.main_layout);
 
-        Toast.makeText(this, R.string.SuccessSignIn ,Toast.LENGTH_LONG).show();
+        myDBHelper.getHelper().addLog ("test", "MA->handleMessage->" + R.string.SuccessSignIn);
+        showProgress(true);
 
         Intent i = new Intent(this, CmdService.class);
         bindService(i,  MainActivity.this, Context.BIND_AUTO_CREATE);
@@ -205,20 +214,8 @@ public class MainActivity extends AppCompatActivity
             showProgress(false);
         }
         else if (id == R.id.nav_view_app_logs) {
-            ArrayList<String> data = new ArrayList<String>();
 
-            List<TLog> tlogs = myDBHelper.getHelper().getAllTLog();
-
-            for (TLog el: tlogs
-                 ) {
-                data.add(el.getDate() +": " + el.getName() + el.getType() );
-            }
-
-            Intent intent = new Intent(MainActivity.this, ListViewLoader.class);
-            intent.putExtra(ActivityActions.EXTRA_TITLE_LIST, R.string.SelectRegion);
-            intent.putStringArrayListExtra(ActivityActions.EXTRA_DATA_LIST, data);
-            intent.putExtra(ActivityActions.EXTRA_SELECT_MODE_CHOICE_TYPE, ListView.CHOICE_MODE_SINGLE);
-            startActivityForResult(intent, ActivityActions.Pick_One_Item);
+          start_activity_view_app_logs();
         }
 
         else if (id == R.id.nav_clear_log) {
@@ -248,14 +245,33 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void start_activity_view_app_logs()
+    {
+        ArrayList<String> data = new ArrayList<String>();
+
+        List<TLog> tlogs = myDBHelper.getHelper().getAllTLog();
+
+        for (TLog el: tlogs
+                ) {
+            data.add(el.getDate() +": " + el.getName() + el.getType() );
+        }
+
+        Intent intent = new Intent(MainActivity.this, ListViewLoader.class);
+        intent.putExtra(ActivityActions.EXTRA_TITLE_LIST, R.string.SelectRegion);
+        intent.putStringArrayListExtra(ActivityActions.EXTRA_DATA_LIST, data);
+        intent.putExtra(ActivityActions.EXTRA_SELECT_MODE_CHOICE_TYPE, ListView.CHOICE_MODE_SINGLE);
+        startActivityForResult(intent, ActivityActions.Pick_One_Item);
+    }
+
+
+
+
     /**
      * Shows the progress UI and hides the login form.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -288,12 +304,12 @@ public class MainActivity extends AppCompatActivity
     public void onServiceConnected(ComponentName componentName, IBinder service) {
         // TODO Auto-generated method stub
         myDBHelper.getHelper().addLog ("INFO", "main->onServiceConnected" );
-        if (service!=null) {
+        if (service!=null && mService == null) {
            // myDBLogger.addLog (APP_TAG_CODE, "main->onServiceConnected->" + service.toString()  );
             mService = new Messenger(service);
-
+            sendComandToIntentService(SrvCmd.CMD_RegisterIntentServiceClientReq);
         }
-        sendComandToIntentService(SrvCmd.CMD_RegisterIntentServiceClientReq);
+
 
 
     }
