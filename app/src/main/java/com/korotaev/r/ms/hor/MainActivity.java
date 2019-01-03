@@ -72,8 +72,6 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void handleMessage(Message msg) {
 
-            myDBHelper.getHelper().addLog ("test", "MA->handleMessage->" + msg.what);
-
             msg.getData();
 
             switch (msg.what) {
@@ -82,17 +80,13 @@ public class MainActivity extends AppCompatActivity
                     if (msg.replyTo == mMessenger)
                     {
                         showProgress(true);
-                        myDBHelper.getHelper().addLog ("test", "MA->handleMessage-> IS FROM THIS ACTIVITY REQ");
                         sendComandToIntentService(SrvCmd.CMD_EntitySyncReq);
                     }
-                    else {
-                        myDBHelper.getHelper().addLog ("test", "MA->handleMessage-> NOT FROM THIS ACTIVITY REQ");
-                    }
+
 
                     break;
                 case SrvCmd.CMD_EntitySyncResp:
                     Bundle data = msg.getData();
-                    myDBHelper.getHelper().addLog ("test", "MA->handleMessage->" + R.string.RefreshComplete);
                     showProgress(false);
                     break;
 
@@ -113,7 +107,6 @@ public class MainActivity extends AppCompatActivity
         mProgressView = (View) findViewById(R.id.main_activity_progress);
         mMainView = (View) findViewById(R.id.main_layout);
 
-        myDBHelper.getHelper().addLog ("test", "MA->handleMessage->" + R.string.SuccessSignIn);
         showProgress(true);
 
         Intent i = new Intent(this, CmdService.class);
@@ -303,9 +296,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
         // TODO Auto-generated method stub
-        myDBHelper.getHelper().addLog ("INFO", "main->onServiceConnected" );
+
         if (service!=null && mService == null) {
-           // myDBLogger.addLog (APP_TAG_CODE, "main->onServiceConnected->" + service.toString()  );
+
             mService = new Messenger(service);
             sendComandToIntentService(SrvCmd.CMD_RegisterIntentServiceClientReq);
         }

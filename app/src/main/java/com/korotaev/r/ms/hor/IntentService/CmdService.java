@@ -84,8 +84,6 @@ public class CmdService extends IntentService {
 
         @Override
         public void handleMessage(Message msg) {
-            Log.e(CODE_INFO, "Service->InHandle->handleMessage : " + msg.what);
-
 
             switch (msg.what) {
                 case SrvCmd.CMD_RegisterIntentServiceClientReq:
@@ -223,8 +221,7 @@ public class CmdService extends IntentService {
 
 
     private void showNotification() {
-        // In this sample, we'll use the same text for the ticker and the expanded notification
-        Log.e(CODE_INFO, "ElmaService->showNotification" );
+
 
         CharSequence text = getText(R.string.remote_service_started);
 
@@ -249,26 +246,25 @@ public class CmdService extends IntentService {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.e(CODE_INFO, "Service->onBind" );
+
         return mMessenger.getBinder();
     }
     @Override
     public void onCreate(){
-        Log.e(CODE_INFO, "Service->onCreate" );
+
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         showNotification();
 
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
-        Log.e(CODE_INFO, "Service->onStartCommand" );
+
         onHandleIntent(intent);
 
         return START_STICKY;
     }
     @Override
     public void onDestroy() {
-        Log.e(CODE_INFO, "Service->onDestroy" );
 
         // Tell the user we stopped.
         Toast.makeText(this, "Завершено", Toast.LENGTH_SHORT).show();
@@ -277,7 +273,7 @@ public class CmdService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         // TODO Auto-generated method stub
-        Log.e(CODE_INFO, "Service->onHandleIntent" );
+
     }
 
 

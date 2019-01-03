@@ -264,7 +264,6 @@ public class SettingsFragment extends Fragment
     {
         user = Preferences.loadCurrentUserInfo(getContext());
         if (user!=null) {
-            myDBHelper.getHelper().addLog(CODE_INFO, "IncomingHandler-> success loadCurrentUserInfo");
             loginView.setText(user.getName());
             emailView.setText(user.getEmail());
             phoneView.setText(user.getPhone());
@@ -506,7 +505,6 @@ public class SettingsFragment extends Fragment
                    if (selectedId.size() > 0)
                    {
                        String selectedTools = "";
-                       myDBHelper.getHelper().addLog(CODE_INFO, "IncomingHandler-> Pick_Tools" + selectedId.toString());
                        for (Integer el: selectedId
                             ) {
                            if (allToolTypesList.size() > el) {
@@ -536,32 +534,32 @@ public class SettingsFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        //myDBHelper.getHelper().addLog (CODE_INFO, "SF->onResume->"  );
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        //myDBHelper.getHelper().addLog (CODE_INFO, "SF->onPause->"  );
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        //myDBHelper.getHelper().addLog (CODE_INFO, "SF->onStop->"  );
+
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         getActivity().unbindService(SettingsFragment.this);
-        //myDBHelper.getHelper().addLog (CODE_INFO, "SF->onDestroy->"  );
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        //myDBHelper.getHelper().addLog (CODE_INFO, "SF->onDetach->"  );
+
     }
 
     @Override
@@ -573,9 +571,8 @@ public class SettingsFragment extends Fragment
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
         // TODO Auto-generated method stub
-        //myDBHelper.getHelper().addLog (CODE_INFO, "SF->onServiceConnected" );
+
         if (service!=null && mService == null) {
-            //myDBHelper.getHelper().addLog (CODE_INFO, "SF->onServiceConnected->" + service.toString()  );
             mService = new Messenger(service);
             sendComandToIntentService(SrvCmd.CMD_RegisterIntentServiceClientReq);
         }
@@ -585,6 +582,6 @@ public class SettingsFragment extends Fragment
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
-        //myDBHelper.getHelper().addLog (CODE_INFO, "SF->onServiceDisconnected->"  );
+
     }
 }
