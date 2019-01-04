@@ -74,14 +74,6 @@
         <activity
             android:name=".ChangePasswordActivity"
             android:label="@string/title_activity_change_password" />
-        <activity
-            android:name=".RequestMainActivity"
-            android:label="@string/title_activity_request_main"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.korotaev.r.ms.hor.MainActivity" />
-        </activity>
     </application>
 
 </manifest>

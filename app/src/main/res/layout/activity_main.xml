@@ -10,22 +10,18 @@
 
     <ProgressBar
         android:id="@+id/main_activity_progress"
-        style="?android:attr/progressBarStyleLarge"
+        style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
-    <ScrollView
-        android:id="@+id/main_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
     <include
+        android:id="@+id/main_layout"
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    </ScrollView>
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
