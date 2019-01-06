@@ -435,14 +435,7 @@ public class SettingsFragment extends Fragment
                 }
                 currentIndex++;
             }
-
-            // адаптер
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_item, dataRegions);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-            mRegion.setAdapter(adapter);
-            mRegion.setPrompt(getString(R.string.regionSpinnerTitle));
-            mRegion.setSelection(selectedRegionIndex);
+            adapterDataInit(mRegion,getString(R.string.regionSpinnerTitle), dataRegions,selectedRegionIndex);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -482,13 +475,7 @@ public class SettingsFragment extends Fragment
                 currentIndex++;
             }
 
-            // адаптер
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_item, dataTrType);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-            mTrType.setAdapter(adapter);
-            mTrType.setPrompt(getString(R.string.trTypeSpinnerTitle));
-            mTrType.setSelection(selectedtrTypeIndex);
+          adapterDataInit(mTrType,getString(R.string.trTypeSpinnerTitle), dataTrType,selectedtrTypeIndex);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -497,6 +484,16 @@ public class SettingsFragment extends Fragment
         myDBHelper.getHelper().addLog(CODE_INFO,"initTransmissionView->" + ((new Date()).getTime() - startDate.getTime()));
     }
 
+
+    public void adapterDataInit(Spinner spinner, String title, ArrayList<String> data, int selectIndex)
+    {
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_item, data);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setPrompt(title);
+        spinner.setSelection( selectIndex);
+    }
 
     @Nullable
     @Override
