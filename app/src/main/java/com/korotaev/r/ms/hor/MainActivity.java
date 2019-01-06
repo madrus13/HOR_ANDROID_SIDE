@@ -47,6 +47,7 @@ import com.korotaev.r.ms.testormlite.data.ActivityActions;
 import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
 import com.korotaev.r.ms.testormlite.data.Entity.TLog;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -243,10 +244,11 @@ public class MainActivity extends AppCompatActivity
         ArrayList<String> data = new ArrayList<String>();
 
         List<TLog> tlogs = myDBHelper.getHelper().getAllTLog();
+        SimpleDateFormat dt = new SimpleDateFormat("hh:mm:ss");
 
         for (TLog el: tlogs
                 ) {
-            data.add(el.getDate() +": " + el.getName() + el.getType() );
+            data.add(dt.format(el.getDate()) +": " + el.getName() + " : " + el.getType() );
         }
 
         Intent intent = new Intent(MainActivity.this, ListViewLoader.class);

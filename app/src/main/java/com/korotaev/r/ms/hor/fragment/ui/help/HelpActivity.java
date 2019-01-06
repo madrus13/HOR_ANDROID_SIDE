@@ -14,6 +14,7 @@ public class HelpActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, HelpFragment.newInstance())
+                    .addToBackStack("myStack")
                     .commitNow();
         }
     }

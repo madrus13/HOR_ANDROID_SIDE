@@ -14,6 +14,7 @@ public class ChatActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, ChatFragment.newInstance())
+                    .addToBackStack("myStack")
                     .commitNow();
         }
     }

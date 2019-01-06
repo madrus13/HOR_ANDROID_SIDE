@@ -15,7 +15,7 @@ import java.util.List;
 import static android.content.Context.MODE_PRIVATE;
 
 
-public   class Preferences {
+public  class  Preferences {
 
     public  static String SAVED_Session             = "Session";
     public  static String SAVED_Region              = "Region";
@@ -32,26 +32,27 @@ public   class Preferences {
     public  static String SAVED_CurrentUserAutos     = "CurrentUserAutos";
     public  static String SAVED_CurrentUserTools     = "CurrentUserTools";
 
+    public static String prefName = "myPrefs";
+    static SharedPreferences sPref;
+    static ObjectMapper mapper = new ObjectMapper();
+
     public static  void saveObjInPrefs(Context context,String objectName, String str) {
         SharedPreferences sPref;
-        sPref = context.getSharedPreferences("myPrefs",MODE_PRIVATE);
+        sPref = context.getSharedPreferences(prefName,MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
         ed.putString(objectName, str);
         ed.commit();
     }
 
     public static String loadObjInPrefs(Context context, String objectName) {
-        SharedPreferences sPref;
-        sPref = context.getSharedPreferences("myPrefs", MODE_PRIVATE);
+        sPref = context.getSharedPreferences(prefName, MODE_PRIVATE);
         return sPref.getString(objectName, "");
     }
 
     public static User loadCurrentUserInfo(Context context) {
-        SharedPreferences sPref;
         User currentObj = null;
-        sPref = context.getSharedPreferences("myPrefs", MODE_PRIVATE);
+        sPref = context.getSharedPreferences(prefName, MODE_PRIVATE);
         String Info = sPref.getString(SAVED_CurrentUserInfo, "");
-        ObjectMapper mapper = new ObjectMapper();
         try {
             currentObj = mapper.readValue(Info, User.class);
         } catch (Exception e) {
@@ -63,11 +64,9 @@ public   class Preferences {
 
 
     public static Auto loadCurrentUserAuto(Context context) {
-        SharedPreferences sPref;
         Auto currentObj = null;
-        sPref = context.getSharedPreferences("myPrefs", MODE_PRIVATE);
+        sPref = context.getSharedPreferences(prefName, MODE_PRIVATE);
         String Info = sPref.getString(SAVED_CurrentUserAutos, "");
-        ObjectMapper mapper = new ObjectMapper();
         try {
             currentObj = mapper.readValue(Info, Auto.class);
         } catch (Exception e) {
@@ -77,11 +76,11 @@ public   class Preferences {
     }
 
     public static List<Tool> loadCurrentUserTools(Context context) {
-        SharedPreferences sPref;
+
         List<Tool> currentObj = null;
-        sPref = context.getSharedPreferences("myPrefs", MODE_PRIVATE);
-        String Info = sPref.getString(SAVED_CurrentUserAutos, "");
-        ObjectMapper mapper = new ObjectMapper();
+        sPref = context.getSharedPreferences(prefName, MODE_PRIVATE);
+        String Info = sPref.getString(SAVED_CurrentUserTools, "");
+
         try {
             currentObj = Arrays.asList(mapper.readValue(Info, Tool[].class));
         } catch (Exception e) {

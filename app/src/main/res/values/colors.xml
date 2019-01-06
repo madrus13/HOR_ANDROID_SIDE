@@ -2,8 +2,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="colorPrimary">#fcca4e</color>
     <color name="colorPrimaryDark">#b0b0bc</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorBackground">#424242</color>
+    <color name="colorAccent">#ff4081</color>
+    <color name="colorBackground">#aaaaaa</color>
     <color name="colorSecondAccent">#80cbc4</color>
     <color name="colorText">#ffffff</color>
 

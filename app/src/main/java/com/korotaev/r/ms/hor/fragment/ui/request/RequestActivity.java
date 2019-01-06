@@ -14,6 +14,7 @@ public class RequestActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, RequestFragment.newInstance())
+                    .addToBackStack("myStack")
                     .commitNow();
         }
     }

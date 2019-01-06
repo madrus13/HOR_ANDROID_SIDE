@@ -41,6 +41,7 @@ public class ServiceObjectHelper {
     private String AllTransmissionType = "";
     private static List<TransmissionType> transmissionTypeList;
 
+    private static ObjectMapper mapper = new ObjectMapper();
 
     public static boolean isValidResult(serviceResult result)
     {
@@ -58,7 +59,7 @@ public class ServiceObjectHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ObjectMapper mapper = new ObjectMapper();
+
             try {
 
                 if (isValidResult(result)) {
@@ -82,7 +83,7 @@ public class ServiceObjectHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ObjectMapper mapper = new ObjectMapper();
+
             try {
 
                 if (isValidResult(result)) {
@@ -109,7 +110,7 @@ public class ServiceObjectHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ObjectMapper mapper = new ObjectMapper();
+
             try {
 
                 if (isValidResult(result)) {
@@ -136,7 +137,7 @@ public class ServiceObjectHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ObjectMapper mapper = new ObjectMapper();
+
             try {
 
                 if (isValidResult(result))
@@ -175,7 +176,6 @@ public class ServiceObjectHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ObjectMapper mapper = new ObjectMapper();
             try {
 
                 if (isValidResult(result))
@@ -195,6 +195,77 @@ public class ServiceObjectHelper {
         return null;
     }
 
+
+    public static List<Tool> setCurrentUserTools(Context context,
+                                          String currentToken,
+                                          String toolTypeIds)
+    {
+        List<Tool> currentUserTools;
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.insertUpdateUserTools( currentToken, toolTypeIds);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+
+                if (isValidResult(result))
+                {
+                    currentUserTools = Arrays.asList(mapper.readValue(result.resultObjectJSON, Tool[].class));
+                    Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserTools,result.resultObjectJSON);
+                    return currentUserTools;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
+    public static List<Auto> setCurrentUserAuto(Context context,
+                                                String currentToken,
+                                                String name,
+                                                long haveCable,
+                                                boolean haveCableSpecified,
+                                                long transmissionType,
+                                                boolean transmissionTypeSpecified)
+    {
+        List<Auto> currentUserAutos;
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.insertUpdateUserAuto(  currentToken,
+                                                        name,
+                                                        haveCable,
+                                                        haveCableSpecified,
+                                                        transmissionType,
+                                                        transmissionTypeSpecified);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+
+                if (isValidResult(result))
+                {
+                    currentUserAutos = Arrays.asList(mapper.readValue(result.resultObjectJSON, Auto[].class));
+                    Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserAutos,result.resultObjectJSON);
+                    return currentUserAutos;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
+
     public static List<Achievement>  getAllAchievmentByUser(Context context, String currentToken, long userId, boolean userSpecified)
     {
         List<Achievement> achievements;
@@ -206,7 +277,6 @@ public class ServiceObjectHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ObjectMapper mapper = new ObjectMapper();
             try {
 
                 if (isValidResult(result))
@@ -237,7 +307,7 @@ public class ServiceObjectHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ObjectMapper mapper = new ObjectMapper();
+
             try {
 
                 if (isValidResult(result))
@@ -265,7 +335,7 @@ public class ServiceObjectHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ObjectMapper mapper = new ObjectMapper();
+
             try {
 
                 if (isValidResult(result)) {
@@ -292,7 +362,7 @@ public class ServiceObjectHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ObjectMapper mapper = new ObjectMapper();
+
             try {
 
                 if (isValidResult(result))
@@ -319,7 +389,7 @@ public class ServiceObjectHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ObjectMapper mapper = new ObjectMapper();
+
             try {
 
                 if (isValidResult(result)) {
@@ -345,7 +415,7 @@ public class ServiceObjectHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ObjectMapper mapper = new ObjectMapper();
+
             try {
 
                 if (isValidResult(result))

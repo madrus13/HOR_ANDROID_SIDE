@@ -300,10 +300,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	static Dao<TLog, Integer> dao;
 	public void addLog(String type, String text)
 	{
-
 		try {
 			if (dao==null) {
-
 				dao = this.getTLogDao();
 			}
 			TLog tlog = new TLog();

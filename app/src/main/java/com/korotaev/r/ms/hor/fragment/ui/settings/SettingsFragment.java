@@ -1,8 +1,5 @@
 package com.korotaev.r.ms.hor.fragment.ui.settings;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
@@ -14,7 +11,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -25,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,6 +58,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -90,6 +88,8 @@ public class SettingsFragment extends Fragment
     private Spinner mRegion;
     private Spinner mTrType;
     private TextView mToolType;
+    private TextView mCarModel;
+
 
     public static ArrayList<String> dataRegions = new ArrayList<String>();
     public static List<Region> regionList = null;
@@ -102,10 +102,18 @@ public class SettingsFragment extends Fragment
     TransmissionType selectedtrType = null;
     public int selectedtrTypeIndex = -1;
 
+    ArrayList<String> dataTools = new ArrayList<String>();
+    public static List<Tooltypes> allToolTypesList ;
+
     public static User user;
     public static Auto auto;
     public static List<Tool> tools;
-    public static List<Tooltypes> allToolTypesList ;
+
+
+    public ArrayList<String> selectedToolsIds = new ArrayList<String>();
+
+
+    static ObjectMapper mapper = new ObjectMapper();
 
     private MyDBHelper myDBHelper = new MyDBHelper(SettingsFragment.this.getContext());
 
@@ -149,13 +157,13 @@ public class SettingsFragment extends Fragment
             if (msg.replyTo == mMessenger) {
                 switch (msg.what) {
                     case SrvCmd.CMD_RegisterIntentServiceClientResp:
-                        //showProgress(false);
+
                         break;
                     case SrvCmd.CMD_EntitySyncResp:
                         break;
 
                     case SrvCmd.CMD_EntitySetUserInfoResp:
-                        // showProgress(false);
+
                         if(SettingsFragment.this.getContext()!=null)
                             Toast.makeText(SettingsFragment.this.getContext(), R.string.SuccessSave, Toast.LENGTH_SHORT).show();
                         break;
@@ -167,6 +175,7 @@ public class SettingsFragment extends Fragment
 
         }
     }
+
 
     public void sendComandToIntentService(int command)
     {
@@ -186,7 +195,16 @@ public class SettingsFragment extends Fragment
     }
 
 
-    public void sendSetUserInfoComandToIntentService(int command, long regionId, String password, String fileName, String file)
+    public void sendSetUserInfoComandToIntentService(int command,
+                                                     long regionId,
+                                                     String password,
+                                                     String fileName,
+                                                     String file,
+                                                     long transmissionType,
+                                                     String nameAuto,
+                                                     long haveCable,
+                                                     String toolTypeIds
+    )
     {
         // We want to monitor the service for as long as we are
         // connected to it.
@@ -199,6 +217,12 @@ public class SettingsFragment extends Fragment
                 b.putString("password", password);
                 b.putString("fileName", fileName);
                 b.putString("file", file);
+
+                b.putLong("transmissionType", transmissionType);
+                b.putString("nameAuto", nameAuto);
+                b.putLong("haveCable", haveCable);
+                b.putString("toolTypeIds", toolTypeIds);
+
                 msg.setData(b);
                 mService.send(msg);
             }
@@ -228,7 +252,11 @@ public class SettingsFragment extends Fragment
                                                     selectedRegion.getId(),
                                                     passwordEdit.getText().toString(),
                                                     "_fname.jpeg" ,
-                                                    imageInByte.toString()
+                                                    imageInByte.toString(),
+                                                    selectedtrType.getId(),
+                                                    mCarModel.getText().toString(),
+                                                    1,
+                                                    TextUtils.join(",", selectedToolsIds)
                     );
             return true;
         }
@@ -239,6 +267,8 @@ public class SettingsFragment extends Fragment
 
     public  void initViews(View v)
     {
+        Date startDate = new Date();
+
         loginView = (Button) v.findViewById(R.id.LoginVal);
         emailView = (Button) v.findViewById(R.id.EmailVal);
         phoneView = (Button) v.findViewById(R.id.PhoneVal);
@@ -248,46 +278,151 @@ public class SettingsFragment extends Fragment
         mProgressView = (View) v.findViewById(R.id.main_activity_progress);
         mMainView = (View) v.findViewById(R.id.main_layout);
         mToolType = (TextView) v.findViewById(R.id.toolTypesVal);
+        mCarModel = (TextView) v.findViewById(R.id.carModelVal);
+        imageView = (ImageView) v.findViewById(R.id.UserImageView);
 
-        mToolType.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                start_activity_select_toolTypes();
-            }
-        });
-        auto = Preferences.loadCurrentUserAuto(getContext());
+        userAutoInit();
         userInfoInit();
         userToolsInit();
+        myDBHelper.getHelper().addLog(CODE_INFO,"initViews->" + ((new Date()).getTime() - startDate.getTime()));
 
     }
+
+    public void userAutoInit()
+    {
+        auto = Preferences.loadCurrentUserAuto(getContext());
+
+        if (auto!=null) {
+            mCarModel.setText(auto.getName());
+
+        }
+    }
+
+
     public void userInfoInit()
     {
+        Date startDate = new Date();
         user = Preferences.loadCurrentUserInfo(getContext());
         if (user!=null) {
             loginView.setText(user.getName());
             emailView.setText(user.getEmail());
             phoneView.setText(user.getPhone());
         }
+        myDBHelper.getHelper().addLog(CODE_INFO,"userInfoInit->" + ((new Date()).getTime() - startDate.getTime()));
+    }
+
+
+    public void oOnClickListenerInit()
+    {
+        Date startDate = new Date();
+        if (mToolType!=null) {
+            mToolType.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    start_activity_select_toolTypes();
+                }
+            });
+        }
+
+        if (passwordEdit!=null) {
+            passwordEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(SettingsFragment.this.getContext(), ChangePasswordActivity.class);
+                    startActivityForResult(intent, ActivityActions.Pick_Change_password);
+                }
+            });
+        }
+        if (imageView!=null)  {
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                    //Тип получаемых объектов - image:
+                    photoPickerIntent.setType("image/*");
+                    //Запускаем переход с ожиданием обратного результата в виде информации об изображении:
+                    startActivityForResult(photoPickerIntent, ActivityActions.Pick_image);
+                }
+            });
+        }
+
+        if (mTrType!=null) {
+            mTrType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (trTypeList.size() >= mTrType.getSelectedItemId()) {
+                        selectedtrType = trTypeList.get((int) mTrType.getSelectedItemId());
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        }
+
+        if (mRegion!=null) {
+            mRegion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (regionList.size() >= mRegion.getSelectedItemId()) {
+                        selectedRegion = regionList.get((int) mRegion.getSelectedItemId());
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        }
+
+        myDBHelper.getHelper().addLog(CODE_INFO,"oOnClickListenerInit->" + ((new Date()).getTime() - startDate.getTime()));
     }
 
 
     public void userToolsInit()
     {
+        Date startDate = new Date();
+
+        String toolTypeStr =  Preferences.loadObjInPrefs(this.getContext(), Preferences.SAVED_ToolType);
+
+
+        try {
+            allToolTypesList = Arrays.asList(mapper.readValue(toolTypeStr, Tooltypes[].class));
+            for (Tooltypes el: allToolTypesList
+                    ) {
+                dataTools.add(el.getName());
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
         tools = Preferences.loadCurrentUserTools(getContext());
-        String toolsStr = "";
+        ArrayList<String> toolsStr = new ArrayList<String>();
+
         if (tools!=null) {
             for (Tool el: tools
                     ) {
-                toolsStr+= el.getType();
+                //Tooltypes finded = allToolTypesList.stream().findFirst().filter(x -> x.getId().equals(el.getType().intValue())).get();
+                //toolsStr.add(finded.getName());
             }
-            mToolType.setText(toolsStr);
+            mToolType.setText(TextUtils.join(" ", toolsStr));
         }
+
+        myDBHelper.getHelper().addLog(CODE_INFO,"userToolsInit->" + ((new Date()).getTime() - startDate.getTime()));
     }
+
 
     public void initRegionView()
     {
+        Date startDate = new Date();
+
         String regionsPrev =  Preferences.loadObjInPrefs(this.getContext(), Preferences.SAVED_Region);
-        ObjectMapper mapper = new ObjectMapper();
+
         try {
             regionList = Arrays.asList(mapper.readValue(regionsPrev, Region[].class));
             dataRegions.clear();
@@ -308,66 +443,42 @@ public class SettingsFragment extends Fragment
             mRegion.setAdapter(adapter);
             mRegion.setPrompt(getString(R.string.regionSpinnerTitle));
             mRegion.setSelection(selectedRegionIndex);
-            mRegion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if (regionList.size() >= mRegion.getSelectedItemId()) {
-                        selectedRegion = regionList.get((int) mRegion.getSelectedItemId());
-                    }
-                }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
         } catch (IOException e) {
             e.printStackTrace();
         }
+        myDBHelper.getHelper().addLog(CODE_INFO,"initRegionView->" + ((new Date()).getTime() - startDate.getTime()));
     }
 
+
     private void start_activity_select_toolTypes() {
-        ArrayList<String> data = new ArrayList<String>();
+        Date startDate = new Date();
 
-
-
-        String toolTypeStr =  Preferences.loadObjInPrefs(this.getContext(), Preferences.SAVED_ToolType);
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            allToolTypesList = Arrays.asList(mapper.readValue(toolTypeStr, Tooltypes[].class));
-            for (Tooltypes el: allToolTypesList
-                    ) {
-                data.add(el.getName());
-            }
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
-        if (data.size() > 0) {
+        if (dataTools.size() > 0) {
             Intent intent = new Intent(SettingsFragment.this.getContext(), ListViewLoader.class);
             intent.putExtra(ActivityActions.EXTRA_TITLE_LIST, R.string.selectToolTypes);
-            intent.putStringArrayListExtra(ActivityActions.EXTRA_DATA_LIST, data);
+            intent.putStringArrayListExtra(ActivityActions.EXTRA_DATA_LIST, dataTools);
             intent.putExtra(ActivityActions.EXTRA_SELECT_MODE_CHOICE_TYPE, ListView.CHOICE_MODE_MULTIPLE);
             startActivityForResult(intent, ActivityActions.Pick_tools);
         }
+        myDBHelper.getHelper().addLog(CODE_INFO,"start_activity_select_toolTypes->" + ((new Date()).getTime() - startDate.getTime()));
     }
 
 
     public void initTransmissionView()
     {
-        String regionsPrev =  Preferences.loadObjInPrefs(this.getContext(), Preferences.SAVED_TransmissionType);
-        ObjectMapper mapper = new ObjectMapper();
+        Date startDate = new Date();
+        String objPrev =  Preferences.loadObjInPrefs(this.getContext(), Preferences.SAVED_TransmissionType);
+
         try {
-            trTypeList = Arrays.asList(mapper.readValue(regionsPrev, TransmissionType[].class));
+            trTypeList = Arrays.asList(mapper.readValue(objPrev, TransmissionType[].class));
             int currentIndex = 0;
             for (TransmissionType item: trTypeList
                     ) {
                 dataTrType.add(item.getName());
-                /*if (user!=null && (item.getId() == user.getRegion())) {
-                    selectedRegionIndex = currentIndex;
-                }*/
+              if (auto.getTransmissionType() == item.getId()) {
+                  selectedtrTypeIndex = currentIndex;
+              }
                 currentIndex++;
             }
 
@@ -378,97 +489,33 @@ public class SettingsFragment extends Fragment
             mTrType.setAdapter(adapter);
             mTrType.setPrompt(getString(R.string.trTypeSpinnerTitle));
             mTrType.setSelection(selectedtrTypeIndex);
-            mTrType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if (trTypeList.size() >= mTrType.getSelectedItemId()) {
-                        selectedtrType = trTypeList.get((int) mTrType.getSelectedItemId());
-                    }
-                }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        myDBHelper.getHelper().addLog(CODE_INFO,"initTransmissionView->" + ((new Date()).getTime() - startDate.getTime()));
     }
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        Date startDate = new Date();
         View v =  inflater.inflate(R.layout.settings_fragment, container, false);
         setHasOptionsMenu(true);
         initViews(v);
         initRegionView();
         initTransmissionView();
-
-        passwordEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SettingsFragment.this.getContext(), ChangePasswordActivity.class);
-                startActivityForResult(intent, ActivityActions.Pick_Change_password);
-            }
-        });
-
-        imageView = (ImageView) v.findViewById(R.id.UserImageView);
-        if (imageView!=null)  {
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                    //Тип получаемых объектов - image:
-                    photoPickerIntent.setType("image/*");
-                    //Запускаем переход с ожиданием обратного результата в виде информации об изображении:
-                    startActivityForResult(photoPickerIntent, ActivityActions.Pick_image);
-                }
-            });
-        }
+        oOnClickListenerInit();
 
         Intent i = new Intent(SettingsFragment.this.getContext(), CmdService.class);
         getActivity().bindService(i,  SettingsFragment.this, Context.BIND_AUTO_CREATE);
 
-        //showProgress(true);
+        myDBHelper.getHelper().addLog(CODE_INFO,"onCreateView->" + ((new Date()).getTime() - startDate.getTime()));
+
         return v;
-    }
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mMainView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mMainView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mMainView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mMainView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
     }
 
 
@@ -476,8 +523,8 @@ public class SettingsFragment extends Fragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
-            case Pick_image:
-                if(resultCode == RESULT_OK) {
+            case Pick_image: {
+                if (resultCode == RESULT_OK) {
                     try {
 
                         Uri selectedImageUri = data.getData();
@@ -487,39 +534,45 @@ public class SettingsFragment extends Fragment
                         ex.printStackTrace();
                     }
                 }
-
-            case Pick_One_Item:
+                break;
+            }
+            case Pick_One_Item: {
                 if (resultCode == RESULT_OK) {
-                    long  selectedId = data.getLongExtra(ActivityActions.EXTRA_SELECTED_ID,-1);
-                    if (selectedId!= -1) {
-                        selectedRegion = regionList.get((int)selectedId);
+                    long selectedId = data.getLongExtra(ActivityActions.EXTRA_SELECTED_ID, -1);
+                    if (selectedId != -1) {
+                        selectedRegion = regionList.get((int) selectedId);
                         //mRegion.setText(selectedRegion.getName()  + getString(R.string.change_field));
-                       // mRegion.setSelection(0);
+                        // mRegion.setSelection(0);
                     }
                 }
                 break;
-            case Pick_tools:
+            }
+            case Pick_tools: {
+                if (resultCode == RESULT_OK)
+                {
+                    ArrayList<Integer> selectedId = data.getIntegerArrayListExtra(ActivityActions.EXTRA_SELECTED_ID);
+                    if (selectedId.size() > 0) {
+                        String selectedTools = "";
+                        ArrayList<String> toolsStr = new ArrayList<String>();
 
-                if (resultCode == RESULT_OK) {
-                    ArrayList<Integer>  selectedId = data.getIntegerArrayListExtra(ActivityActions.EXTRA_SELECTED_ID);
-                   if (selectedId.size() > 0)
-                   {
-                       String selectedTools = "";
-                       for (Integer el: selectedId
-                            ) {
-                           if (allToolTypesList.size() > el) {
-                               selectedTools+= allToolTypesList.get(el).getName() + " ";
-                           }
-                       }
-                       mToolType.setText(selectedTools);
-                   }
-                   else {
-                       myDBHelper.getHelper().addLog(CODE_INFO, "IncomingHandler-> Pick_Tools NO SELECTED ITEM");
-                   }
+                        for (Integer el : selectedId
+                                )
+                        {
+                            if (allToolTypesList.size() > el)
+                            {
+                                selectedTools += allToolTypesList.get(el).getName() + " ";
+                                selectedToolsIds.add(allToolTypesList.get(el).getId().toString());
+                                toolsStr.add(allToolTypesList.get(el).getName());
+                            }
+                        }
+                        mToolType.setText(TextUtils.join(" ", toolsStr));
+                    } else {
+                        myDBHelper.getHelper().addLog(CODE_INFO, "IncomingHandler-> Pick_Tools NO SELECTED ITEM");
+                    }
                 }
                 break;
 
-
+                }
                 }
     }
 
@@ -571,13 +624,12 @@ public class SettingsFragment extends Fragment
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
         // TODO Auto-generated method stub
-
+       Date startDate = new Date();
         if (service!=null && mService == null) {
             mService = new Messenger(service);
             sendComandToIntentService(SrvCmd.CMD_RegisterIntentServiceClientReq);
         }
-
-
+        myDBHelper.getHelper().addLog(CODE_INFO,"onServiceConnected->" + ((new Date()).getTime() - startDate.getTime()));
     }
 
     @Override

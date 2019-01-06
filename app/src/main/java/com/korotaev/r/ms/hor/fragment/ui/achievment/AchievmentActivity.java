@@ -14,6 +14,7 @@ public class AchievmentActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, AchievmentFragment.newInstance())
+                    .addToBackStack("myStack")
                     .commitNow();
         }
     }

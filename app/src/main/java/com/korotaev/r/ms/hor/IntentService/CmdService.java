@@ -11,7 +11,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.MainActivity;
@@ -31,8 +30,6 @@ import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 
 
 public class CmdService extends IntentService {
@@ -105,11 +102,15 @@ public class CmdService extends IntentService {
                     String password = (String) data.get("password");
                     String filename = (String) data.get("filename");
                     String file = (String) data.get("file");
+                    long transmissionType = (long) data.get("transmissionType");
+                    String nameAuto = (String) data.get("nameAuto");
+                    long haveCable= (long) data.get("haveCable");
+                    String toolTypeIds= (String) data.get("toolTypeIds");
 
                     mSetUserInfoTask = new SetUserInfoTask(msg,
                             regionId,true,
                             password,
-                            "filename",file);
+                            "filename",file, transmissionType, nameAuto, haveCable,toolTypeIds );
                     mSetUserInfoTask.execute((Void) null);
                     break;
                 default:
@@ -167,19 +168,32 @@ public class CmdService extends IntentService {
         private final String password;
         private final String fileName;
         private final String fileImage;
+        private final long transmissionType;
+        private final String nameAuto;
+        private final long haveCable;
+        private final String toolTypeIds;
 
         public SetUserInfoTask(Message msg,
                                long region,
                                boolean regionSpecified,
                                String password,
                                String fileName,
-                               String fileImage) {
+                               String fileImage,
+                               long transmissionType,
+                               String nameAuto,
+                               long haveCable,
+                               String toolTypeIds
+                               ) {
             this.msg = msg;
             this.region = region;
             this.regionSpecified = regionSpecified;
             this.password = password;
             this.fileName = fileName;
             this.fileImage = fileImage;
+            this.transmissionType = transmissionType;
+            this.nameAuto = nameAuto;
+            this.haveCable = haveCable;
+            this.toolTypeIds = toolTypeIds;
         }
 
         @Override
@@ -205,6 +219,24 @@ public class CmdService extends IntentService {
                 userId = currentUser.getId();
                 userSpecified = true;
             }
+
+            List<Tool> tools = ServiceObjectHelper.setCurrentUserTools(CmdService.this, currentToken,toolTypeIds);
+
+            boolean haveCableIsSpecified = true;
+
+            boolean transmissionTypeSpecified = true;
+            if (transmissionType <= 0 ) {
+                transmissionTypeSpecified = false;
+            }
+
+            List<Auto> auto = ServiceObjectHelper.setCurrentUserAuto(CmdService.this,
+                    currentToken,
+                    this.nameAuto,
+                    this.haveCable,
+                    haveCableIsSpecified,
+                    this.transmissionType,
+                    transmissionTypeSpecified);
+
 
             sendMsgToServiceClients(msg, SrvCmd.CMD_EntitySetUserInfoResp);
             return null;
