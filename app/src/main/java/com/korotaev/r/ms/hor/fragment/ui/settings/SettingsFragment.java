@@ -70,11 +70,9 @@ import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_tools;
 public class SettingsFragment extends Fragment
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor>,ServiceConnection, View.OnClickListener  {
 
-    /** Messenger for communicating with service. */
+
     Messenger mService = null;
-    /** Flag indicating whether we have called bind on the service. */
     boolean mIsBound;
-    /**Target we publish for clients to send messages to IncomingHandler */
     final Messenger mMessenger = new Messenger(new IncomingHandler());
 
     private SettingsViewModel mViewModel;
@@ -103,7 +101,7 @@ public class SettingsFragment extends Fragment
     public int selectedtrTypeIndex = -1;
 
     ArrayList<String> dataTools = new ArrayList<String>();
-    public static List<Tooltypes> allToolTypesList ;
+    public static List<Tooltypes> ALL_TOOL_TYPES_LIST;
 
     public static User user;
     public static Auto auto;
@@ -390,8 +388,8 @@ public class SettingsFragment extends Fragment
 
 
         try {
-            allToolTypesList = Arrays.asList(mapper.readValue(toolTypeStr, Tooltypes[].class));
-            for (Tooltypes el: allToolTypesList
+            ALL_TOOL_TYPES_LIST = Arrays.asList(mapper.readValue(toolTypeStr, Tooltypes[].class));
+            for (Tooltypes el: ALL_TOOL_TYPES_LIST
                     ) {
                 dataTools.add(el.getName());
             }
@@ -402,16 +400,24 @@ public class SettingsFragment extends Fragment
         }
 
         tools = Preferences.loadCurrentUserTools(getContext());
-        ArrayList<String> toolsStr = new ArrayList<String>();
+        ArrayList<Integer> selectedId = new ArrayList<Integer>();
 
-        if (tools!=null) {
+        for (Tool el: tools
+             ) {
+            selectedId.add(el.getType().intValue());
+        }
+
+        setToolsStateField(selectedId);
+
+        /*if (tools!=null) {
             for (Tool el: tools
                     ) {
-                //Tooltypes finded = allToolTypesList.stream().findFirst().filter(x -> x.getId().equals(el.getType().intValue())).get();
+                //Tooltypes finded = ALL_TOOL_TYPES_LIST.stream().findFirst().filter(x -> x.getId().equals(el.getType().intValue())).get();
                 //toolsStr.add(finded.getName());
             }
             mToolType.setText(TextUtils.join(" ", toolsStr));
         }
+        */
 
         myDBHelper.getHelper().addLog(CODE_INFO,"userToolsInit->" + ((new Date()).getTime() - startDate.getTime()));
     }
@@ -545,33 +551,34 @@ public class SettingsFragment extends Fragment
                 break;
             }
             case Pick_tools: {
-                if (resultCode == RESULT_OK)
-                {
-                    ArrayList<Integer> selectedId = data.getIntegerArrayListExtra(ActivityActions.EXTRA_SELECTED_ID);
-                    if (selectedId.size() > 0) {
-                        String selectedTools = "";
-                        ArrayList<String> toolsStr = new ArrayList<String>();
+                if (resultCode == RESULT_OK) {
 
-                        for (Integer el : selectedId
-                                )
-                        {
-                            if (allToolTypesList.size() > el)
-                            {
-                                selectedTools += allToolTypesList.get(el).getName() + " ";
-                                selectedToolsIds.add(allToolTypesList.get(el).getId().toString());
-                                toolsStr.add(allToolTypesList.get(el).getName());
-                            }
-                        }
-                        mToolType.setText(TextUtils.join(" ", toolsStr));
-                    } else {
-                        myDBHelper.getHelper().addLog(CODE_INFO, "IncomingHandler-> Pick_Tools NO SELECTED ITEM");
-                    }
+                    setToolsStateField( data.getIntegerArrayListExtra(ActivityActions.EXTRA_SELECTED_ID));
                 }
                 break;
-
                 }
-                }
+        }
     }
+
+
+    public void setToolsStateField(ArrayList<Integer> selectedId)
+    {
+        selectedToolsIds.clear();
+        if (selectedId.size() > 0) {
+            ArrayList<String> toolsStr = new ArrayList<String>();
+            for (Integer el : selectedId
+                    )
+            {
+                if (ALL_TOOL_TYPES_LIST.size() > el)
+                {
+                    selectedToolsIds.add(ALL_TOOL_TYPES_LIST.get(el).getId().toString());
+                    toolsStr.add(ALL_TOOL_TYPES_LIST.get(el).getName());
+                }
+            }
+            mToolType.setText(TextUtils.join(" ", toolsStr));
+        }
+    }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

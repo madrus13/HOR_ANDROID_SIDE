@@ -49,6 +49,11 @@ public class ServiceObjectHelper {
                 !result.resultObjectJSON.toUpperCase().equals("NULL"));
     }
 
+    public static boolean isValidResultWithNoObject(serviceResult result)
+    {
+        return (result!=null );
+    }
+
     public static List<Messagetype> getMessageType(Context context, String currentToken)
     {
         serviceResult result = new serviceResult();
