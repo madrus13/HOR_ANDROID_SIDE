@@ -42,9 +42,21 @@ public class ChatFragment extends Fragment {
         sendMsgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String messageText = "";
 
-                Message message = new Message(messageToSend.getText().toString(), data, true);
-                messageAdapter.add(message);
+                if (messageToSend!=null && !messageToSend.getText().toString().isEmpty()) {
+                    messageText = messageToSend.getText().toString();
+                    try {
+                        Message message = new Message(messageText, data, true);
+                        messageAdapter.add(message);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+
+
                 //messagesView.setSelection(messagesView.getCount() - 1);
             }
         });
