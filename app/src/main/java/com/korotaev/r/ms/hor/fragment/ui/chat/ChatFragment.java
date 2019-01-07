@@ -2,6 +2,8 @@ package com.korotaev.r.ms.hor.fragment.ui.chat;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Messenger;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,19 +13,53 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.AppHelpers.MemberData;
 import com.korotaev.r.ms.hor.AppHelpers.Message;
 import com.korotaev.r.ms.hor.AppHelpers.MessageAdapter;
 
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
+import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.R;
+import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
+import com.korotaev.r.ms.hor.fragment.ui.settings.SettingsFragment;
 
 import java.util.Random;
 
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 
-public class ChatFragment extends Fragment {
+public class ChatFragment extends Fragment implements ServiceActivity {
+
+    static Messenger mMessenger = new Messenger(new ChatFragment.IncomingHandler());
+
+    /**
+     * Handler of incoming messages from service.
+     */
+    protected static class IncomingHandler extends Handler {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+
+            msg.getData();
+            if (msg.replyTo == mMessenger) {
+                switch (msg.what) {
+                    case SrvCmd.CMD_RegisterIntentServiceClientResp:
+
+                        break;
+                    case SrvCmd.CMD_EntitySyncResp:
+                        break;
+
+                    case SrvCmd.CMD_EntitySetUserInfoResp:
+
+                        break;
+
+                    default:
+                        super.handleMessage(msg);
+                }
+            }
+
+        }
+    }
 
     private ChatViewModel mViewModel;
     MessageAdapter messageAdapter;
@@ -46,9 +82,10 @@ public class ChatFragment extends Fragment {
         messageAdapter = new MessageAdapter(getContext());
         messagesView.setAdapter(messageAdapter);
     }
-    public void oOnClickListenerInit()
+
+    public void OnClickListenerInit()
     {
-        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> oOnClickListenerInit" );
+        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> OnClickListenerInit" );
         sendMsgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,7 +101,7 @@ public class ChatFragment extends Fragment {
                     }
                     catch (Exception ex)
                     {
-                        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> oOnClickListenerInit" + ex.toString() );
+                        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> OnClickListenerInit" + ex.toString() );
                     }
                 }
 
@@ -103,7 +140,7 @@ public class ChatFragment extends Fragment {
         myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> onCreateView 2");
         initViews(v);
         myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> onCreateView 3");
-        oOnClickListenerInit();
+        OnClickListenerInit();
         myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> onCreateView 4");
         return v;
     }
