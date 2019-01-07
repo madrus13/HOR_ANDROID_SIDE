@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
+import com.korotaev.r.ms.testormlite.data.Entity.Region;
 import com.korotaev.r.ms.testormlite.data.Entity.Tool;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
@@ -83,6 +84,20 @@ public  class  Preferences {
 
         try {
             currentObj = Arrays.asList(mapper.readValue(Info, Tool[].class));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return currentObj;
+    }
+
+    public static  List<Region> loadAllRegions(Context context) {
+
+        List<Region> currentObj = null;
+        sPref = context.getSharedPreferences(prefName, MODE_PRIVATE);
+        String Info = sPref.getString(SAVED_Region, "");
+
+        try {
+            currentObj = Arrays.asList(mapper.readValue(Info, Region[].class));
         } catch (Exception e) {
             e.printStackTrace();
         }

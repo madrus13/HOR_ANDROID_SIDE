@@ -36,7 +36,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.korotaev.r.ms.hor.Adapters.AdapterHelper;
+import com.korotaev.r.ms.hor.AppHelpers.AdapterHelper;
 import com.korotaev.r.ms.hor.ChangePasswordActivity;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
@@ -408,17 +408,6 @@ public class SettingsFragment extends Fragment
         }
 
         setToolsStateField(selectedId);
-
-        /*if (tools!=null) {
-            for (Tool el: tools
-                    ) {
-                //Tooltypes finded = ALL_TOOL_TYPES_LIST.stream().findFirst().filter(x -> x.getId().equals(el.getType().intValue())).get();
-                //toolsStr.add(finded.getName());
-            }
-            mToolType.setText(TextUtils.join(" ", toolsStr));
-        }
-        */
-
         myDBHelper.getHelper().addLog(CODE_INFO,"userToolsInit->" + ((new Date()).getTime() - startDate.getTime()));
     }
 
@@ -427,25 +416,19 @@ public class SettingsFragment extends Fragment
     {
         Date startDate = new Date();
 
-        String regionsPrev =  Preferences.loadObjInPrefs(this.getContext(), Preferences.SAVED_Region);
-
-        try {
-            regionList = Arrays.asList(mapper.readValue(regionsPrev, Region[].class));
-            dataRegions.clear();
-            int currentIndex = 0;
-            for (Region item: regionList
-                    ) {
-                dataRegions.add(item.getName());
-                if (user!=null && (item.getId() == user.getRegion())) {
-                    selectedRegionIndex = currentIndex;
-                }
-                currentIndex++;
+        regionList = Preferences.loadAllRegions(this.getContext());
+        dataRegions.clear();
+        int currentIndex = 0;
+        for (Region item: regionList
+                ) {
+            dataRegions.add(item.getName());
+            if (user!=null && (item.getId() == user.getRegion())) {
+                selectedRegionIndex = currentIndex;
             }
-            AdapterHelper.adapterSimpleDataInit(this.getContext(),mRegion,getString(R.string.regionSpinnerTitle), dataRegions,selectedRegionIndex);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            currentIndex++;
         }
+        AdapterHelper.adapterSimpleDataInit(this.getContext(),mRegion,getString(R.string.regionSpinnerTitle), dataRegions,selectedRegionIndex);
+
         myDBHelper.getHelper().addLog(CODE_INFO,"initRegionView->" + ((new Date()).getTime() - startDate.getTime()));
     }
 

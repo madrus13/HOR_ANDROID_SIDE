@@ -1,9 +1,6 @@
 package com.korotaev.r.ms.hor;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,7 +8,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.ServiceConnection;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -34,6 +30,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
@@ -80,7 +77,7 @@ public class MainActivity extends AppCompatActivity
 
                     if (msg.replyTo == mMessenger)
                     {
-                        showProgress(true);
+                        ViewHelper.showProgress(MainActivity.this,mMainView, mProgressView,true );
                         sendComandToIntentService(SrvCmd.CMD_EntitySyncReq);
                     }
 
@@ -88,7 +85,7 @@ public class MainActivity extends AppCompatActivity
                     break;
                 case SrvCmd.CMD_EntitySyncResp:
                     Bundle data = msg.getData();
-                    showProgress(false);
+                    ViewHelper.showProgress(MainActivity.this,mMainView, mProgressView,false );
                     break;
 
                 default:
@@ -108,7 +105,7 @@ public class MainActivity extends AppCompatActivity
         mProgressView = (View) findViewById(R.id.main_activity_progress);
         mMainView = (View) findViewById(R.id.main_layout);
 
-        showProgress(true);
+        ViewHelper.showProgress(MainActivity.this,mMainView, mProgressView,true );
 
         Intent i = new Intent(this, CmdService.class);
         bindService(i,  MainActivity.this, Context.BIND_AUTO_CREATE);
@@ -205,7 +202,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
 
-            showProgress(false);
+            ViewHelper.showProgress(MainActivity.this,mMainView, mProgressView,false );
         }
         else if (id == R.id.nav_view_app_logs) {
 
@@ -259,43 +256,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-
-        if (mProgressView == null) return;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mMainView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mMainView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mMainView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mMainView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
-
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
         // TODO Auto-generated method stub
@@ -320,14 +280,13 @@ public class MainActivity extends AppCompatActivity
         } catch (RemoteException e) {
             Toast.makeText(MainActivity.this, R.string.remote_service_crashed,
                     Toast.LENGTH_SHORT).show();
-            showProgress(false);
+            ViewHelper.showProgress(MainActivity.this,mMainView, mProgressView,false );
         }
 
     }
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
-       // showProgress(false);
     }
 
     @Override

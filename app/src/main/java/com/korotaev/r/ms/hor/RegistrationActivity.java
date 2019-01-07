@@ -1,7 +1,5 @@
 package com.korotaev.r.ms.hor;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -30,7 +28,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.korotaev.r.ms.hor.Adapters.AdapterHelper;
+import com.korotaev.r.ms.hor.AppHelpers.AdapterHelper;
+import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.WebServices.WebServiceMainService;
 import com.korotaev.r.ms.hor.WebServices.serviceResult;
@@ -42,7 +41,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -85,11 +83,11 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         mLoginView = (AutoCompleteTextView) findViewById(R.id.login_name);
         mPhoneView = (AutoCompleteTextView) findViewById(R.id.phone);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mRegistrationButton = (Button) findViewById(R.id.try_registration_in_button);
+        mPasswordView = findViewById(R.id.password);
+        mRegistrationButton = findViewById(R.id.try_registration_in_button);
         mLoginFormView = findViewById(R.id.registration_form);
         mProgressView = findViewById(R.id.login_progress);
-        mRegion = (Spinner) findViewById(R.id.regionList);
+        mRegion = findViewById(R.id.regionList);
 
     }
     public void oOnClickListenerInit()
@@ -136,28 +134,20 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         oOnClickListenerInit();
         populateAutoComplete();
 
-        String regionsPrev =  Preferences.loadObjInPrefs(RegistrationActivity.this, Preferences.SAVED_Region);
+        regionList = Preferences.loadAllRegions(RegistrationActivity.this);
 
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            regionList = Arrays.asList(mapper.readValue(regionsPrev, Region[].class));
-
-            for (Region item: regionList
-                 ) {
-                dataRegions.add(item.getName());
-            }
-
-
-            AdapterHelper.adapterSimpleDataInit(
-                    this,
-                    mRegion,
-                    getString(R.string.regionSpinnerTitle),
-                    dataRegions,
-                    0);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (Region item: regionList
+             ) {
+            dataRegions.add(item.getName());
         }
+
+        AdapterHelper.adapterSimpleDataInit(
+                this,
+                mRegion,
+                getString(R.string.regionSpinnerTitle),
+                dataRegions,
+                0);
+
     }
 
     private void populateAutoComplete() {
@@ -257,13 +247,6 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             cancel = true;
         }
 
-        /*
-        if (mRegion!=null) {
-            Toast.makeText(this, "mRegion = " + String.valueOf(mRegion.getSelectedItemId()) ,Toast.LENGTH_LONG).show();
-        }
-        */
-
-
         if (selectedRegion!=null && selectedRegion.getId() >= 0)
         {
             regionId = selectedRegion.getId();
@@ -281,53 +264,18 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+            ViewHelper.showProgress(this,mLoginFormView, mProgressView,true );
             mAuthTask = new UserRegistrationTask(login, regionId, phone, email, password);
             mAuthTask.execute((Void) null);
         }
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -407,7 +355,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             User currentUser;
             serviceResult result;
             Boolean resOut = false;
-            showProgress(true);
+            ViewHelper.showProgress(RegistrationActivity.this,mLoginFormView, mProgressView,true );
 
             result = service.insertUser(this.mLoginName,this.mRegionId, false,this.mPassword,this.mEmail,this.mPhone );
             if (result!=null && result.isSuccess) {
@@ -431,7 +379,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
                     e.printStackTrace();
                 }
                 finally {
-                    showProgress(false);
+                    ViewHelper.showProgress(RegistrationActivity.this,mLoginFormView, mProgressView,false );
                 }
             }
             return resOut;
@@ -474,7 +422,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            showProgress(false);
+            ViewHelper.showProgress(RegistrationActivity.this,mLoginFormView, mProgressView,false );
 
             if (success) {
                 finish();
@@ -487,7 +435,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-            showProgress(false);
+            ViewHelper.showProgress(RegistrationActivity.this,mLoginFormView, mProgressView,false );
         }
     }
 }
