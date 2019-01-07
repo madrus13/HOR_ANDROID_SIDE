@@ -55,9 +55,9 @@ public class ChatFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.chat_activity, container, false);
+        View v = inflater.inflate(R.layout.chat_fragment, container, false);
         initViews(v);
-
+        oOnClickListenerInit();
 
         return v;
     }
