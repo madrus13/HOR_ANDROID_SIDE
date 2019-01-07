@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.korotaev.r.ms.hor.Adapters.AdapterHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.WebServices.WebServiceMainService;
 import com.korotaev.r.ms.hor.WebServices.serviceResult;
@@ -51,7 +52,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class RegistrationActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    private static WebServiceMainService service = null;
+    private static WebServiceMainService service = new WebServiceMainService();
     Session currentSession = null;
     ArrayList<String> dataRegions = new ArrayList<String>();
     List<Region> regionList = null;
@@ -72,24 +73,27 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
     private AutoCompleteTextView mPhoneView;
     private AutoCompleteTextView mLoginView;
     private EditText mPasswordView;
+    private Button mRegistrationButton;
 
     private View mProgressView;
     private View mLoginFormView;
     private Spinner mRegion;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration);
-        service = new WebServiceMainService();
 
+    public  void initViews() {
         // Set up the form
         mLoginView = (AutoCompleteTextView) findViewById(R.id.login_name);
         mPhoneView = (AutoCompleteTextView) findViewById(R.id.phone);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
-
         mPasswordView = (EditText) findViewById(R.id.password);
+        mRegistrationButton = (Button) findViewById(R.id.try_registration_in_button);
+        mLoginFormView = findViewById(R.id.registration_form);
+        mProgressView = findViewById(R.id.login_progress);
+        mRegion = (Spinner) findViewById(R.id.regionList);
+
+    }
+    public void oOnClickListenerInit()
+    {
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -101,7 +105,6 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             }
         });
 
-        Button mRegistrationButton = (Button) findViewById(R.id.try_registration_in_button);
         mRegistrationButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,9 +112,29 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             }
         });
 
-        mLoginFormView = findViewById(R.id.registration_form);
-        mProgressView = findViewById(R.id.login_progress);
-        mRegion = (Spinner) findViewById(R.id.regionList);
+        mRegion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (regionList.size() >= mRegion.getSelectedItemId()) {
+                    selectedRegion = regionList.get((int) mRegion.getSelectedItemId());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_registration);
+        initViews();
+        oOnClickListenerInit();
+        populateAutoComplete();
 
         String regionsPrev =  Preferences.loadObjInPrefs(RegistrationActivity.this, Preferences.SAVED_Region);
 
@@ -124,29 +147,13 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
                 dataRegions.add(item.getName());
             }
 
-            // адаптер
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dataRegions);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-            Spinner spinner = (Spinner) findViewById(R.id.regionList);
-            spinner.setAdapter(adapter);
-            // заголовок
-            spinner.setPrompt(getString(R.string.regionSpinnerTitle));
-            // выделяем элемент
-            spinner.setSelection(0);
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if (regionList.size() >= mRegion.getSelectedItemId()) {
-                        selectedRegion = regionList.get((int) mRegion.getSelectedItemId());
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
+            AdapterHelper.adapterSimpleDataInit(
+                    this,
+                    mRegion,
+                    getString(R.string.regionSpinnerTitle),
+                    dataRegions,
+                    0);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -223,7 +230,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (!TextUtils.isEmpty(password) && !LoginActivity.isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -285,10 +292,6 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         return email.contains("@");
     }
 
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 6;
-    }
 
     /**
      * Shows the progress UI and hides the login form.

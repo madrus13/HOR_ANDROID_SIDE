@@ -67,4 +67,5 @@
     <string name="car_model">Модель авто</string>
     <string name="tool_types">Что в багажнике полезного</string>
     <string name="region">Регион</string>
+    <string name="error_passwords_not_repeated">Пароли не совпадают</string>
 </resources>

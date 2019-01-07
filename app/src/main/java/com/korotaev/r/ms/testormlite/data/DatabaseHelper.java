@@ -45,22 +45,22 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private static final int DATABASE_VERSION = 21;
 
 
-	private Dao<Tooltypes		 , Integer> TooltypesDao;
-	private Dao<Achievmenttype   , Integer> AchievmenttypeDao;
-	private Dao<Messagetype      , Integer> MessagetypeDao;
-	private Dao<Requeststatus    , Integer> RequeststatusDao;
-	private Dao<Requesttype      , Integer> RequesttypeDao;
-	private Dao<Userstatus       , Integer> UserstatusDao;
-	private Dao<TransmissionType , Integer> TransmissionTypeDao;
-	private Dao<Tool             , Integer> ToolDao;
-	private Dao<Achievement      , Integer> AchievementDao;
-	private Dao<Region           , Integer> RegionDao;
-	private Dao<User             , Integer> UserDao;
-	private Dao<Auto             , Integer> AutoDao;
-	private Dao<Message          , Integer> MessageDao;
-	private Dao<Request          , Integer> RequestDao;
-	private Dao<Session          , Integer> SessionDao;
-	private Dao<TLog             , Integer> TLogDao;
+	private static Dao<Tooltypes		 , Integer> TooltypesDao;
+	private static Dao<Achievmenttype   , Integer> AchievmenttypeDao;
+	private static Dao<Messagetype      , Integer> MessagetypeDao;
+	private static Dao<Requeststatus    , Integer> RequeststatusDao;
+	private static Dao<Requesttype      , Integer> RequesttypeDao;
+	private static Dao<Userstatus       , Integer> UserstatusDao;
+	private static Dao<TransmissionType , Integer> TransmissionTypeDao;
+	private static Dao<Tool             , Integer> ToolDao;
+	private static Dao<Achievement      , Integer> AchievementDao;
+	private static Dao<Region           , Integer> RegionDao;
+	private static Dao<User             , Integer> UserDao;
+	private static Dao<Auto             , Integer> AutoDao;
+	private static Dao<Message          , Integer> MessageDao;
+	private static Dao<Request          , Integer> RequestDao;
+	private static Dao<Session          , Integer> SessionDao;
+	private static  Dao<TLog             , Integer> TLogDao;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);

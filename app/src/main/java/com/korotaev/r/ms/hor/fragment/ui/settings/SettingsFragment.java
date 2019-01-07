@@ -29,7 +29,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -37,6 +36,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.korotaev.r.ms.hor.Adapters.AdapterHelper;
 import com.korotaev.r.ms.hor.ChangePasswordActivity;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
@@ -441,7 +441,7 @@ public class SettingsFragment extends Fragment
                 }
                 currentIndex++;
             }
-            adapterDataInit(mRegion,getString(R.string.regionSpinnerTitle), dataRegions,selectedRegionIndex);
+            AdapterHelper.adapterSimpleDataInit(this.getContext(),mRegion,getString(R.string.regionSpinnerTitle), dataRegions,selectedRegionIndex);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -481,24 +481,13 @@ public class SettingsFragment extends Fragment
                 currentIndex++;
             }
 
-          adapterDataInit(mTrType,getString(R.string.trTypeSpinnerTitle), dataTrType,selectedtrTypeIndex);
+            AdapterHelper.adapterSimpleDataInit(this.getContext(), mTrType,getString(R.string.trTypeSpinnerTitle), dataTrType,selectedtrTypeIndex);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         myDBHelper.getHelper().addLog(CODE_INFO,"initTransmissionView->" + ((new Date()).getTime() - startDate.getTime()));
-    }
-
-
-    public void adapterDataInit(Spinner spinner, String title, ArrayList<String> data, int selectIndex)
-    {
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_item, data);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setPrompt(title);
-        spinner.setSelection( selectIndex);
     }
 
     @Nullable
