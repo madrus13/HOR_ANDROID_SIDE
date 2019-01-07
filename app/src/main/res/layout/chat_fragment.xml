@@ -32,10 +32,11 @@ tools:context=".fragment.ui.chat.ChatFragment">
         android:hint="Write a message"
         android:inputType="text"
         android:paddingHorizontal="10dp"
-        android:text="" />
+        android:text=""
+        android:textColor="@android:color/background_dark" />
 
     <ImageButton
-        android:id="@+id/send_chat_message"
+        android:id="@+id/send_chat_message_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

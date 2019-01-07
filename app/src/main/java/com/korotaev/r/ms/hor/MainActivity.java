@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -28,7 +27,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.AppHelpers.ListViewLoader;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
@@ -43,7 +41,6 @@ import com.korotaev.r.ms.hor.fragment.ui.help.HelpFragment;
 import com.korotaev.r.ms.hor.fragment.ui.request.RequestFragment;
 import com.korotaev.r.ms.hor.fragment.ui.settings.SettingsFragment;
 import com.korotaev.r.ms.testormlite.data.ActivityActions;
-import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
 import com.korotaev.r.ms.testormlite.data.Entity.TLog;
 
 import java.text.SimpleDateFormat;
@@ -81,7 +78,13 @@ public class MainActivity extends AppCompatActivity
                     if (msg.replyTo == mMessenger)
                     {
                         ViewHelper.showProgress(MainActivity.this,mMainView, mProgressView,true );
-                        sendComandToIntentService(SrvCmd.CMD_EntitySyncReq);
+                        ViewHelper.sendComandToIntentService(
+                                MainActivity.this,
+                                mMessenger,
+                                mService,
+                                mMainView,
+                                mProgressView,
+                                SrvCmd.CMD_EntitySyncReq);
                     }
 
 
@@ -269,26 +272,17 @@ public class MainActivity extends AppCompatActivity
         if (service!=null && mService == null) {
 
             mService = new Messenger(service);
-            sendComandToIntentService(SrvCmd.CMD_RegisterIntentServiceClientReq);
+            ViewHelper.sendComandToIntentService(
+                    MainActivity.this,
+                    mMessenger,
+                    mService,
+                    mMainView,
+                    mProgressView,
+                    SrvCmd.CMD_RegisterIntentServiceClientReq);
         }
     }
 
 
-    public void sendComandToIntentService(int command)
-    {
-        // We want to monitor the service for as long as we are
-        // connected to it.
-        try {
-            Message msg = Message.obtain(null, command);
-            msg.replyTo = mMessenger;
-            mService.send(msg);
-        } catch (RemoteException e) {
-            Toast.makeText(MainActivity.this, R.string.remote_service_crashed,
-                    Toast.LENGTH_SHORT).show();
-            ViewHelper.showProgress(MainActivity.this,mMainView, mProgressView,false );
-        }
-
-    }
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {

@@ -1,8 +1,12 @@
 package com.korotaev.r.ms.hor.fragment.ui.chat;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Messenger;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,20 +14,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.AppHelpers.MemberData;
 import com.korotaev.r.ms.hor.AppHelpers.Message;
 import com.korotaev.r.ms.hor.AppHelpers.MessageAdapter;
-
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
+import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
+import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
-import com.korotaev.r.ms.hor.fragment.ui.settings.SettingsFragment;
 
 import java.util.Random;
 
@@ -31,7 +34,32 @@ import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 
 public class ChatFragment extends Fragment implements ServiceActivity {
 
+    static boolean  stateFromMe = true;
+    Messenger mService = null;
     static Messenger mMessenger = new Messenger(new ChatFragment.IncomingHandler());
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder service) {
+        if (service!=null && mService == null) {
+
+            mService = new Messenger(service);
+
+            ViewHelper.sendComandToIntentService(
+                    ChatFragment.this.getContext(),
+                    mMessenger,
+                    mService,
+                    null,
+                    null,
+                    SrvCmd.CMD_RegisterIntentServiceClientReq);
+
+
+        }
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+
+    }
 
     /**
      * Handler of incoming messages from service.
@@ -68,14 +96,14 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         return new ChatFragment();
     }
 
-    private Button sendMsgButton;
+    private ImageButton sendMsgButton;
     private EditText messageToSend;
     private ListView messagesView;
 
     public  void initViews(View v)
     {
         myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> initViews" );
-        sendMsgButton = v.findViewById(R.id.send_chat_message);
+        sendMsgButton = v.findViewById(R.id.send_chat_message_button);
         messageToSend = v.findViewById(R.id.message_to_send);
         messagesView = v.findViewById(R.id.messages_view);
 
@@ -95,9 +123,11 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                     messageText = messageToSend.getText().toString();
                     try {
                         MemberData data = new MemberData(getRandomName(), getRandomColor());
-                        Message message = new Message(messageText, data, true);
+                        Message message = new Message(messageText, data, stateFromMe);
+                        stateFromMe = !stateFromMe;
                         messageAdapter.add(message);
                         messagesView.setSelection(messagesView.getCount() - 1);
+                        messageToSend.setText("");
                     }
                     catch (Exception ex)
                     {
@@ -135,13 +165,14 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> onCreateView 1");
+
         View v = inflater.inflate(R.layout.chat_fragment, container, false);
-        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> onCreateView 2");
         initViews(v);
-        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> onCreateView 3");
         OnClickListenerInit();
-        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> onCreateView 4");
+
+        Intent i = new Intent(getContext(), CmdService.class);
+        getActivity().bindService(i,  ChatFragment.this, Context.BIND_AUTO_CREATE);
+
         return v;
     }
 

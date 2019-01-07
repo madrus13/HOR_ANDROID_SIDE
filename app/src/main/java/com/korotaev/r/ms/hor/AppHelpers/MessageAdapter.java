@@ -59,12 +59,12 @@ public class MessageAdapter extends BaseAdapter {
             Message message = messages.get(i);
 
             if (message.isBelongsToCurrentUser()) { // this message was sent by us so let's create a basic chat bubble on the right
-                convertView = messageInflater.inflate(R.layout.input_message, null);
+                convertView = messageInflater.inflate(R.layout.output_message, null);
                 holder.messageBody = (TextView) convertView.findViewById(R.id.message_body);
                 convertView.setTag(holder);
                 holder.messageBody.setText(message.getText());
             } else {
-                convertView = messageInflater.inflate(R.layout.output_message, null);
+                convertView = messageInflater.inflate(R.layout.input_message, null);
                 holder.avatar = (View) convertView.findViewById(R.id.avatar);
                 holder.name = (TextView) convertView.findViewById(R.id.name);
                 holder.messageBody = (TextView) convertView.findViewById(R.id.message_body);
