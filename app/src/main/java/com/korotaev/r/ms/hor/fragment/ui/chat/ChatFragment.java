@@ -16,15 +16,18 @@ import com.korotaev.r.ms.hor.AppHelpers.MemberData;
 import com.korotaev.r.ms.hor.AppHelpers.Message;
 import com.korotaev.r.ms.hor.AppHelpers.MessageAdapter;
 
+import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.R;
 
 import java.util.Random;
+
+import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 
 public class ChatFragment extends Fragment {
 
     private ChatViewModel mViewModel;
     MessageAdapter messageAdapter;
-
+    private MyDBHelper myDBHelper = new MyDBHelper(getContext());
     public static ChatFragment newInstance() {
         return new ChatFragment();
     }
@@ -35,14 +38,17 @@ public class ChatFragment extends Fragment {
 
     public  void initViews(View v)
     {
+        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> initViews" );
         sendMsgButton = v.findViewById(R.id.send_chat_message);
         messageToSend = v.findViewById(R.id.message_to_send);
+        messagesView = v.findViewById(R.id.messages_view);
+
         messageAdapter = new MessageAdapter(getContext());
-        messagesView = (ListView) v.findViewById(R.id.messages_view);
         messagesView.setAdapter(messageAdapter);
     }
     public void oOnClickListenerInit()
     {
+        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> oOnClickListenerInit" );
         sendMsgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,7 +64,7 @@ public class ChatFragment extends Fragment {
                     }
                     catch (Exception ex)
                     {
-
+                        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> oOnClickListenerInit" + ex.toString() );
                     }
                 }
 
@@ -92,11 +98,13 @@ public class ChatFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
+        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> onCreateView 1");
         View v = inflater.inflate(R.layout.chat_fragment, container, false);
+        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> onCreateView 2");
         initViews(v);
-
+        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> onCreateView 3");
         oOnClickListenerInit();
-
+        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> onCreateView 4");
         return v;
     }
 
