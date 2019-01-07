@@ -1,7 +1,5 @@
 package com.korotaev.r.ms.hor;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -29,6 +27,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.WebServices.ServiceObjectHelper;
@@ -64,6 +63,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private CheckBox mAutoSignCheckBox;
+    private Button mEmailSignInButton;
+    private Button mRegistrationButton;
 
     private MyDBHelper myDBHelper = new MyDBHelper(this);
 
@@ -88,17 +89,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
+    public  void initViews() {
         // Set up the login form.
-        mAutoSignCheckBox = (CheckBox) findViewById(R.id.autoSignCheckBox);
+        mAutoSignCheckBox = findViewById(R.id.autoSignCheckBox);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
+        mPasswordView = findViewById(R.id.password);
+        mEmailSignInButton = findViewById(R.id.email_sign_in_button);
+        mRegistrationButton = findViewById(R.id.registration_in_button);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+    }
+
+
+    public void oOnClickListenerInit()
+    {
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -110,15 +115,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        initLogonInfoFromSavedPrefs();
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
+
         mAutoSignCheckBox.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,7 +138,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mRegistrationButton = (Button) findViewById(R.id.registration_in_button);
         mRegistrationButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,9 +147,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 startActivity(intent);
             }
         });
+    }
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        initViews();
+        oOnClickListenerInit();
+        populateAutoComplete();
+        initLogonInfoFromSavedPrefs();
 
         if (mAutoSignCheckBox.isChecked()) {
             attemptLogin();
@@ -204,11 +214,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;

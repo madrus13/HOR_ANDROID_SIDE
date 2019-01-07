@@ -30,6 +30,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.korotaev.r.ms.hor.AppHelpers.ListViewLoader;
+import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
@@ -51,16 +53,17 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor>,ServiceConnection, View.OnClickListener {
 
-
-    /** Messenger for communicating with service. */
     Messenger mService = null;
-    /** Flag indicating whether we have called bind on the service. */
     boolean mIsBound;
-    /**Target we publish for clients to send messages to IncomingHandler */
     final Messenger mMessenger = new Messenger(new IncomingHandler());
 
     private View mProgressView;
     private View mMainView;
+    private Toolbar mToolbar;
+    private FloatingActionButton mFab;
+    private DrawerLayout drawer;
+
+    private String currentToken = "";
     private MyDBHelper myDBHelper = new MyDBHelper(this);
 
     /**
@@ -93,17 +96,37 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-    private String currentToken = "";
-    private List<Requesttype> requesttypeList;
+
+
+    public  void initViews() {
+        mProgressView = findViewById(R.id.main_activity_progress);
+        mMainView = findViewById(R.id.main_layout);
+        mToolbar = findViewById(R.id.toolbar);
+        mFab = findViewById(R.id.fab);
+        drawer = findViewById(R.id.drawer_layout);
+    }
+
+    public void oOnClickListenerInit()
+    {
+        if (mFab!=null) {
+            mFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            });
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        initViews();
+        oOnClickListenerInit();
 
-        mProgressView = (View) findViewById(R.id.main_activity_progress);
-        mMainView = (View) findViewById(R.id.main_layout);
 
         ViewHelper.showProgress(MainActivity.this,mMainView, mProgressView,true );
 
@@ -111,22 +134,10 @@ public class MainActivity extends AppCompatActivity
         bindService(i,  MainActivity.this, Context.BIND_AUTO_CREATE);
 
         currentToken = Preferences.loadObjInPrefs(this,Preferences.SAVED_Session);
+        setSupportActionBar(mToolbar);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -221,12 +232,9 @@ public class MainActivity extends AppCompatActivity
 
         if (fragment!=null)
         {
-            // Вставляем фрагмент, заменяя текущий фрагмент
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
-            // Выделяем выбранный пункт меню в шторке
             item.setChecked(true);
-            // Выводим выбранный пункт в заголовке
             setTitle(item.getTitle());
         }
 
@@ -258,17 +266,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
-        // TODO Auto-generated method stub
-
         if (service!=null && mService == null) {
 
             mService = new Messenger(service);
             sendComandToIntentService(SrvCmd.CMD_RegisterIntentServiceClientReq);
         }
-
-
-
     }
+
+
     public void sendComandToIntentService(int command)
     {
         // We want to monitor the service for as long as we are
