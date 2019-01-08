@@ -1,12 +1,10 @@
 package com.korotaev.r.ms.hor.fragment.ui.settings;
 
-import android.app.LoaderManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -16,7 +14,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -37,12 +34,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.AppHelpers.AdapterHelper;
+import com.korotaev.r.ms.hor.AppHelpers.ListViewLoader;
+import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.ChangePasswordActivity;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
-import com.korotaev.r.ms.hor.AppHelpers.ListViewLoader;
-import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
@@ -208,7 +205,7 @@ public class SettingsFragment extends Fragment
                         mService,
                         null,
                         null,
-                        command, null);
+                        command, b);
             }
     }
 

@@ -266,20 +266,22 @@ public class ServiceObjectHelper {
     }
 
 
-    public static int insertMessage(Context context,
+    public static serviceResult insertMessage(Context context,
                                               String currentToken,
                                               String text,
-                                              long requestId, boolean requestIdSpecified,
-                                              long regionId,  boolean regionIdSpecified,
-                                              long userRx,    boolean userRxSpecified,
-                                              long typeId,    boolean typeIdSpecified,
+                                              Long requestId, boolean requestIdSpecified,
+                                              Long regionId,  boolean regionIdSpecified,
+                                              Long userRx,    boolean userRxSpecified,
+                                              Long typeId,    boolean typeIdSpecified,
                                               String fileName,
                                               VectorByte fileImage)
     {
+        serviceResult result = new serviceResult();
+
         if (!currentToken.isEmpty()) {
 
             try {
-                service.insertMessageAsync(
+                result = service.insertMessage(
                         currentToken,
                         text,
                         requestId, requestIdSpecified,
@@ -290,11 +292,12 @@ public class ServiceObjectHelper {
                         fileImage);
 
             } catch (Exception e) {
+                result.isSuccess = false;
+                result.errorMessage = e.toString();
                 e.printStackTrace();
-                return -1;
             }
         }
-        return 1;
+        return result;
     }
 
 

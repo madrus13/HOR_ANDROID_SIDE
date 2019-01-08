@@ -160,15 +160,18 @@ public class WebServiceMainService {
         SoapObject soapReq = new SoapObject("http://Service.ru/","insertMessage");
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("text",text);
-        soapReq.addProperty("requestId",requestId);
-        soapReq.addProperty("requestIdSpecified",requestIdSpecified);
-        soapReq.addProperty("regionId",regionId);
-        soapReq.addProperty("regionIdSpecified",regionIdSpecified);
-        soapReq.addProperty("userRx",userRx);
-        soapReq.addProperty("userRxSpecified",userRxSpecified);
-        soapReq.addProperty("typeId",typeId);
-        soapReq.addProperty("typeIdSpecified",typeIdSpecified);
-        soapReq.addProperty("fileName",fileName);
+
+
+        soapReq.addProperty("requestId",requestIdSpecified?requestId:"");
+        //soapReq.addProperty("requestIdSpecified",requestIdSpecified);
+        soapReq.addProperty("regionId",regionIdSpecified?regionId:"");
+        //soapReq.addProperty("regionIdSpecified",regionIdSpecified);
+        soapReq.addProperty("userRx",userRxSpecified?userRx:"");
+        //soapReq.addProperty("userRxSpecified",userRxSpecified);
+        soapReq.addProperty("typeId",typeIdSpecified?typeId:"");
+        //soapReq.addProperty("typeIdSpecified",typeIdSpecified);
+
+        soapReq.addProperty("fileName",fileName!=null ? fileName : "");
         soapReq.addProperty("fileImage",fileImage!=null ? fileImage.toString() : "");
         soapEnvelope.setOutputSoapObject(soapReq);
 

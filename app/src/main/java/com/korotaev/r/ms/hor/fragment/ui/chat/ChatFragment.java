@@ -30,7 +30,6 @@ import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
-import com.korotaev.r.ms.hor.fragment.ui.settings.SettingsFragment;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import java.util.Random;
@@ -158,11 +157,11 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                         User user = Preferences.loadCurrentUserInfo(getContext());
                         Bundle b = new Bundle();
                         b.putString("text",messageText);
-                        //b.putLong("requestId", null);
+                        b.putLong("requestId", 0);
                         if (user!=null && user.getRegion() > 0) {
                             b.putLong("regionId", user.getRegion());
                         }
-                        //b.putLong("userRx", null);
+                        b.putLong("userRx", 0);
                         b.putLong("typeId", 3); //region message
                         b.putString("fileName",null);
                         b.putByteArray("fileImage",null);

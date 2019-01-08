@@ -1,4 +1,5 @@
 package com.korotaev.r.ms.hor.IntentService;
+
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -18,6 +19,7 @@ import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.WebServices.ServiceObjectHelper;
 import com.korotaev.r.ms.hor.WebServices.VectorByte;
+import com.korotaev.r.ms.hor.WebServices.serviceResult;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievement;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
@@ -32,8 +34,6 @@ import com.korotaev.r.ms.testormlite.data.Entity.User;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CMD_GetMessageByUserRegionReq;
-
 
 public class CmdService extends IntentService {
 
@@ -43,6 +43,7 @@ public class CmdService extends IntentService {
     private SetUserInfoTask mSetUserInfoTask = null;
 
     private GetMessageByRegionTask mGetMessageByRegionTask = null;
+    private InsertMessageTask mInsertMessageTask = null;
 
     /** For showing and hiding our notification. */
     NotificationManager mNM;
@@ -112,7 +113,7 @@ public class CmdService extends IntentService {
                     long haveCable = (long) data.get("haveCable");
                     String toolTypeIds = (String) data.get("toolTypeIds");
                     VectorByte fileImage = null;
-                    if (file.length > 0) {
+                    if (file!=null && file.length > 0) {
                         fileImage = new VectorByte(file);
                     }
                     mSetUserInfoTask = new SetUserInfoTask(msg,
@@ -125,28 +126,11 @@ public class CmdService extends IntentService {
 
                 case SrvCmd.CMD_InsertMessageReq: {
                     Bundle data = msg.getData();
-                    String text = (String) data.get("text");
-                    Long requestId = (Long) data.get("requestId");
-                    Long regionId = (Long) data.get("regionId");
-                    Long userRx = (Long) data.get("userRx");
-                    Long typeId = (Long) data.get("typeId");
-                    String fileName = (String) data.get("fileName");
-                    byte[] fileImage = data.getByteArray("fileImage");
+                    mInsertMessageTask = new InsertMessageTask(msg,data);
+                    mInsertMessageTask.execute((Void) null);
 
-                    VectorByte file = null;
-                    if (fileImage.length > 0 && !fileImage.toString().isEmpty()) {
-                        file = new VectorByte(fileImage);
-                    }
-                    ServiceObjectHelper.insertMessage(CmdService.this, currentToken,
-                            text,
-                            requestId, requestId > 0 ? true : false,
-                            regionId, regionId > 0 ? true : false,
-                            userRx, userRx > 0 ? true : false,
-                            typeId, typeId > 0 ? true : false,
-                            fileName,
-                            file
 
-                    );
+                    sendMsgToServiceClients(msg, SrvCmd.CMD_InsertMessageResp);
 
                     break;
                 }
@@ -313,6 +297,48 @@ public class CmdService extends IntentService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            return null;
+        }
+    }
+
+
+    public class InsertMessageTask extends AsyncTask<Void, Void, Boolean> {
+        Message msg;
+        Bundle data;
+        public InsertMessageTask(Message msg, Bundle data) {
+            this.msg = msg;
+            this.data = data;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            currentToken = Preferences.loadObjInPrefs(CmdService.this,Preferences.SAVED_Session);
+
+            String text = this.data.getString("text");
+            Long requestId = this.data.getLong("requestId");
+            Long regionId = this.data.getLong("regionId");
+            Long userRx = this.data.getLong("userRx");
+            Long typeId = this.data.getLong("typeId");
+            String fileName = this.data.getString("fileName");
+            byte[] fileImage = this.data.getByteArray("fileImage");
+
+            VectorByte file = null;
+            if (fileImage!=null && fileImage.length > 0 && !fileImage.toString().isEmpty()) {
+                file = new VectorByte(fileImage);
+            }
+
+            serviceResult result = ServiceObjectHelper.insertMessage(CmdService.this, currentToken,
+                    text,
+                    requestId, requestId > 0 ? true : false,
+                    regionId , regionId > 0 ? true : false,
+                    userRx,    userRx > 0 ? true : false,
+                    typeId,    typeId > 0  ? true : false,
+                    fileName,
+                    file
+
+            );
+
             return null;
         }
     }
