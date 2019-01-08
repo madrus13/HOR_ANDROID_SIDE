@@ -28,6 +28,9 @@ import javax.persistence.Table;
 @DatabaseTable
 public class Message implements Serializable {
     @DatabaseField(generatedId = true)
+    private Long uid;
+
+    @DatabaseField
     private Long id;
     @DatabaseField
     private String text;
@@ -64,9 +67,8 @@ public class Message implements Serializable {
     public  Message() {
     }
 
-    @Id
+    @Basic
     @Column(name = "Id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }
@@ -261,5 +263,16 @@ public class Message implements Serializable {
 
     public void setRegionByRegion(Region regionByRegion) {
         this.regionByRegion = regionByRegion;
+    }
+
+    @Id
+    @Column(name = "uid", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getUid() {
+        return uid;
+    }
+
+    public void setUid(Long uid) {
+        this.uid = uid;
     }
 }

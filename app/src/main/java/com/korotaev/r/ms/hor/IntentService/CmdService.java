@@ -32,6 +32,8 @@ import com.korotaev.r.ms.testormlite.data.Entity.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CMD_GetMessageByUserRegionReq;
+
 
 public class CmdService extends IntentService {
 
@@ -39,6 +41,8 @@ public class CmdService extends IntentService {
 
     private SyncTask mSyncTask = null;
     private SetUserInfoTask mSetUserInfoTask = null;
+
+    private GetMessageByRegionTask mGetMessageByRegionTask = null;
 
     /** For showing and hiding our notification. */
     NotificationManager mNM;
@@ -119,7 +123,7 @@ public class CmdService extends IntentService {
                     break;
                 }
 
-                case SrvCmd.CMD_InsertMessageReq:
+                case SrvCmd.CMD_InsertMessageReq: {
                     Bundle data = msg.getData();
                     String text = (String) data.get("text");
                     Long requestId = (Long) data.get("requestId");
@@ -129,23 +133,30 @@ public class CmdService extends IntentService {
                     String fileName = (String) data.get("fileName");
                     byte[] fileImage = data.getByteArray("fileImage");
 
-                   VectorByte file = null ;
-                   if (fileImage.length > 0 && !fileImage.toString().isEmpty())  {
-                       file = new VectorByte(fileImage);
-                   }
-                    ServiceObjectHelper.insertMessage(CmdService.this,  currentToken,
-                             text,
-                             requestId,  requestId!=null? true : false,
-                             regionId,   regionId!=null? true : false ,
-                             userRx,     userRx!=null? true : false ,
-                             typeId,     typeId!=null? true : false ,
-                             fileName,
+                    VectorByte file = null;
+                    if (fileImage.length > 0 && !fileImage.toString().isEmpty()) {
+                        file = new VectorByte(fileImage);
+                    }
+                    ServiceObjectHelper.insertMessage(CmdService.this, currentToken,
+                            text,
+                            requestId, requestId > 0 ? true : false,
+                            regionId, regionId > 0 ? true : false,
+                            userRx, userRx > 0 ? true : false,
+                            typeId, typeId > 0 ? true : false,
+                            fileName,
                             file
 
                     );
 
                     break;
+                }
+                case SrvCmd.CMD_GetMessageByUserRegionReq:
+                {
 
+                    mGetMessageByRegionTask = new GetMessageByRegionTask(msg);
+                    mGetMessageByRegionTask.execute((Void) null);
+                    break;
+                }
                 default:
                     super.handleMessage(msg);
             }
@@ -238,7 +249,7 @@ public class CmdService extends IntentService {
             currentToken = Preferences.loadObjInPrefs(CmdService.this,Preferences.SAVED_Session);
 
 
-
+            /*
             User currentUser = ServiceObjectHelper.setCurrentUserInfo(CmdService.this,
                     currentToken,
                     this.region,
@@ -252,6 +263,7 @@ public class CmdService extends IntentService {
                 userId = currentUser.getId();
                 userSpecified = true;
             }
+            */
 
             List<Tool> tools = ServiceObjectHelper.setCurrentUserTools(CmdService.this, currentToken,toolTypeIds);
 
@@ -277,7 +289,33 @@ public class CmdService extends IntentService {
     }
 
 
+    public class GetMessageByRegionTask extends AsyncTask<Void, Void, Boolean> {
+        Message msg;
+        public GetMessageByRegionTask(Message msg) {
+            this.msg = msg;
+        }
 
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            long userId = 0;
+            boolean userSpecified = false;
+
+            currentToken = Preferences.loadObjInPrefs(CmdService.this,Preferences.SAVED_Session);
+            User currentUser = ServiceObjectHelper.getCurrentUserInfo(CmdService.this, currentToken);
+
+            ServiceObjectHelper.getAllMessageByRegion(
+                    CmdService.this,
+                    currentToken,currentUser.getRegion(),0L,1000);
+
+            sendMsgToServiceClients(msg, SrvCmd.CMD_GetMessageByUserRegionResp);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 
     public CmdService() {
         super("CmdService");

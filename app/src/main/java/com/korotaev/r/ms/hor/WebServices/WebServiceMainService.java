@@ -169,14 +169,18 @@ public class WebServiceMainService {
         soapReq.addProperty("typeId",typeId);
         soapReq.addProperty("typeIdSpecified",typeIdSpecified);
         soapReq.addProperty("fileName",fileName);
-        soapReq.addProperty("fileImage",fileImage.toString());
+        soapReq.addProperty("fileImage",fileImage!=null ? fileImage.toString() : "");
         soapEnvelope.setOutputSoapObject(soapReq);
 
         return soapMethodExecutor(headers, "insertMessageRequest");
 
     }
     
-    public void getMessageByRegionAndIdGreaterAsync(String sessionToken,long regionId,boolean regionIdSpecified,long lastId,boolean lastIdSpecified,int pageSize) throws Exception{
+    public void getMessageByRegionAndIdGreaterAsync(String sessionToken,
+                                                    long regionId, boolean regionIdSpecified,
+                                                    long lastId, boolean lastIdSpecified,
+                                                    int pageSize
+    ) throws Exception{
         if (this.eventHandler == null)
             throw new Exception("Async Methods Requires IWsdl2CodeEvents");
         getMessageByRegionAndIdGreaterAsync(sessionToken, regionId, regionIdSpecified, lastId, lastIdSpecified, pageSize, null);
@@ -1093,7 +1097,7 @@ public class WebServiceMainService {
         soapReq.addProperty("regionSpecified",regionSpecified);
         soapReq.addProperty("password",password);
         soapReq.addProperty("fileName",fileName);
-        soapReq.addProperty("fileImage",!fileImage.isEmpty() ? fileImage.toString() : "");
+        soapReq.addProperty("fileImage",fileImage!=null ? fileImage.toString() : "");
         soapEnvelope.setOutputSoapObject(soapReq);
 
         return soapMethodExecutor(headers, "updateUserRequest");

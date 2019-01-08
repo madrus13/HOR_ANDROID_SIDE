@@ -41,7 +41,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 
     static boolean  stateFromMe = true;
     Messenger mService = null;
-    static Messenger mMessenger = new Messenger(new ChatFragment.IncomingHandler());
+    Messenger mMessenger = new Messenger(new ChatFragment.IncomingHandler());
 
 
     private ChatViewModel mViewModel;
@@ -60,6 +60,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         if (service!=null && mService == null) {
 
             mService = new Messenger(service);
+
 
             ViewHelper.sendComandToIntentService(
                     ChatFragment.this.getContext(),
@@ -96,7 +97,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     /**
      * Handler of incoming messages from service.
      */
-    protected static class IncomingHandler extends Handler {
+    protected  class IncomingHandler extends Handler {
         @Override
         public void handleMessage(android.os.Message msg) {
 
@@ -104,6 +105,13 @@ public class ChatFragment extends Fragment implements ServiceActivity {
             if (msg.replyTo == mMessenger) {
                 switch (msg.what) {
                     case SrvCmd.CMD_RegisterIntentServiceClientResp:
+                        ViewHelper.sendComandToIntentService(
+                                getContext(),
+                                mMessenger,
+                                mService,
+                                null,
+                                null,
+                                SrvCmd.CMD_GetMessageByUserRegionReq, null);
 
                         break;
                     case SrvCmd.CMD_EntitySyncResp:

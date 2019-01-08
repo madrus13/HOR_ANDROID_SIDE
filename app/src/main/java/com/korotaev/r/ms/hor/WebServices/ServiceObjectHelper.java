@@ -6,6 +6,7 @@ import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievement;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
+import com.korotaev.r.ms.testormlite.data.Entity.Message;
 import com.korotaev.r.ms.testormlite.data.Entity.Messagetype;
 import com.korotaev.r.ms.testormlite.data.Entity.Region;
 import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
@@ -71,6 +72,40 @@ public class ServiceObjectHelper {
                     messagetypeList = Arrays.asList(mapper.readValue(result.resultObjectJSON, Messagetype[].class));
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_MessageType,result.resultObjectJSON);
                     return messagetypeList;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
+    public static List<Message> getAllMessageByRegion(Context context,
+                                                      String currentToken,
+                                                      Long regionId,
+                                                      Long lastId,
+                                                      int pageSize
+                                                      )
+    {
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.getMessageByRegionAndIdGreater(
+                        currentToken,
+                        regionId, regionId > 0 ? true : false,
+                        lastId, lastId > 0 ? true : false,
+                        pageSize);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+
+                if (isValidResult(result)) {
+                    return Arrays.asList(mapper.readValue(result.resultObjectJSON, Message[].class));
                 }
 
             } catch (Exception e) {
