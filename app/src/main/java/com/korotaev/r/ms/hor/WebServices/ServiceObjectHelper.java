@@ -165,7 +165,7 @@ public class ServiceObjectHelper {
                                           boolean regionSpecified,
                                           String password,
                                           String fileName,
-                                          String fileImage)
+                                          VectorByte fileImage)
     {
         User currentUser;
         serviceResult result = new serviceResult();
@@ -177,7 +177,7 @@ public class ServiceObjectHelper {
                                              regionSpecified,
                                              password,
                                              fileName,
-                                             fileImage);
+                                              fileImage);
             } catch (Exception e) {
                 e.printStackTrace();
             }

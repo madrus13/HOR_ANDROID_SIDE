@@ -102,16 +102,19 @@ public class CmdService extends IntentService {
                     long regionId = (long) data.get("region");
                     String password = (String) data.get("password");
                     String filename = (String) data.get("filename");
-                    String file = (String) data.get("file");
+                    byte[] file =  data.getByteArray("file");
                     long transmissionType = (long) data.get("transmissionType");
                     String nameAuto = (String) data.get("nameAuto");
                     long haveCable = (long) data.get("haveCable");
                     String toolTypeIds = (String) data.get("toolTypeIds");
-
+                    VectorByte fileImage = null;
+                    if (file.length > 0) {
+                        fileImage = new VectorByte(file);
+                    }
                     mSetUserInfoTask = new SetUserInfoTask(msg,
                             regionId, true,
                             password,
-                            "filename", file, transmissionType, nameAuto, haveCable, toolTypeIds);
+                            "filename", fileImage , transmissionType, nameAuto, haveCable, toolTypeIds);
                     mSetUserInfoTask.execute((Void) null);
                     break;
                 }
@@ -197,7 +200,7 @@ public class CmdService extends IntentService {
         private final boolean regionSpecified;
         private final String password;
         private final String fileName;
-        private final String fileImage;
+        private final VectorByte fileImage;
         private final long transmissionType;
         private final String nameAuto;
         private final long haveCable;
@@ -208,7 +211,7 @@ public class CmdService extends IntentService {
                                boolean regionSpecified,
                                String password,
                                String fileName,
-                               String fileImage,
+                               VectorByte fileImage,
                                long transmissionType,
                                String nameAuto,
                                long haveCable,

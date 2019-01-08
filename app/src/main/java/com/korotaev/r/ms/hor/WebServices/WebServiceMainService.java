@@ -1051,13 +1051,13 @@ public class WebServiceMainService {
         return soapMethodExecutor(headers, "insertUserRequest");
     }
     
-    public void updateUserAsync(String sessionToken,long region,boolean regionSpecified,String password,String fileName,String fileImage) throws Exception{
+    public void updateUserAsync(String sessionToken,long region,boolean regionSpecified,String password,String fileName,VectorByte fileImage) throws Exception{
         if (this.eventHandler == null)
             throw new Exception("Async Methods Requires IWsdl2CodeEvents");
         updateUserAsync(sessionToken, region, regionSpecified, password, fileName, fileImage, null);
     }
     
-    public void updateUserAsync(final String sessionToken,final long region,final boolean regionSpecified,final String password,final String fileName,final String fileImage,final List<HeaderProperty> headers) throws Exception{
+    public void updateUserAsync(final String sessionToken,final long region,final boolean regionSpecified,final String password,final String fileName,final VectorByte fileImage,final List<HeaderProperty> headers) throws Exception{
         
         new AsyncTask<Void, Void, serviceResult>(){
             @Override
@@ -1079,11 +1079,11 @@ public class WebServiceMainService {
         }.execute();
     }
     
-    public serviceResult updateUser(String sessionToken,long region,boolean regionSpecified,String password,String fileName,String fileImage){
+    public serviceResult updateUser(String sessionToken,long region,boolean regionSpecified,String password,String fileName,VectorByte fileImage){
         return updateUser(sessionToken, region, regionSpecified, password, fileName, fileImage, null);
     }
     
-    public serviceResult updateUser(String sessionToken,long region,boolean regionSpecified,String password,String fileName,String fileImage,List<HeaderProperty> headers){
+    public serviceResult updateUser(String sessionToken,long region,boolean regionSpecified,String password,String fileName,VectorByte fileImage,List<HeaderProperty> headers){
 
         soapEnvelope.implicitTypes = true;
 
