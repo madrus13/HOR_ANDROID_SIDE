@@ -1,7 +1,11 @@
 package com.korotaev.r.ms.hor.fragment.ui.request;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -12,8 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.korotaev.r.ms.hor.R;
+import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
+import com.korotaev.r.ms.hor.fragment.ui.chat.ChatFragment;
 
-public class RequestFragment extends Fragment {
+public class RequestFragment extends Fragment implements ServiceActivity {
 
     private RequestViewModel mViewModel;
 
@@ -27,10 +33,12 @@ public class RequestFragment extends Fragment {
                    // mTextMessage.setText(R.string.title_home);
                     return true;
                 case R.id.navigation_active_request:
+                    //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new RequestFragment()).commit();
                     //mTextMessage.setText(R.string.title_dashboard);
                     return true;
                 case R.id.navigation_common_chat:
                     //mTextMessage.setText(R.string.title_notifications);
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new ChatFragment()).commit();
                     return true;
             }
             return false;
@@ -60,4 +68,38 @@ public class RequestFragment extends Fragment {
         // TODO: Use the ViewModel
     }
 
+    @Override
+    public void initViews(View v) {
+
+    }
+
+    @Override
+    public void OnClickListenerInit() {
+
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+
+    }
 }

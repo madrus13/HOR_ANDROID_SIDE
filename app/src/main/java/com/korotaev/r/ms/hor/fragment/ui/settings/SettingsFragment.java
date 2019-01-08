@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.AppHelpers.AdapterHelper;
+import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.ChangePasswordActivity;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
@@ -44,6 +45,7 @@ import com.korotaev.r.ms.hor.AppHelpers.ListViewLoader;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
+import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
 import com.korotaev.r.ms.testormlite.data.ActivityActions;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
 import com.korotaev.r.ms.testormlite.data.Entity.Region;
@@ -68,7 +70,7 @@ import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_image;
 import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_tools;
 
 public class SettingsFragment extends Fragment
-        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor>,ServiceConnection, View.OnClickListener  {
+        implements NavigationView.OnNavigationItemSelectedListener, ServiceActivity, View.OnClickListener  {
 
 
     Messenger mService = null;
@@ -175,24 +177,6 @@ public class SettingsFragment extends Fragment
     }
 
 
-    public void sendComandToIntentService(int command)
-    {
-        // We want to monitor the service for as long as we are
-        // connected to it.
-        try {
-            if (mService!=null) {
-                Message msg = Message.obtain(null, command);
-                msg.replyTo = mMessenger;
-                mService.send(msg);
-            }
-        } catch (RemoteException e) {
-            Toast.makeText(SettingsFragment.this.getContext(), R.string.remote_service_crashed,
-                    Toast.LENGTH_SHORT).show();
-            //showProgress(false);
-        }
-    }
-
-
     public void sendSetUserInfoComandToIntentService(int command,
                                                      long regionId,
                                                      String password,
@@ -286,6 +270,8 @@ public class SettingsFragment extends Fragment
 
     }
 
+
+
     public void userAutoInit()
     {
         auto = Preferences.loadCurrentUserAuto(getContext());
@@ -310,7 +296,7 @@ public class SettingsFragment extends Fragment
     }
 
 
-    public void oOnClickListenerInit()
+    public void OnClickListenerInit()
     {
         Date startDate = new Date();
         if (mToolType!=null) {
@@ -376,7 +362,7 @@ public class SettingsFragment extends Fragment
             });
         }
 
-        myDBHelper.getHelper().addLog(CODE_INFO,"oOnClickListenerInit->" + ((new Date()).getTime() - startDate.getTime()));
+        myDBHelper.getHelper().addLog(CODE_INFO,"OnClickListenerInit->" + ((new Date()).getTime() - startDate.getTime()));
     }
 
 
@@ -483,7 +469,7 @@ public class SettingsFragment extends Fragment
         initViews(v);
         initRegionView();
         initTransmissionView();
-        oOnClickListenerInit();
+        OnClickListenerInit();
 
         Intent i = new Intent(SettingsFragment.this.getContext(), CmdService.class);
         getActivity().bindService(i,  SettingsFragment.this, Context.BIND_AUTO_CREATE);
@@ -516,8 +502,6 @@ public class SettingsFragment extends Fragment
                     long selectedId = data.getLongExtra(ActivityActions.EXTRA_SELECTED_ID, -1);
                     if (selectedId != -1) {
                         selectedRegion = regionList.get((int) selectedId);
-                        //mRegion.setText(selectedRegion.getName()  + getString(R.string.change_field));
-                        // mRegion.setSelection(0);
                     }
                 }
                 break;
@@ -603,7 +587,13 @@ public class SettingsFragment extends Fragment
        Date startDate = new Date();
         if (service!=null && mService == null) {
             mService = new Messenger(service);
-            sendComandToIntentService(SrvCmd.CMD_RegisterIntentServiceClientReq);
+            ViewHelper.sendComandToIntentService(
+                    SettingsFragment.this.getContext(),
+                    mMessenger,
+                    mService,
+                    null,
+                    null,
+                    SrvCmd.CMD_RegisterIntentServiceClientReq);
         }
         myDBHelper.getHelper().addLog(CODE_INFO,"onServiceConnected->" + ((new Date()).getTime() - startDate.getTime()));
     }

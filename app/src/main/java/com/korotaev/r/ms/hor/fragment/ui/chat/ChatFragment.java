@@ -4,6 +4,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -38,6 +40,18 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     Messenger mService = null;
     static Messenger mMessenger = new Messenger(new ChatFragment.IncomingHandler());
 
+
+    private ChatViewModel mViewModel;
+    MessageAdapter messageAdapter;
+    private MyDBHelper myDBHelper = new MyDBHelper(getContext());
+    public static ChatFragment newInstance() {
+        return new ChatFragment();
+    }
+
+    private ImageButton sendMsgButton;
+    private EditText messageToSend;
+    private ListView messagesView;
+
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
         if (service!=null && mService == null) {
@@ -58,6 +72,21 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
+
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 
@@ -89,16 +118,6 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         }
     }
 
-    private ChatViewModel mViewModel;
-    MessageAdapter messageAdapter;
-    private MyDBHelper myDBHelper = new MyDBHelper(getContext());
-    public static ChatFragment newInstance() {
-        return new ChatFragment();
-    }
-
-    private ImageButton sendMsgButton;
-    private EditText messageToSend;
-    private ListView messagesView;
 
     public  void initViews(View v)
     {

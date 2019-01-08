@@ -34,6 +34,7 @@ import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
+import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
 import com.korotaev.r.ms.hor.fragment.ui.about.AboutFragment;
 import com.korotaev.r.ms.hor.fragment.ui.achievment.AchievmentFragment;
 import com.korotaev.r.ms.hor.fragment.ui.chat.ChatFragment;
@@ -48,7 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor>,ServiceConnection, View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ServiceActivity, View.OnClickListener {
 
     Messenger mService = null;
     boolean mIsBound;
@@ -62,6 +63,21 @@ public class MainActivity extends AppCompatActivity
 
     private String currentToken = "";
     private MyDBHelper myDBHelper = new MyDBHelper(this);
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
 
     /**
      * Handler of incoming messages from service.
@@ -101,15 +117,16 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public  void initViews() {
+    public  void initViews(View v) {
         mProgressView = findViewById(R.id.main_activity_progress);
         mMainView = findViewById(R.id.main_layout);
         mToolbar = findViewById(R.id.toolbar);
         mFab = findViewById(R.id.fab);
         drawer = findViewById(R.id.drawer_layout);
     }
+    
 
-    public void oOnClickListenerInit()
+    public void OnClickListenerInit()
     {
         if (mFab!=null) {
             mFab.setOnClickListener(new View.OnClickListener() {
@@ -127,8 +144,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        initViews();
-        oOnClickListenerInit();
+        initViews(null);
+        OnClickListenerInit();
 
 
         ViewHelper.showProgress(MainActivity.this,mMainView, mProgressView,true );
@@ -288,20 +305,6 @@ public class MainActivity extends AppCompatActivity
     public void onServiceDisconnected(ComponentName componentName) {
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
 
     @Override
     public void onClick(View view) {

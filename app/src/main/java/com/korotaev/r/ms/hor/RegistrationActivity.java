@@ -2,6 +2,7 @@ package com.korotaev.r.ms.hor;
 
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ComponentName;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -11,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -33,6 +35,7 @@ import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.WebServices.WebServiceMainService;
 import com.korotaev.r.ms.hor.WebServices.serviceResult;
+import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
 import com.korotaev.r.ms.testormlite.data.Entity.Region;
 import com.korotaev.r.ms.testormlite.data.Entity.Session;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
@@ -48,7 +51,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class RegistrationActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class RegistrationActivity extends AppCompatActivity implements ServiceActivity {
 
     private static WebServiceMainService service = new WebServiceMainService();
     Session currentSession = null;
@@ -78,7 +81,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
     private Spinner mRegion;
 
 
-    public  void initViews() {
+    public  void initViews(View v) {
         // Set up the form
         mLoginView = (AutoCompleteTextView) findViewById(R.id.login_name);
         mPhoneView = (AutoCompleteTextView) findViewById(R.id.phone);
@@ -90,7 +93,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         mRegion = findViewById(R.id.regionList);
 
     }
-    public void oOnClickListenerInit()
+    public void OnClickListenerInit()
     {
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -130,8 +133,8 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        initViews();
-        oOnClickListenerInit();
+        initViews(null);
+        OnClickListenerInit();
         populateAutoComplete();
 
         regionList = Preferences.loadAllRegions(RegistrationActivity.this);
@@ -318,6 +321,16 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+
     }
 
 
