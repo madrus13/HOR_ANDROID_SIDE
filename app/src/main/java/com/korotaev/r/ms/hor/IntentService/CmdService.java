@@ -17,6 +17,7 @@ import com.korotaev.r.ms.hor.MainActivity;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.WebServices.ServiceObjectHelper;
+import com.korotaev.r.ms.hor.WebServices.VectorByte;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievement;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
@@ -96,7 +97,7 @@ public class CmdService extends IntentService {
                     break;
                 case SrvCmd.CMD_EntityGetUserInfoReq:
                     break;
-                case SrvCmd.CMD_EntitySetUserInfoReq:
+                case SrvCmd.CMD_EntitySetUserInfoReq: {
                     Bundle data = msg.getData();
                     long regionId = (long) data.get("region");
                     String password = (String) data.get("password");
@@ -104,15 +105,44 @@ public class CmdService extends IntentService {
                     String file = (String) data.get("file");
                     long transmissionType = (long) data.get("transmissionType");
                     String nameAuto = (String) data.get("nameAuto");
-                    long haveCable= (long) data.get("haveCable");
-                    String toolTypeIds= (String) data.get("toolTypeIds");
+                    long haveCable = (long) data.get("haveCable");
+                    String toolTypeIds = (String) data.get("toolTypeIds");
 
                     mSetUserInfoTask = new SetUserInfoTask(msg,
-                            regionId,true,
+                            regionId, true,
                             password,
-                            "filename",file, transmissionType, nameAuto, haveCable,toolTypeIds );
+                            "filename", file, transmissionType, nameAuto, haveCable, toolTypeIds);
                     mSetUserInfoTask.execute((Void) null);
                     break;
+                }
+
+                case SrvCmd.CMD_InsertMessageReq:
+                    Bundle data = msg.getData();
+                    String text = (String) data.get("text");
+                    Long requestId = (Long) data.get("requestId");
+                    Long regionId = (Long) data.get("regionId");
+                    Long userRx = (Long) data.get("userRx");
+                    Long typeId = (Long) data.get("typeId");
+                    String fileName = (String) data.get("fileName");
+                    byte[] fileImage = data.getByteArray("fileImage");
+
+                   VectorByte file = null ;
+                   if (fileImage.length > 0 && !fileImage.toString().isEmpty())  {
+                       file = new VectorByte(fileImage);
+                   }
+                    ServiceObjectHelper.insertMessage(CmdService.this,  currentToken,
+                             text,
+                             requestId,  requestId!=null? true : false,
+                             regionId,   regionId!=null? true : false ,
+                             userRx,     userRx!=null? true : false ,
+                             typeId,     typeId!=null? true : false ,
+                             fileName,
+                            file
+
+                    );
+
+                    break;
+
                 default:
                     super.handleMessage(msg);
             }

@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
@@ -56,13 +57,14 @@ public class ViewHelper {
                                           Messenger mService,
                                           View viewForm,
                                           View progressBar,
-                                          int command)
+                                          int command, Bundle b)
     {
-        // We want to monitor the service for as long as we are
-        // connected to it.
         try {
             android.os.Message msg = Message.obtain(null, command);
             msg.replyTo = mMessengerFrom;
+            if (b!=null) {
+                msg.setData(b);
+            }
             mService.send(msg);
         } catch (RemoteException e) {
             Toast.makeText(context, R.string.remote_service_crashed,

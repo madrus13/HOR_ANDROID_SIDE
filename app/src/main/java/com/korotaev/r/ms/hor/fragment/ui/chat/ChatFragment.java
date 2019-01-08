@@ -27,8 +27,11 @@ import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
+import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
+import com.korotaev.r.ms.hor.fragment.ui.settings.SettingsFragment;
+import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import java.util.Random;
 
@@ -64,7 +67,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                     mService,
                     null,
                     null,
-                    SrvCmd.CMD_RegisterIntentServiceClientReq);
+                    SrvCmd.CMD_RegisterIntentServiceClientReq, null);
 
 
         }
@@ -144,6 +147,27 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                         MemberData data = new MemberData(getRandomName(), getRandomColor());
                         Message message = new Message(messageText, data, stateFromMe);
                         stateFromMe = !stateFromMe;
+                        User user = Preferences.loadCurrentUserInfo(getContext());
+                        Bundle b = new Bundle();
+                        b.putString("text",messageText);
+                        //b.putLong("requestId", null);
+                        if (user!=null && user.getRegion() > 0) {
+                            b.putLong("regionId", user.getRegion());
+                        }
+                        //b.putLong("userRx", null);
+                        b.putLong("typeId", 3); //region message
+                        b.putString("fileName",null);
+                        b.putByteArray("fileImage",null);
+
+
+                        ViewHelper.sendComandToIntentService(
+                                ChatFragment.this.getContext(),
+                                mMessenger,
+                                mService,
+                                null,
+                                null,
+                                SrvCmd.CMD_InsertMessageReq, b);
+
                         messageAdapter.add(message);
                         messagesView.setSelection(messagesView.getCount() - 1);
                         messageToSend.setText("");

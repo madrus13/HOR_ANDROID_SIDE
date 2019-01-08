@@ -188,12 +188,9 @@ public class SettingsFragment extends Fragment
                                                      String toolTypeIds
     )
     {
-        // We want to monitor the service for as long as we are
-        // connected to it.
-        try {
+
             if (mService!=null) {
-                Message msg = Message.obtain(null, command);
-                msg.replyTo = mMessenger;
+
                 Bundle b = new Bundle();
                 b.putLong("region", regionId );
                 b.putString("password", password);
@@ -205,15 +202,14 @@ public class SettingsFragment extends Fragment
                 b.putLong("haveCable", haveCable);
                 b.putString("toolTypeIds", toolTypeIds);
 
-                msg.setData(b);
-                mService.send(msg);
+                ViewHelper.sendComandToIntentService(
+                        SettingsFragment.this.getContext(),
+                        mMessenger,
+                        mService,
+                        null,
+                        null,
+                        command, null);
             }
-
-        } catch (RemoteException e) {
-            Toast.makeText(SettingsFragment.this.getContext(), R.string.remote_service_crashed,
-                    Toast.LENGTH_SHORT).show();
-            //showProgress(false);
-        }
     }
 
 
@@ -593,7 +589,7 @@ public class SettingsFragment extends Fragment
                     mService,
                     null,
                     null,
-                    SrvCmd.CMD_RegisterIntentServiceClientReq);
+                    SrvCmd.CMD_RegisterIntentServiceClientReq, null);
         }
         myDBHelper.getHelper().addLog(CODE_INFO,"onServiceConnected->" + ((new Date()).getTime() - startDate.getTime()));
     }

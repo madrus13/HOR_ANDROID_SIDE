@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity
                                 mService,
                                 mMainView,
                                 mProgressView,
-                                SrvCmd.CMD_EntitySyncReq);
+                                SrvCmd.CMD_EntitySyncReq, null);
                     }
 
 
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity
         mFab = findViewById(R.id.fab);
         drawer = findViewById(R.id.drawer_layout);
     }
-    
+
 
     public void OnClickListenerInit()
     {
@@ -295,7 +295,7 @@ public class MainActivity extends AppCompatActivity
                     mService,
                     mMainView,
                     mProgressView,
-                    SrvCmd.CMD_RegisterIntentServiceClientReq);
+                    SrvCmd.CMD_RegisterIntentServiceClientReq, null);
         }
     }
 

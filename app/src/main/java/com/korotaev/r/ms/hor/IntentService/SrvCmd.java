@@ -11,6 +11,8 @@ public class SrvCmd {
     public  static final int	CMD_EntityGetUserInfoResp      = 8;
     public  static final int	CMD_EntitySetUserInfoReq       = 9;
     public  static final int	CMD_EntitySetUserInfoResp      = 10;
+    public  static final int	CMD_InsertMessageReq           = 11;
+    public  static final int	CMD_InsertMessageResp          = 12;
 
     public  static String CODE_INFO = "INF";
     public  static String CODE_ERR  = "ERR";

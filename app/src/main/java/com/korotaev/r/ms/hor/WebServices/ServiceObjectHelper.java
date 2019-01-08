@@ -231,6 +231,38 @@ public class ServiceObjectHelper {
     }
 
 
+    public static int insertMessage(Context context,
+                                              String currentToken,
+                                              String text,
+                                              long requestId, boolean requestIdSpecified,
+                                              long regionId,  boolean regionIdSpecified,
+                                              long userRx,    boolean userRxSpecified,
+                                              long typeId,    boolean typeIdSpecified,
+                                              String fileName,
+                                              VectorByte fileImage)
+    {
+        if (!currentToken.isEmpty()) {
+
+            try {
+                service.insertMessageAsync(
+                        currentToken,
+                        text,
+                        requestId, requestIdSpecified,
+                        regionId, regionIdSpecified,
+                        userRx, userRxSpecified,
+                        typeId, typeIdSpecified,
+                        fileName,
+                        fileImage);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -1;
+            }
+        }
+        return 1;
+    }
+
+
     public static List<Auto> setCurrentUserAuto(Context context,
                                                 String currentToken,
                                                 String name,
