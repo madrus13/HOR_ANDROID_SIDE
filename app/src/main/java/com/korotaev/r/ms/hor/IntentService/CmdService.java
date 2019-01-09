@@ -291,7 +291,7 @@ public class CmdService extends IntentService {
             boolean isEnd = false;
             while (isEnd == false) {
                 String val = Preferences.loadObjInPrefs(getApplicationContext(), Preferences.SAVED_LAST_MSG_ID_IN_REGION);
-                Long index = Long.getLong(val);
+                Long index = val!=null && !val.isEmpty() ? Long.getLong(val): 0;
                 msgList.clear();
                 msgList.addAll(ServiceObjectHelper.getAllMessageByRegion(
                         CmdService.this,
