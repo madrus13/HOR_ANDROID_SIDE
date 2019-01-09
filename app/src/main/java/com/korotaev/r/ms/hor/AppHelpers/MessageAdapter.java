@@ -17,7 +17,7 @@ import java.util.List;
 
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 
-public class MessageAdapter extends BaseAdapter {
+public class MessageAdapter extends BaseAdapter  {
 
     List<Message> messages = new ArrayList<Message>();
     Context context;
@@ -80,7 +80,7 @@ public class MessageAdapter extends BaseAdapter {
         }
         catch (Exception ex)
         {
-            myDBHelper.getHelper().addLog(CODE_INFO, "MsgAdapt -> getView Except " );
+            myDBHelper.getHelper().addLog(CODE_INFO, "MsgAdapt -> getView Except " + ex.toString() );
         }
         return  null;
     }

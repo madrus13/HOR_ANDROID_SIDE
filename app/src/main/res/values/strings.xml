@@ -85,4 +85,5 @@
     <string name="title_notifications" translatable="false">Notifications</string>
     <string name="error_passwords_not_repeated">Passwords not equal</string>
     <string name="send">Send</string>
+    <string name="write_a_message">Write a message...</string>
 </resources>
