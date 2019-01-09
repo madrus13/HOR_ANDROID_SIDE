@@ -9,11 +9,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.widget.Toast;
 
+import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.MainActivity;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
@@ -61,7 +63,7 @@ public class CmdService extends IntentService {
     private List<Achievement> achievements;
     private List<Tool> tools;
     private Auto autos;
-
+    private MyDBHelper myDBHelper = new MyDBHelper(getApplicationContext());
 
 
     public  void  sendMsgToServiceClients(Message msg, int command){
@@ -136,7 +138,7 @@ public class CmdService extends IntentService {
                 }
                 case SrvCmd.CMD_GetMessageByUserRegionReq:
                 {
-
+                    myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "START mGetMessageByRegionTask");
                     mGetMessageByRegionTask = new GetMessageByRegionTask(msg);
                     mGetMessageByRegionTask.execute((Void) null);
                     break;
@@ -281,21 +283,27 @@ public class CmdService extends IntentService {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            long userId = 0;
-            boolean userSpecified = false;
+
+            ArrayList<com.korotaev.r.ms.testormlite.data.Entity.Message> msgList = new ArrayList<com.korotaev.r.ms.testormlite.data.Entity.Message>();
 
             currentToken = Preferences.loadObjInPrefs(CmdService.this,Preferences.SAVED_Session);
             User currentUser = ServiceObjectHelper.getCurrentUserInfo(CmdService.this, currentToken);
+            boolean isEnd = false;
+            while (isEnd == false) {
+                String val = Preferences.loadObjInPrefs(getApplicationContext(), Preferences.SAVED_LAST_MSG_ID_IN_REGION);
+                Long index = Long.getLong(val);
+                msgList.clear();
+                msgList.addAll(ServiceObjectHelper.getAllMessageByRegion(
+                        CmdService.this,
+                        currentToken, currentUser.getRegion(), index, 2));
 
-            ServiceObjectHelper.getAllMessageByRegion(
-                    CmdService.this,
-                    currentToken,currentUser.getRegion(),0L,1000);
-
-            sendMsgToServiceClients(msg, SrvCmd.CMD_GetMessageByUserRegionResp);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllMessageByRegion id = " + index );
+                sendMsgToServiceClients(msg, SrvCmd.CMD_GetMessageByUserRegionResp);
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             return null;
         }

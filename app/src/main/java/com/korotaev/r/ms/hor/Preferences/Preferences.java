@@ -33,6 +33,8 @@ public  class  Preferences {
     public  static String SAVED_CurrentUserAutos     = "CurrentUserAutos";
     public  static String SAVED_CurrentUserTools     = "CurrentUserTools";
 
+    public  static String SAVED_LAST_MSG_ID_IN_REGION  = "SAVED_LAST_MSG_ID_IN_REGION";
+
     public static String prefName = "myPrefs";
     static SharedPreferences sPref;
     static ObjectMapper mapper = new ObjectMapper();

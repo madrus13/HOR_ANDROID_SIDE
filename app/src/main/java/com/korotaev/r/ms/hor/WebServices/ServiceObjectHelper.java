@@ -17,6 +17,7 @@ import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -89,6 +90,8 @@ public class ServiceObjectHelper {
                                                       int pageSize
                                                       )
     {
+        ArrayList<Message> messageList = new ArrayList<Message>();
+
         serviceResult result = new serviceResult();
         if (!currentToken.isEmpty()) {
 
@@ -98,6 +101,7 @@ public class ServiceObjectHelper {
                         regionId, regionId > 0 ? true : false,
                         lastId, lastId > 0 ? true : false,
                         pageSize);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -105,7 +109,13 @@ public class ServiceObjectHelper {
             try {
 
                 if (isValidResult(result)) {
-                    return Arrays.asList(mapper.readValue(result.resultObjectJSON, Message[].class));
+
+                    messageList.addAll(Arrays.asList(mapper.readValue(result.resultObjectJSON, Message[].class)));
+                    if (!messageList.isEmpty()) {
+                        String val = messageList.get(messageList.size()-1).getId().toString();
+                        Preferences.saveObjInPrefs(context,
+                                Preferences.SAVED_LAST_MSG_ID_IN_REGION,val);
+                    }
                 }
 
             } catch (Exception e) {
