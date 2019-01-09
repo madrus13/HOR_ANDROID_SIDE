@@ -9,13 +9,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
+import com.korotaev.r.ms.hor.AppHelpers.ParserHelper;
 import com.korotaev.r.ms.hor.MainActivity;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
@@ -63,7 +63,7 @@ public class CmdService extends IntentService {
     private List<Achievement> achievements;
     private List<Tool> tools;
     private Auto autos;
-    private MyDBHelper myDBHelper = new MyDBHelper(getApplicationContext());
+    private MyDBHelper myDBHelper = new MyDBHelper(CmdService.this);
 
 
     public  void  sendMsgToServiceClients(Message msg, int command){
@@ -100,7 +100,7 @@ public class CmdService extends IntentService {
                     break;
                 case SrvCmd.CMD_EntitySyncReq:
                     mSyncTask = new SyncTask(msg );
-                    mSyncTask.execute((Void) null);
+                    mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     break;
                 case SrvCmd.CMD_EntityGetUserInfoReq:
                     break;
@@ -122,14 +122,14 @@ public class CmdService extends IntentService {
                             regionId, true,
                             password,
                             "filename", fileImage , transmissionType, nameAuto, haveCable, toolTypeIds);
-                    mSetUserInfoTask.execute((Void) null);
+                    mSetUserInfoTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     break;
                 }
 
                 case SrvCmd.CMD_InsertMessageReq: {
                     Bundle data = msg.getData();
                     mInsertMessageTask = new InsertMessageTask(msg,data);
-                    mInsertMessageTask.execute((Void) null);
+                    mInsertMessageTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
                     sendMsgToServiceClients(msg, SrvCmd.CMD_InsertMessageResp);
@@ -140,7 +140,7 @@ public class CmdService extends IntentService {
                 {
                     myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "START mGetMessageByRegionTask");
                     mGetMessageByRegionTask = new GetMessageByRegionTask(msg);
-                    mGetMessageByRegionTask.execute((Void) null);
+                    mGetMessageByRegionTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     break;
                 }
                 default:
@@ -275,6 +275,7 @@ public class CmdService extends IntentService {
     }
 
 
+
     public class GetMessageByRegionTask extends AsyncTask<Void, Void, Boolean> {
         Message msg;
         public GetMessageByRegionTask(Message msg) {
@@ -290,10 +291,10 @@ public class CmdService extends IntentService {
             User currentUser = ServiceObjectHelper.getCurrentUserInfo(CmdService.this, currentToken);
             boolean isEnd = false;
             while (isEnd == false) {
-                try {
 
-                    String val = Preferences.loadObjInPrefs(getApplicationContext(), Preferences.SAVED_LAST_MSG_ID_IN_REGION);
-                    Long index = val!=null && !val.isEmpty() ? Long.getLong(val): 0;
+
+                    String val = Preferences.loadObjInPrefs(CmdService.this, Preferences.SAVED_LAST_MSG_ID_IN_REGION);
+                    Long index = ParserHelper.TryParse(val);
                     msgList.clear();
                     List<com.korotaev.r.ms.testormlite.data.Entity.Message> retVal = ServiceObjectHelper.getAllMessageByRegion(
                             CmdService.this,
@@ -305,14 +306,11 @@ public class CmdService extends IntentService {
 
                     myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllMessageByRegion id = " + index );
                     sendMsgToServiceClients(msg, SrvCmd.CMD_GetMessageByUserRegionResp);
+                isEnd = true;
+                    //Thread.sleep(10000);
 
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllMessageByRegion id = " + e.toString() );
-                    e.printStackTrace();
-                }
             }
-            return true;
+            return null;
         }
     }
 

@@ -10,12 +10,13 @@ import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WebServiceMainService {
     
     public static String NAMESPACE ="http://Service.ru/";
-    public static String url="http://185.246.154.49:8080/samplejpa-26/ws?wsdl"; //?wsdl
+    public static String url="http://185.246.154.49:8080/samplejpa-29/ws?wsdl"; //?wsdl
     public String PREFIX_SERVICE  = "";
     public static int timeOut = 5000;
     public IWsdl2CodeEvents eventHandler;
@@ -80,6 +81,11 @@ public class WebServiceMainService {
 
     public serviceResult soapMethodExecutor(List<HeaderProperty> headers, String methodRequestName)
     {
+        ArrayList<HeaderProperty> headerProperty = new ArrayList<HeaderProperty>();
+
+        headerProperty.add(new HeaderProperty("Content-Type", "text/xml"));
+        headerProperty.add(new HeaderProperty("charset", "UTF-8"));
+        soapEnvelope.encodingStyle = "UTF-8";
         try{
             if (headers!=null){
                 //http://Service.ru/WebServiceMain/
@@ -157,6 +163,7 @@ public class WebServiceMainService {
     public serviceResult insertMessage(String sessionToken,String text,long requestId,boolean requestIdSpecified,long regionId,boolean regionIdSpecified,long userRx,boolean userRxSpecified,long typeId,boolean typeIdSpecified,String fileName,VectorByte fileImage,List<HeaderProperty> headers){
 
         soapEnvelope.implicitTypes = true;
+
         SoapObject soapReq = new SoapObject("http://Service.ru/","insertMessage");
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("text",text);
