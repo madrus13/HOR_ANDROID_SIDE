@@ -290,22 +290,29 @@ public class CmdService extends IntentService {
             User currentUser = ServiceObjectHelper.getCurrentUserInfo(CmdService.this, currentToken);
             boolean isEnd = false;
             while (isEnd == false) {
-                String val = Preferences.loadObjInPrefs(getApplicationContext(), Preferences.SAVED_LAST_MSG_ID_IN_REGION);
-                Long index = val!=null && !val.isEmpty() ? Long.getLong(val): 0;
-                msgList.clear();
-                msgList.addAll(ServiceObjectHelper.getAllMessageByRegion(
-                        CmdService.this,
-                        currentToken, currentUser.getRegion(), index, 2));
-
-                myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllMessageByRegion id = " + index );
-                sendMsgToServiceClients(msg, SrvCmd.CMD_GetMessageByUserRegionResp);
                 try {
+
+                    String val = Preferences.loadObjInPrefs(getApplicationContext(), Preferences.SAVED_LAST_MSG_ID_IN_REGION);
+                    Long index = val!=null && !val.isEmpty() ? Long.getLong(val): 0;
+                    msgList.clear();
+                    List<com.korotaev.r.ms.testormlite.data.Entity.Message> retVal = ServiceObjectHelper.getAllMessageByRegion(
+                            CmdService.this,
+                            currentToken, currentUser.getRegion(), index, 2);
+                    if (retVal!=null && retVal.size() > 0)
+                    {
+                        msgList.addAll(retVal);
+                    }
+
+                    myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllMessageByRegion id = " + index );
+                    sendMsgToServiceClients(msg, SrvCmd.CMD_GetMessageByUserRegionResp);
+
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {
+                    myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllMessageByRegion id = " + e.toString() );
                     e.printStackTrace();
                 }
             }
-            return null;
+            return true;
         }
     }
 
