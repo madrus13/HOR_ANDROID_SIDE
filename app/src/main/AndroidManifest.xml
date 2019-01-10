@@ -45,6 +45,13 @@
             android:screenOrientation="portrait" />
 
         <service android:name=".IntentService.CmdService" />
+        <service
+            android:name="com.korotaev.r.ms.FcmListenerService"
+            android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".fragment.ui.settings.SettingsActivity"
@@ -74,6 +81,7 @@
         <activity
             android:name=".ChangePasswordActivity"
             android:label="@string/title_activity_change_password" />
+
     </application>
 
 </manifest>

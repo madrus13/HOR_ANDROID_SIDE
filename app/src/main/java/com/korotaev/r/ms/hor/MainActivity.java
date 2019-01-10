@@ -23,11 +23,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.korotaev.r.ms.hor.AppHelpers.ListViewLoader;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
@@ -114,6 +118,21 @@ public class MainActivity extends AppCompatActivity
                     super.handleMessage(msg);
             }
         }
+    }
+
+    public void initFcmToken()
+    {
+        FirebaseInstanceId.getInstance().getInstanceId().
+                addOnSuccessListener(
+                MainActivity.this,
+                new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String newToken = instanceIdResult.getToken();
+                myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO,"initFcmToken -newToken" + newToken );
+
+            }
+        });
     }
 
 

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1041740350288",
+    "firebase_url": "https://helponroad-cf7c4.firebaseio.com",
+    "project_id": "helponroad-cf7c4",
+    "storage_bucket": "helponroad-cf7c4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041740350288:android:987264b891a471fc",
+        "android_client_info": {
+          "package_name": "com.korotaev.r.ms.hor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041740350288-nc4df80itrh32245v9eeai639rn83dli.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6usSha3fuWEeVGjIMsGf8khmEpi-Zln8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
