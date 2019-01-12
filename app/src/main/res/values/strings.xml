@@ -86,4 +86,6 @@
     <string name="error_passwords_not_repeated">Passwords not equal</string>
     <string name="send">Send</string>
     <string name="write_a_message">Write a message...</string>
+    <string name="msg_subscribe_failed">Subscribe failed</string>
+    <string name="msg_subscribed">Subscribe success</string>
 </resources>

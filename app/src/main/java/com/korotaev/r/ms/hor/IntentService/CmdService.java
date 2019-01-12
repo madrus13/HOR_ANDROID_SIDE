@@ -303,12 +303,14 @@ public class CmdService extends IntentService {
                     {
                         msgList.addAll(retVal);
                     }
+                    else {
+                        isEnd = true;
+                    }
 
                     myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllMessageByRegion id = " + index );
                     sendMsgToServiceClients(msg, SrvCmd.CMD_GetMessageByUserRegionResp);
-                isEnd = true;
-                    //Thread.sleep(10000);
 
+                    //Thread.sleep(10000);
             }
             return null;
         }

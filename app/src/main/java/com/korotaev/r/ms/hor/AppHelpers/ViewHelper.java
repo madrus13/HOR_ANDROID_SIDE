@@ -60,12 +60,14 @@ public class ViewHelper {
                                           int command, Bundle b)
     {
         try {
-            android.os.Message msg = Message.obtain(null, command);
-            msg.replyTo = mMessengerFrom;
-            if (b!=null) {
-                msg.setData(b);
+            if (mService!=null && mMessengerFrom!=null) {
+                android.os.Message msg = Message.obtain(null, command);
+                msg.replyTo = mMessengerFrom;
+                if (b != null) {
+                    msg.setData(b);
+                }
+                mService.send(msg);
             }
-            mService.send(msg);
         } catch (RemoteException e) {
             Toast.makeText(context, R.string.remote_service_crashed,
                     Toast.LENGTH_SHORT).show();

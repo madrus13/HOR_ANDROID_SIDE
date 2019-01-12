@@ -16,7 +16,7 @@ import java.util.List;
 public class WebServiceMainService {
     
     public static String NAMESPACE ="http://Service.ru/";
-    public static String url="http://185.246.154.49:8080/samplejpa-29/ws?wsdl"; //?wsdl
+    public static String url="http://185.246.154.49:8080/samplejpa-30/ws?wsdl"; //?wsdl
     public String PREFIX_SERVICE  = "";
     public static int timeOut = 5000;
     public IWsdl2CodeEvents eventHandler;

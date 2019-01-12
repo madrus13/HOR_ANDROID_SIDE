@@ -3,34 +3,77 @@ package com.korotaev.r.ms;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Messenger;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.view.View;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
+import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
+import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.R;
+import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
 
 import org.json.JSONObject;
 
 import java.util.Map;
 
-public class FcmListenerService extends FirebaseMessagingService {
+public class FcmListenerService extends FirebaseMessagingService implements ServiceActivity {
     private MyDBHelper myDBHelper = new MyDBHelper(this);
+
+    static Messenger mService = null;
+    Messenger mMessenger = new Messenger(new FcmListenerService.IncomingHandler());
+
+    public  FcmListenerService() {
+
+
+    }
+
+    protected  class IncomingHandler extends Handler {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+
+            msg.getData();
+            if (msg.replyTo == mMessenger) {
+                switch (msg.what) {
+                    case SrvCmd.CMD_RegisterIntentServiceClientResp:
+                        ViewHelper.sendComandToIntentService(
+                                getBaseContext(),
+                                mMessenger,
+                                mService,
+                                null,
+                                null,
+                                SrvCmd.CMD_GetMessageByUserRegionReq, null);
+
+                        break;
+                    default:
+                        super.handleMessage(msg);
+                }
+            }
+
+        }
+    }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         Map<String, String> params = remoteMessage.getData();
         JSONObject object = new JSONObject(params);
-        Log.e("JSON_OBJECT", object.toString());
 
-        String NOTIFICATION_CHANNEL_ID = "Nilesh_channel";
+        String NOTIFICATION_CHANNEL_ID = "Channel";
 
         long pattern[] = {0, 1000, 500, 1000};
 
@@ -68,6 +111,20 @@ public class FcmListenerService extends FirebaseMessagingService {
 
 
         mNotificationManager.notify(1000, notificationBuilder.build());
+
+        Intent i = new Intent(this, CmdService.class);
+
+        bindService(i,  this, Context.BIND_AUTO_CREATE);
+
+        ViewHelper.sendComandToIntentService(
+                this,
+                mMessenger,
+                mService,
+                null,
+                null,
+                SrvCmd.CMD_GetMessageByUserRegionReq, null);
+
+
     }
 
     @Override
@@ -78,4 +135,49 @@ public class FcmListenerService extends FirebaseMessagingService {
     }
 
 
+    @Override
+    public void initViews(View v) {
+
+    }
+
+    @Override
+    public void OnClickListenerInit() {
+
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder service) {
+        if (service!=null && mService == null) {
+            mService = new Messenger(service);
+            ViewHelper.sendComandToIntentService(
+                    getApplicationContext(),
+                    mMessenger,
+                    mService,
+                    null,
+                    null,
+                    SrvCmd.CMD_RegisterIntentServiceClientReq, null);
+
+
+        }
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+
+    }
 }

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1041740350288-q4kl8r804ra5fdhau79ec9govp0j8pe8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.korotaev.r.ms.hor",
+            "certificate_hash": "245fe6cc19e059a6f04f309773780b3fa073828c"
+          }
+        },
+        {
           "client_id": "1041740350288-nc4df80itrh32245v9eeai639rn83dli.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041740350288-nc4df80itrh32245v9eeai639rn83dli.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

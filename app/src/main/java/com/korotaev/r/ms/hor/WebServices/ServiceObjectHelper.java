@@ -122,7 +122,7 @@ public class ServiceObjectHelper {
                 e.printStackTrace();
             }
         }
-        return null;
+        return messageList;
     }
 
     public static List<Region> getAllRegions(Context context, String currentToken)

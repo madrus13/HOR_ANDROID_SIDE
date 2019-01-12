@@ -1,12 +1,10 @@
 package com.korotaev.r.ms.hor;
 
 
-import android.app.LoaderManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,15 +21,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.korotaev.r.ms.hor.AppHelpers.ListViewLoader;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
@@ -47,6 +44,7 @@ import com.korotaev.r.ms.hor.fragment.ui.request.RequestFragment;
 import com.korotaev.r.ms.hor.fragment.ui.settings.SettingsFragment;
 import com.korotaev.r.ms.testormlite.data.ActivityActions;
 import com.korotaev.r.ms.testormlite.data.Entity.TLog;
+import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -122,17 +120,30 @@ public class MainActivity extends AppCompatActivity
 
     public void initFcmToken()
     {
+        User currentUser = Preferences.loadCurrentUserInfo(this);
+
         FirebaseInstanceId.getInstance().getInstanceId().
                 addOnSuccessListener(
                 MainActivity.this,
-                new OnSuccessListener<InstanceIdResult>() {
-            @Override
-            public void onSuccess(InstanceIdResult instanceIdResult) {
-                String newToken = instanceIdResult.getToken();
-                myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO,"initFcmToken -newToken" + newToken );
+                        instanceIdResult -> {
+                            String newToken = instanceIdResult.getToken();
+                            myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO,"initFcmToken -newToken" + newToken );
 
-            }
-        });
+                        });
+
+        if (currentUser!=null && currentUser.getRegion() > 0) {
+            //Topic name equal on server side insertMessage code
+            FirebaseMessaging.getInstance().subscribeToTopic("region_" + currentUser.getRegion().toString())
+                    .addOnCompleteListener(task -> {
+                        String msg = getString(R.string.msg_subscribed);
+                        if (!task.isSuccessful()) {
+                            msg = getString(R.string.msg_subscribe_failed);
+                        }
+                        myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO,"initFcmToken - chat_message_region" + msg );
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    });
+        }
+
     }
 
 
@@ -165,7 +176,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         initViews(null);
         OnClickListenerInit();
-
+        initFcmToken();
 
         ViewHelper.showProgress(MainActivity.this,mMainView, mProgressView,true );
 
