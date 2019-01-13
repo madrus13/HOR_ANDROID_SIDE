@@ -1,6 +1,7 @@
 package com.korotaev.r.ms.hor.fragment.ui.chat;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -14,14 +15,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.util.DiffUtil;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
-import com.korotaev.r.ms.hor.AppHelpers.MessageAdapter;
+import com.korotaev.r.ms.hor.AppHelpers.Message.MainThreadExec;
+import com.korotaev.r.ms.hor.AppHelpers.Message.MessageStorage;
+import com.korotaev.r.ms.hor.AppHelpers.Message.MyPositionalDataSource;
+import com.korotaev.r.ms.hor.AppHelpers.Message.ormMessageAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
@@ -44,7 +49,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 
 
     private ChatViewModel mViewModel;
-    MessageAdapter messageAdapter;
+    ormMessageAdapter messageAdapter;
     private MyDBHelper myDBHelper = new MyDBHelper(getContext());
     public static ChatFragment newInstance() {
         return new ChatFragment();
@@ -52,7 +57,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 
     private ImageButton sendMsgButton;
     private EditText messageToSend;
-    private ListView messagesView;
+    private RecyclerView messagesView;
 
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
@@ -136,8 +141,46 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         messageToSend = v.findViewById(R.id.message_to_send);
         messagesView = v.findViewById(R.id.messages_view);
 
-        messageAdapter = new MessageAdapter(getContext());
+        /*
+        messageAdapter = new ormMessageAdapter(getContext());
         messagesView.setAdapter(messageAdapter);
+        */
+        // DataSource
+
+
+
+        MyPositionalDataSource dataSource = new MyPositionalDataSource(
+                new MessageStorage(getContext()));
+
+
+// PagedList
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setPageSize(10)
+                .build();
+
+        PagedList<Message> pagedList = new PagedList.Builder<>(dataSource, config)
+                .setFetchExecutor(new MainThreadExec())
+                .setNotifyExecutor(new MainThreadExec())
+                .build();
+
+
+            // Adapter
+
+        messageAdapter = new ormMessageAdapter(new DiffUtil.ItemCallback<Message>() {
+            @Override
+            public boolean areItemsTheSame(Message oldItem, Message newItem) {
+                return false;
+            }
+
+            @Override
+            public boolean areContentsTheSame(Message oldItem, Message newItem) {
+                return false;
+            }
+        });
+        messageAdapter.submitList(pagedList);
+        messagesView.setAdapter(messageAdapter);
+
     }
 
     public void OnClickListenerInit()
@@ -181,8 +224,8 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                                 null,
                                 SrvCmd.CMD_InsertMessageReq, b);
 
-                        messageAdapter.add(message);
-                        messagesView.setSelection(messagesView.getCount() - 1);
+                        //messageAdapter.ad(message);
+                        //messagesView.setsele(messagesView.getCount() - 1);
                         messageToSend.setText("");
                     }
                     catch (Exception ex)
