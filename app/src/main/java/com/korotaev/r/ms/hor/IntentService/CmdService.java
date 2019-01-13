@@ -302,6 +302,7 @@ public class CmdService extends IntentService {
                     if (retVal!=null && retVal.size() > 0)
                     {
                         msgList.addAll(retVal);
+                        myDBHelper.getHelper().addMessageList(msgList);
                     }
                     else {
                         isEnd = true;

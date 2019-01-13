@@ -297,18 +297,18 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return TLogDao;
 	}
 
-	static Dao<TLog, Integer> dao;
+	//static Dao<TLog, Integer> dao;
 	public void addLog(String type, String text)
 	{
 		try {
-			if (dao==null) {
-				dao = this.getTLogDao();
+			if (TLogDao==null) {
+				TLogDao = this.getTLogDao();
 			}
 			TLog tlog = new TLog();
 			tlog.setDate(new Date());
 			tlog.setName(text);
 			tlog.setType(type);
-			dao.create(tlog);
+			TLogDao.create(tlog);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -317,8 +317,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	public void clearLog()
 	{
 		try {
-			if (dao==null) {
-				dao = this.getTLogDao();
+			if (TLogDao==null) {
+				TLogDao = this.getTLogDao();
 			}
 			TableUtils.clearTable(this.getConnectionSource(), TLog.class);
 		} catch (SQLException e) {
@@ -329,13 +329,90 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	public List<TLog> getAllTLog()
 	{
 		try {
-			if (dao==null) {
-				dao = this.getTLogDao();
+			if (TLogDao==null) {
+				TLogDao = this.getTLogDao();
 			}
-			return dao.queryForAll();
+			return TLogDao.queryForAll();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
+
+
+	public List<Message> getAllMessage()
+	{
+		try {
+			if (MessageDao==null) {
+				MessageDao = this.getMessageDao();
+			}
+			return MessageDao.queryForAll();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	public void clearMessage()
+	{
+		try {
+			if (MessageDao==null) {
+				MessageDao = this.getMessageDao();
+			}
+			TableUtils.clearTable(this.getConnectionSource(), Message.class);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	public void addMessageList(List<Message> msgList)
+	{
+		try {
+			if (MessageDao==null) {
+				MessageDao = this.getMessageDao();
+			}
+			for (Message msg: msgList
+				 ) {
+				Message finded = MessageDao.queryBuilder().where().eq("id", msg.getId()).queryForFirst();
+				if (finded == null) {
+					MessageDao.create(msg);
+				}
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Message getMessageItem(int i)
+	{
+		Message finded = null;
+		try {
+			if (MessageDao==null) {
+				MessageDao = this.getMessageDao();
+			}
+			finded = MessageDao.queryBuilder().where().eq("uid", i).queryForFirst();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finded;
+	}
+
+	public int getMessageCount()
+	{
+		int result = 0;
+		try {
+			if (MessageDao==null) {
+				MessageDao = this.getMessageDao();
+			}
+			result = (int) MessageDao.countOf();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return  result;
+	}
+
 }

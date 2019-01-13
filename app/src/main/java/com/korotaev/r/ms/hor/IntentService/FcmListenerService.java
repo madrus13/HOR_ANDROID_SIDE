@@ -1,4 +1,4 @@
-package com.korotaev.r.ms;
+package com.korotaev.r.ms.hor.IntentService;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -22,8 +22,6 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
-import com.korotaev.r.ms.hor.IntentService.CmdService;
-import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
 

@@ -21,8 +21,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
-import com.korotaev.r.ms.hor.AppHelpers.MemberData;
-import com.korotaev.r.ms.hor.AppHelpers.Message;
 import com.korotaev.r.ms.hor.AppHelpers.MessageAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
@@ -31,6 +29,7 @@ import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
+import com.korotaev.r.ms.testormlite.data.Entity.Message;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import java.util.Random;
@@ -152,10 +151,16 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                 if (messageToSend!=null && !messageToSend.getText().toString().isEmpty()) {
                     messageText = messageToSend.getText().toString();
                     try {
-                        MemberData data = new MemberData(getRandomName(), getRandomColor());
-                        Message message = new Message(messageText, data, stateFromMe);
-                        stateFromMe = !stateFromMe;
                         User user = Preferences.loadCurrentUserInfo(getContext());
+
+                        Message message = new Message();
+                        message.setText(messageText);
+                        message.setCreateUser(user.getId());
+                        message.setRegion(user.getRegion());
+                        message.setType(3L);
+
+                        stateFromMe = !stateFromMe;
+
                         Bundle b = new Bundle();
                         b.putString("text",messageText);
                         b.putLong("requestId", 0);

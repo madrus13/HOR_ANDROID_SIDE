@@ -437,7 +437,7 @@ public class SettingsFragment extends Fragment
             for (TransmissionType item: trTypeList
                     ) {
                 dataTrType.add(item.getName());
-              if (auto.getTransmissionType() == item.getId()) {
+              if (auto!=null && (auto.getTransmissionType() == item.getId())) {
                   selectedtrTypeIndex = currentIndex;
               }
                 currentIndex++;

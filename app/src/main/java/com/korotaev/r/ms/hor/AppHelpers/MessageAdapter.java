@@ -10,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
+import com.korotaev.r.ms.testormlite.data.Entity.Message;
+import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +24,7 @@ public class MessageAdapter extends BaseAdapter  {
 
     List<Message> messages = new ArrayList<Message>();
     Context context;
-    MyDBHelper myDBHelper;
+    private static MyDBHelper myDBHelper;
 
     public MessageAdapter(Context context) {
         this.context = context;
@@ -34,13 +37,20 @@ public class MessageAdapter extends BaseAdapter  {
 
     @Override
     public int getCount() {
-        return messages.size();
+        initMydDBHelper();
+        return myDBHelper.getHelper().getMessageCount();
     }
 
-    @Override
-    public Object getItem(int i) {
-        return messages.get(i);
+    public void initMydDBHelper()
+    {
+        if (myDBHelper ==null) {
+            myDBHelper =  new MyDBHelper(this.context);
+        }
     }
+    @Override
+    public Message getItem(int i) {
+        initMydDBHelper();
+        return myDBHelper.getHelper().getMessageItem(i + 1);   }
 
     @Override
     public long getItemId(int i) {
@@ -50,15 +60,19 @@ public class MessageAdapter extends BaseAdapter  {
     // This is the backbone of the class, it handles the creation of single ListView row (chat bubble)
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
-        myDBHelper =  new MyDBHelper(this.context);
+
+        initMydDBHelper();
         try {
 
             myDBHelper.getHelper().addLog(CODE_INFO, "MsgAdapt -> getView" );
             MessageViewHolder holder = new MessageViewHolder();
             LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            Message message = messages.get(i);
+            Message message = getItem (i);
 
-            if (message.isBelongsToCurrentUser()) { // this message was sent by us so let's create a basic chat bubble on the right
+            if (message!=null) {
+                User user = Preferences.loadCurrentUserInfo(context);
+
+            if (user!=null && (message.getCreateUser() == user.getId() )) { //message.isBelongsToCurrentUser()) {
                 convertView = messageInflater.inflate(R.layout.output_message, null);
                 holder.messageBody = (TextView) convertView.findViewById(R.id.message_body);
                 convertView.setTag(holder);
@@ -70,12 +84,12 @@ public class MessageAdapter extends BaseAdapter  {
                 holder.messageBody = (TextView) convertView.findViewById(R.id.message_body);
                 convertView.setTag(holder);
 
-                holder.name.setText(message.getData().getName());
+                holder.name.setText(message.getText());
                 holder.messageBody.setText(message.getText());
                 GradientDrawable drawable = (GradientDrawable) holder.avatar.getBackground();
-                drawable.setColor(Color.parseColor(message.getData().getColor()));
+                drawable.setColor(Color.parseColor("yellow"));
             }
-
+            }
             return convertView;
         }
         catch (Exception ex)

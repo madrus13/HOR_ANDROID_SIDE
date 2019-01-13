@@ -46,7 +46,7 @@
 
         <service android:name=".IntentService.CmdService" />
         <service
-            android:name="com.korotaev.r.ms.FcmListenerService"
+            android:name=".IntentService.FcmListenerService"
             android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
