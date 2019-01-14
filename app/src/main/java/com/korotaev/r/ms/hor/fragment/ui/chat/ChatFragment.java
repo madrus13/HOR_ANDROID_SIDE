@@ -16,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.util.DiffUtil;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -156,7 +157,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 // PagedList
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
-                .setPageSize(10)
+                .setPageSize(20)
                 .build();
 
         PagedList<Message> pagedList = new PagedList.Builder<>(dataSource, config)
@@ -177,10 +178,13 @@ public class ChatFragment extends Fragment implements ServiceActivity {
             public boolean areContentsTheSame(Message oldItem, Message newItem) {
                 return false;
             }
-        });
-        messageAdapter.submitList(pagedList);
-        messagesView.setAdapter(messageAdapter);
+        },getContext());
 
+        messageAdapter.submitList(pagedList);
+
+        messagesView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        messagesView.setAdapter(messageAdapter);
+        messageAdapter.notifyDataSetChanged();
     }
 
     public void OnClickListenerInit()
@@ -272,7 +276,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         Intent i = new Intent(getContext(), CmdService.class);
         FragmentActivity activity;
         if ((activity = getActivity())!=null) {
-                getActivity().bindService(i,  ChatFragment.this, Context.BIND_AUTO_CREATE);
+             activity.bindService(i,  ChatFragment.this, Context.BIND_AUTO_CREATE);
         }
 
 

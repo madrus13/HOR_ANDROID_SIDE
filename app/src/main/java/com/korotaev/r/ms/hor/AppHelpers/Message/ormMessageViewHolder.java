@@ -1,12 +1,12 @@
 package com.korotaev.r.ms.hor.AppHelpers.Message;
 
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 import android.widget.TextView;
 
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 
-public class ormMessageViewHolder extends RecyclerView.ViewHolder {
+public class ormMessageViewHolder extends ViewHolder {
     public View avatar;
     public TextView name;
     public TextView messageBody;
@@ -21,8 +21,8 @@ public class ormMessageViewHolder extends RecyclerView.ViewHolder {
              messageBody.setText("EMPTY");
 
         } else {
-            name.setText("empty");
-            messageBody.setText(item.getText());
+           // name.setText("empty");
+            //messageBody.setText(item.getText());
         }
     }
 }
