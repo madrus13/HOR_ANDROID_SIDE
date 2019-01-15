@@ -58,7 +58,7 @@ public class ormMessageAdapter extends PagedListAdapter<Message, ormMessageViewH
         if (message!=null) {
             User user = Preferences.loadCurrentUserInfo(context);
 
-            if (user!=null && (message.getCreateUser() == user.getId() )) { //message.isBelongsToCurrentUser()) {
+            if (user!=null && (message.getCreateUser() == user.getId() )) {
                 convertView = messageInflater.inflate(R.layout.output_message, null);
                 holder.messageBody = (TextView) convertView.findViewById(R.id.message_body);
                 convertView.setTag(holder);
@@ -90,7 +90,7 @@ public class ormMessageAdapter extends PagedListAdapter<Message, ormMessageViewH
     @Override
     protected Message getItem(int position) {
         initMydDBHelper();
-        return myDBHelper.getHelper().getMessageItem(position + 1);
+        return myDBHelper.getHelper().getMessageItem(position);
     }
 
     @Override

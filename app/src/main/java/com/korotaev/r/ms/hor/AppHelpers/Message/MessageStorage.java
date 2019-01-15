@@ -17,7 +17,7 @@ public class MessageStorage {
     public List<Message> getData(int requestedStartPosition, int requestedLoadSize) {
         ArrayList<Message> msgList = new ArrayList<Message>();
 
-         msgList.add(myDBHelper.getHelper().getMessageItem(requestedStartPosition + 1));
+         msgList.addAll(myDBHelper.getHelper().getMessageItemBlock(requestedStartPosition,requestedLoadSize));
 
          return msgList;
     }

@@ -41,8 +41,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      * Suggested Copy/Paste code. Everything from here to the done block.
      ************************************************/
 
-    private static final String DATABASE_NAME = "ormDB_21.db";
-    private static final int DATABASE_VERSION = 21;
+    private static final String DATABASE_NAME = "ormDB_22.db";
+    private static final int DATABASE_VERSION = 22;
 
 
 	private static Dao<Tooltypes		 , Integer> TooltypesDao;
@@ -386,14 +386,37 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 	}
 
-	public Message getMessageItem(int i)
+	public Message getMessageItem(int startRow)
 	{
-		Message finded = null;
+		List<Message> finded = null;
+
 		try {
 			if (MessageDao==null) {
 				MessageDao = this.getMessageDao();
 			}
-			finded = MessageDao.queryBuilder().where().eq("uid", i).queryForFirst();
+			//QueryBuilder<Message, Integer> queryBuilder = MessageDao.queryBuilder();
+			//queryBuilder.offset(Long.valueOf(startRow)).limit(1L);
+
+			//finded = MessageDao.queryForFirst(queryBuilder.prepare());
+			finded = MessageDao.queryBuilder().limit(1L).offset(Long.valueOf(startRow)).query();
+					//MessageDao.queryBuilder().where().eq("uid", i).queryForFirst();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finded.size() > 0 ? finded.get(0) : null;
+	}
+
+	public List<Message> getMessageItemBlock(int startRow, int  size)
+	{
+		List<Message> finded = null;
+		try {
+			if (MessageDao==null) {
+				MessageDao = this.getMessageDao();
+			}
+
+
+			finded = MessageDao.queryBuilder().orderBy("uid", false).limit(Long.valueOf(size)).offset(Long.valueOf(startRow)).query();
 
 		} catch (SQLException e) {
 			e.printStackTrace();

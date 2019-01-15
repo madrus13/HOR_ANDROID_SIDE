@@ -34,7 +34,7 @@ public class FcmListenerService extends FirebaseMessagingService implements Serv
 
     static Messenger mService = null;
     Messenger mMessenger = new Messenger(new FcmListenerService.IncomingHandler());
-
+    public  static boolean isServiceConnected;
     public  FcmListenerService() {
 
 
@@ -110,9 +110,11 @@ public class FcmListenerService extends FirebaseMessagingService implements Serv
 
         mNotificationManager.notify(1000, notificationBuilder.build());
 
-        Intent i = new Intent(this, CmdService.class);
+        if (isServiceConnected == false && mService == null) {
+            Intent i = new Intent(this, CmdService.class);
+            bindService(i, this, Context.BIND_AUTO_CREATE);
+        }
 
-        bindService(i,  this, Context.BIND_AUTO_CREATE);
 
         ViewHelper.sendComandToIntentService(
                 this,
@@ -170,7 +172,7 @@ public class FcmListenerService extends FirebaseMessagingService implements Serv
                     null,
                     SrvCmd.CMD_RegisterIntentServiceClientReq, null);
 
-
+            isServiceConnected = true;
         }
     }
 

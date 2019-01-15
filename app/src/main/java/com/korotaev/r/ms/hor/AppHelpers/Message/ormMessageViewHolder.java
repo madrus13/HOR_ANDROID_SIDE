@@ -18,14 +18,14 @@ public class ormMessageViewHolder extends ViewHolder {
     }
 
     public void bind(Message item) {
-        if (item == null) {
-             name.setText("empty");
-             messageBody.setText("EMPTY");
+        if (item == null ) {
+            if (name!=null) name.setText("empty");
+            if (messageBody!=null)  messageBody.setText("EMPTY");
 
         } else {
            // name.setText("empty");
             //messageBody.setText(item.getText());
-            messageBody.setText(item.getText());
+            if (messageBody!=null)  messageBody.setText("EMPTY");
         }
     }
 }
