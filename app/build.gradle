@@ -9,6 +9,9 @@ android {
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
+        dataBinding {
+            enabled = true
+        }
     }
     buildTypes {
         release {
@@ -57,3 +60,4 @@ dependencies {
     implementation 'android.arch.paging:runtime:1.0.1'
 }
 apply plugin: 'com.google.gms.google-services'
+

@@ -4,28 +4,41 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 import android.widget.TextView;
 
+import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
+import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 
-public class ormMessageViewHolder extends ViewHolder {
-    public View mainItem;
+    public class ormMessageViewHolder extends ViewHolder {
     public View avatar;
     public TextView name;
     public TextView messageBody;
 
     public ormMessageViewHolder(View itemView) {
         super(itemView);
-        mainItem = itemView;
     }
 
-    public void bind(Message item) {
+    public void bind(Message item, int viewType) {
+
         if (item == null ) {
-            if (name!=null) name.setText("empty");
-            if (messageBody!=null)  messageBody.setText("EMPTY");
 
         } else {
-           // name.setText("empty");
-            //messageBody.setText(item.getText());
-            if (messageBody!=null)  messageBody.setText("EMPTY");
+            messageBody = itemView.findViewById(R.id.message_body);
+            messageBody.setText(item.getText());
+            switch (viewType)
+            {
+                case ViewHelper.INPUT_MESSAGE:
+                    name = itemView.findViewById(R.id.name);
+                    name.setText(item.getCreateUser().toString());
+                    break;
+                case ViewHelper.OUTPUT_MESSAGE:
+                    break;
+                case ViewHelper.SYSTEM_MESSAGE:
+                    break;
+                default:
+                    break;
+            }
+
+
         }
     }
 }

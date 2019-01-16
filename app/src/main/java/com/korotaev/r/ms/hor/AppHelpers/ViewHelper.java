@@ -15,6 +15,9 @@ import android.widget.Toast;
 import com.korotaev.r.ms.hor.R;
 
 public class ViewHelper {
+    public final static int INPUT_MESSAGE = 0;
+    public final static int OUTPUT_MESSAGE = 1;
+    public final static int SYSTEM_MESSAGE = 3;
     /**
      * Shows the progress UI and hides the login form.
      */

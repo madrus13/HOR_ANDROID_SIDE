@@ -23,8 +23,9 @@ public class MyPositionalDataSource extends PositionalDataSource<Message> {
         Log.d(TAG, "loadInitial, requestedStartPosition = " + params.requestedStartPosition +
                 ", requestedLoadSize = " + params.requestedLoadSize);
         List<Message> result = messageStorage.getData(params.requestedStartPosition, params.requestedLoadSize);
-        callback.onResult(result, params.requestedStartPosition);
+        callback.onResult(result, params.requestedStartPosition, result.size());
     }
+
 
     @Override
     public void loadRange(@NonNull LoadRangeParams params, @NonNull LoadRangeCallback<Message> callback) {

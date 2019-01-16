@@ -1,6 +1,9 @@
 package com.korotaev.r.ms.hor.fragment.ui.chat;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.content.ComponentName;
 import android.content.Context;
@@ -18,15 +21,15 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.korotaev.r.ms.hor.AppHelpers.Message.MainThreadExec;
 import com.korotaev.r.ms.hor.AppHelpers.Message.MessageStorage;
-import com.korotaev.r.ms.hor.AppHelpers.Message.MyPositionalDataSource;
+import com.korotaev.r.ms.hor.AppHelpers.Message.MySourceFactory;
 import com.korotaev.r.ms.hor.AppHelpers.Message.ormMessageAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
@@ -38,13 +41,15 @@ import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
-import java.util.Random;
+import java.util.concurrent.Executors;
 
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 
 public class ChatFragment extends Fragment implements ServiceActivity {
 
     static boolean  stateFromMe = true;
+
+    static boolean  registeredToServiceIntent;
     Messenger mService = null;
     Messenger mMessenger = new Messenger(new ChatFragment.IncomingHandler());
 
@@ -52,6 +57,11 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     private ChatViewModel mViewModel;
     ormMessageAdapter messageAdapter;
     private MyDBHelper myDBHelper = new MyDBHelper(getContext());
+
+    public ChatFragment() {
+        registeredToServiceIntent = false;
+    }
+
     public static ChatFragment newInstance() {
         return new ChatFragment();
     }
@@ -81,7 +91,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
-
+        registeredToServiceIntent = false;
     }
 
     @Override
@@ -117,7 +127,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                                 null,
                                 null,
                                 SrvCmd.CMD_GetMessageByUserRegionReq, null);
-
+                        registeredToServiceIntent = true;
                         break;
                     case SrvCmd.CMD_EntitySyncResp:
                         break;
@@ -142,31 +152,17 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         messageToSend = v.findViewById(R.id.message_to_send);
         messagesView = v.findViewById(R.id.messages_view);
 
-        /*
-        messageAdapter = new ormMessageAdapter(getContext());
-        messagesView.setAdapter(messageAdapter);
-        */
-        // DataSource
 
+        MySourceFactory sourceFactory = new MySourceFactory(new MessageStorage(getContext()));
 
-
-        MyPositionalDataSource dataSource = new MyPositionalDataSource(
-                new MessageStorage(getContext()));
-
-
-// PagedList
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
                 .setPageSize(20)
                 .build();
 
-        PagedList<Message> pagedList = new PagedList.Builder<>(dataSource, config)
-                .setFetchExecutor(new MainThreadExec())
-                .setNotifyExecutor(new MainThreadExec())
+        LiveData<PagedList<Message>> pagedListLiveData = new LivePagedListBuilder<>(sourceFactory, config)
+                .setFetchExecutor(Executors.newSingleThreadExecutor())
                 .build();
-
-
-            // Adapter
 
         messageAdapter = new ormMessageAdapter(new DiffUtil.ItemCallback<Message>() {
             @Override
@@ -180,11 +176,19 @@ public class ChatFragment extends Fragment implements ServiceActivity {
             }
         },getContext());
 
-        messageAdapter.submitList(pagedList);
+
+        pagedListLiveData.observe(this, new Observer<PagedList<Message>>() {
+            @Override
+            public void onChanged(@Nullable PagedList<Message> messages) {
+                Log.d(CODE_INFO, "submit PagedList");
+                messageAdapter.submitList(messages);
+            }
+        });
 
         messagesView.setLayoutManager(new LinearLayoutManager(getActivity()));
         messagesView.setAdapter(messageAdapter);
         messageAdapter.notifyDataSetChanged();
+
     }
 
     public void OnClickListenerInit()
@@ -244,24 +248,6 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         });
     }
 
-    private String getRandomName() {
-        String[] adjs = {"autumn", "hidden", "bitter", "misty", "silent", "empty", "dry", "dark", "summer", "icy", "delicate", "quiet", "white", "cool", "spring", "winter", "patient", "twilight", "dawn", "crimson", "wispy", "weathered", "blue", "billowing", "broken", "cold", "damp", "falling", "frosty", "green", "long", "late", "lingering", "bold", "little", "morning", "muddy", "old", "red", "rough", "still", "small", "sparkling", "throbbing", "shy", "wandering", "withered", "wild", "black", "young", "holy", "solitary", "fragrant", "aged", "snowy", "proud", "floral", "restless", "divine", "polished", "ancient", "purple", "lively", "nameless"};
-        String[] nouns = {"waterfall", "river", "breeze", "moon", "rain", "wind", "sea", "morning", "snow", "lake", "sunset", "pine", "shadow", "leaf", "dawn", "glitter", "forest", "hill", "cloud", "meadow", "sun", "glade", "bird", "brook", "butterfly", "bush", "dew", "dust", "field", "fire", "flower", "firefly", "feather", "grass", "haze", "mountain", "night", "pond", "darkness", "snowflake", "silence", "sound", "sky", "shape", "surf", "thunder", "violet", "water", "wildflower", "wave", "water", "resonance", "sun", "wood", "dream", "cherry", "tree", "fog", "frost", "voice", "paper", "frog", "smoke", "star"};
-        return (
-                adjs[(int) Math.floor(Math.random() * adjs.length)] +
-                        "_" +
-                        nouns[(int) Math.floor(Math.random() * nouns.length)]
-        );
-    }
-
-    private String getRandomColor() {
-        Random r = new Random();
-        StringBuffer sb = new StringBuffer("#");
-        while(sb.length() < 7){
-            sb.append(Integer.toHexString(r.nextInt()));
-        }
-        return sb.toString().substring(0, 7);
-    }
 
     @Nullable
     @Override
@@ -275,7 +261,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 
         Intent i = new Intent(getContext(), CmdService.class);
         FragmentActivity activity;
-        if ((activity = getActivity())!=null) {
+        if ((activity = getActivity())!=null && registeredToServiceIntent == false) {
              activity.bindService(i,  ChatFragment.this, Context.BIND_AUTO_CREATE);
         }
 
