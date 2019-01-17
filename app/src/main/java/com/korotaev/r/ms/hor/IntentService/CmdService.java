@@ -397,8 +397,8 @@ public class CmdService extends IntentService {
     @Override
     public void onCreate(){
 
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        showNotification();
+        //mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        //showNotification();
 
     }
     @Override

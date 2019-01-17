@@ -26,13 +26,13 @@ import com.korotaev.r.ms.testormlite.data.Entity.Message;
             messageBody = itemView.findViewById(R.id.message_body);
             message_time = itemView.findViewById(R.id.message_time);
 
-            messageBody.setText(item.getText());
-            message_time.setText(item.getCreationDate().toString());
+            if (messageBody!=null) messageBody.setText(item.getText());
+            if (message_time!=null && item.getCreationDate()!=null) message_time.setText(item.getCreationDate().toString());
             switch (viewType)
             {
                 case ViewHelper.INPUT_MESSAGE:
                     name = itemView.findViewById(R.id.name);
-                    name.setText(item.getCreateUser().toString());
+                    if (name!=null) name.setText(item.getCreateUser().toString());
                     break;
                 case ViewHelper.OUTPUT_MESSAGE:
                     break;

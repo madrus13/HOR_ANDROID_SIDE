@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity
 
                     break;
                 case SrvCmd.CMD_EntitySyncResp:
-                    Bundle data = msg.getData();
                     ViewHelper.showProgress(MainActivity.this,mMainView, mProgressView,false );
                     break;
 
