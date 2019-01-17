@@ -4,16 +4,16 @@ import android.arch.paging.DataSource;
 
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 
-public class MySourceFactory extends DataSource.Factory<Integer, Message> {
+public class MessageSourceFactory extends DataSource.Factory<Integer, Message> {
 
     private final MessageStorage messageStorage;
 
-    public MySourceFactory(MessageStorage messageStorage) {
+    public MessageSourceFactory(MessageStorage messageStorage) {
         this.messageStorage = messageStorage;
     }
 
     @Override
     public DataSource create() {
-        return new MyPositionalDataSource(messageStorage);
+        return new MessagePositionalDataSource(messageStorage);
     }
 }

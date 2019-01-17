@@ -29,7 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.korotaev.r.ms.hor.AppHelpers.Message.MessageStorage;
-import com.korotaev.r.ms.hor.AppHelpers.Message.MySourceFactory;
+import com.korotaev.r.ms.hor.AppHelpers.Message.MessageSourceFactory;
 import com.korotaev.r.ms.hor.AppHelpers.Message.ormMessageAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
@@ -153,7 +153,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         messagesView = v.findViewById(R.id.messages_view);
 
 
-        MySourceFactory sourceFactory = new MySourceFactory(new MessageStorage(getContext()));
+        MessageSourceFactory sourceFactory = new MessageSourceFactory(new MessageStorage(getContext()));
 
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)

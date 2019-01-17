@@ -10,11 +10,11 @@ import java.util.List;
 
 import static android.support.constraint.Constraints.TAG;
 
-public class MyPositionalDataSource extends PositionalDataSource<Message> {
+public class MessagePositionalDataSource extends PositionalDataSource<Message> {
 
     private final MessageStorage messageStorage;
 
-    public MyPositionalDataSource(MessageStorage messageStorage) {
+    public MessagePositionalDataSource(MessageStorage messageStorage) {
         this.messageStorage = messageStorage;
     }
 

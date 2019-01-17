@@ -12,6 +12,7 @@ import com.korotaev.r.ms.testormlite.data.Entity.Message;
     public View avatar;
     public TextView name;
     public TextView messageBody;
+    public TextView message_time;
 
     public ormMessageViewHolder(View itemView) {
         super(itemView);
@@ -23,7 +24,10 @@ import com.korotaev.r.ms.testormlite.data.Entity.Message;
 
         } else {
             messageBody = itemView.findViewById(R.id.message_body);
+            message_time = itemView.findViewById(R.id.message_time);
+
             messageBody.setText(item.getText());
+            message_time.setText(item.getCreationDate().toString());
             switch (viewType)
             {
                 case ViewHelper.INPUT_MESSAGE:
