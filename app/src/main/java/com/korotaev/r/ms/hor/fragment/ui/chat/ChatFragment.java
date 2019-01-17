@@ -38,6 +38,7 @@ import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
+import com.korotaev.r.ms.testormlite.data.Entity.EntityConstVariables;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
@@ -208,7 +209,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                         message.setText(messageText);
                         message.setCreateUser(user.getId());
                         message.setRegion(user.getRegion());
-                        message.setType(3L);
+                        message.setType(Long.valueOf(EntityConstVariables.MESSAGE_TYPE_REGION));
 
                         stateFromMe = !stateFromMe;
 
@@ -219,7 +220,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                             b.putLong("regionId", user.getRegion());
                         }
                         b.putLong("userRx", 0);
-                        b.putLong("typeId", 3); //region message
+                        b.putLong("typeId", Long.valueOf(EntityConstVariables.MESSAGE_TYPE_REGION)); //region message
                         b.putString("fileName",null);
                         b.putByteArray("fileImage",null);
 

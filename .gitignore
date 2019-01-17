@@ -9,3 +9,5 @@
 /captures
 .externalNativeBuild
 /*.log
+/.idea/caches/*.ser
+/*.ini

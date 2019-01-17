@@ -41,8 +41,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      * Suggested Copy/Paste code. Everything from here to the done block.
      ************************************************/
 
-    private static final String DATABASE_NAME = "ormDB_22.db";
-    private static final int DATABASE_VERSION = 22;
+    private static final String DATABASE_NAME = "ormDB_23.db";
+    private static final int DATABASE_VERSION = 23;
 
 
 	private static Dao<Tooltypes		 , Integer> TooltypesDao;

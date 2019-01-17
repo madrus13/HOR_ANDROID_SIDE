@@ -41,6 +41,8 @@ public class Message implements Serializable {
     @DatabaseField
     private Long createUser;
     @DatabaseField
+    private String createUserName;
+    @DatabaseField
     private Long userRx;
     @DatabaseField
     private String messagePhotoPath;
@@ -274,5 +276,15 @@ public class Message implements Serializable {
 
     public void setUid(Long uid) {
         this.uid = uid;
+    }
+
+    @Basic
+    @Column(name = "CreateUserName", nullable = true, length = 100)
+    public String getCreateUserName() {
+        return createUserName;
+    }
+
+    public void setCreateUserName(String createUserName) {
+        this.createUserName = createUserName;
     }
 }
