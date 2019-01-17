@@ -88,4 +88,9 @@
     <string name="write_a_message">Write a message...</string>
     <string name="msg_subscribe_failed">Subscribe failed</string>
     <string name="msg_subscribed">Subscribe success</string>
+    <string name="message_sample_time" translatable="false">28.11.12 16:35</string>
+    <string name="output_message__sample_text" translatable="false">Output message text</string>
+    <string name="input_message_sample_text" translatable="false">How are you doing? This is a long message that should probably wrap.</string>
+    <string name="from">From</string>
+    <string name="system_message">system_message_sample</string>
 </resources>

@@ -15,6 +15,7 @@ import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
+import com.korotaev.r.ms.testormlite.data.Entity.EntityConstVariables;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
@@ -51,17 +52,17 @@ public class ormMessageAdapter extends PagedListAdapter<Message, ormMessageViewH
     @Override
     public ormMessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View convertView;
-
-
-        LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-
+        View convertView = null;
 
         if (viewType == ViewHelper.OUTPUT_MESSAGE) {
             convertView =  LayoutInflater.from(parent.getContext()).inflate(R.layout.output_message, parent, false);
-        } else {
-            convertView =  LayoutInflater.from(parent.getContext()).inflate(R.layout.input_message, parent, false);
         }
+        else if (viewType == ViewHelper.INPUT_MESSAGE) {
+            convertView =  LayoutInflater.from(parent.getContext()).inflate(R.layout.input_message, parent, false);
+        } else if (viewType == ViewHelper.SYSTEM_MESSAGE) {
+            convertView =  LayoutInflater.from(parent.getContext()).inflate(R.layout.system_message, parent, false);
+        }
+
 
         ormMessageViewHolder holder = new ormMessageViewHolder(convertView);
 
@@ -76,16 +77,21 @@ public class ormMessageAdapter extends PagedListAdapter<Message, ormMessageViewH
     @Override
     public int getItemViewType(int position) {
         Message message = getItem(position);
+        int result = ViewHelper.SYSTEM_MESSAGE;
         if (message != null) {
             User user = Preferences.loadCurrentUserInfo(context);
 
-            if (user != null && (message.getCreateUser() == user.getId())) {
-                return ViewHelper.OUTPUT_MESSAGE;
+            if (user != null && (message.getCreateUser() == user.getId()) && message.getType() == EntityConstVariables.MESSAGE_TYPE_REGION) {
+                result = ViewHelper.OUTPUT_MESSAGE;
             } else {
-                return ViewHelper.INPUT_MESSAGE;
+                if (user != null && (message.getCreateUser() != user.getId()) && message.getType() == EntityConstVariables.MESSAGE_TYPE_REGION)
+                    result = ViewHelper.INPUT_MESSAGE;
             }
         }
-        return ViewHelper.SYSTEM_MESSAGE;
+        if (message.getType() == EntityConstVariables.MESSAGE_TYPE_BROADCAST) {
+            result = ViewHelper.SYSTEM_MESSAGE;
+        }
+        return result;
     }
 
     @Nullable

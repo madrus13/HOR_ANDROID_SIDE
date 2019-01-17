@@ -70,4 +70,7 @@
     <string name="error_passwords_not_repeated">Пароли не совпадают</string>
     <string name="write_a_message">Напишите сообщение...</string>
     <string name="send">Отправить</string>
+    <string name="msg_subscribed">Успешно подписаны на сообщения</string>
+    <string name="msg_subscribe_failed">Ошибка при подключении к чату</string>
+    <string name="from">От</string>
 </resources>

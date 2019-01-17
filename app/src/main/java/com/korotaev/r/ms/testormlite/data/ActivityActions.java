@@ -13,4 +13,6 @@ public  class ActivityActions {
     public static final String EXTRA_TITLE_LIST = "EXTRA_TITLE_LIST";
     public static final String EXTRA_DATA_LIST = "EXTRA_DATA_LIST";
     public static final String EXTRA_SELECT_MODE_CHOICE_TYPE = "EXTRA_SELECT_MODE_CHOICE_TYPE";
+
+
 }

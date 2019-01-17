@@ -33,6 +33,7 @@ public class Messagetype implements Serializable {
     @DatabaseField
     private Byte isDeleted;
 
+
     @JsonIgnore
     @ForeignCollectionField
     private Collection<Message> messagesById;
