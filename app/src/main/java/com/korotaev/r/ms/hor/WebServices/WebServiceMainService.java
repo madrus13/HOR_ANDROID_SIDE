@@ -16,7 +16,7 @@ import java.util.List;
 public class WebServiceMainService {
     
     public static String NAMESPACE ="http://Service.ru/";
-    public static String url="http://185.246.154.49:8080/samplejpa-32/ws?wsdl"; //?wsdl
+    public static String url="http://185.246.154.49:8080/samplejpa-33/ws?wsdl"; //?wsdl
     public String PREFIX_SERVICE  = "";
     public static int timeOut = 5000;
     public IWsdl2CodeEvents eventHandler;
@@ -237,13 +237,13 @@ public class WebServiceMainService {
 
     }
     
-    public void getAllMessageByRequestAsync(String sessionToken,long request,boolean requestSpecified,int pageSize) throws Exception{
+    public void getAllMessageByRequestAsync(String sessionToken,long request,boolean requestSpecified,int startRow, int pageSize) throws Exception{
         if (this.eventHandler == null)
             throw new Exception("Async Methods Requires IWsdl2CodeEvents");
-        getAllMessageByRequestAsync(sessionToken, request, requestSpecified, pageSize, null);
+        getAllMessageByRequestAsync(sessionToken, request, requestSpecified,startRow, pageSize, null);
     }
     
-    public void getAllMessageByRequestAsync(final String sessionToken,final long request,final boolean requestSpecified,final int pageSize,final List<HeaderProperty> headers) throws Exception{
+    public void getAllMessageByRequestAsync(final String sessionToken,final long request,final boolean requestSpecified,final int startRow, final int pageSize,final List<HeaderProperty> headers) throws Exception{
         
         new AsyncTask<Void, Void, serviceResult>(){
             @Override
@@ -252,7 +252,7 @@ public class WebServiceMainService {
             };
             @Override
             protected serviceResult doInBackground(Void... params) {
-                return getAllMessageByRequest(sessionToken, request, requestSpecified, pageSize, headers);
+                return getAllMessageByRequest(sessionToken, request, requestSpecified,startRow, pageSize, headers);
             }
             @Override
             protected void onPostExecute(serviceResult result)
@@ -265,11 +265,11 @@ public class WebServiceMainService {
         }.execute();
     }
     
-    public serviceResult getAllMessageByRequest(String sessionToken,long request,boolean requestSpecified,int pageSize){
-        return getAllMessageByRequest(sessionToken, request, requestSpecified, pageSize, null);
+    public serviceResult getAllMessageByRequest(String sessionToken,long request,boolean requestSpecified, int startRow, int pageSize){
+        return getAllMessageByRequest(sessionToken, request, requestSpecified,startRow, pageSize, null);
     }
     
-    public serviceResult getAllMessageByRequest(String sessionToken,long request,boolean requestSpecified,int pageSize,List<HeaderProperty> headers){
+    public serviceResult getAllMessageByRequest(String sessionToken,long request,boolean requestSpecified,int startRow, int pageSize,List<HeaderProperty> headers){
 
         soapEnvelope.implicitTypes = true;
 
@@ -277,6 +277,7 @@ public class WebServiceMainService {
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("request",request);
         soapReq.addProperty("requestSpecified",requestSpecified);
+        soapReq.addProperty("startRow",startRow);
         soapReq.addProperty("pageSize",pageSize);
         soapEnvelope.setOutputSoapObject(soapReq);
         return soapMethodExecutor(headers, "getAllMessageByRequestRequest");

@@ -6,7 +6,6 @@ import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MessageStorage {
     private static MyDBHelper myDBHelper;
@@ -14,11 +13,11 @@ public class MessageStorage {
         myDBHelper = new MyDBHelper(context);
     }
 
-    public List<Message> getData(int requestedStartPosition, int requestedLoadSize) {
+    public ArrayList<Message> getData(Long region, int requestedStartPosition, int requestedLoadSize) {
         ArrayList<Message> msgList = new ArrayList<Message>();
 
-         msgList.addAll(myDBHelper.getHelper().getMessageItemBlock(requestedStartPosition,requestedLoadSize));
+         msgList.addAll(myDBHelper.getHelper().getMessageItemBlock(region,requestedStartPosition,requestedLoadSize));
 
-         return msgList;
+         return msgList.size() > 0 ? msgList: null;
     }
 }

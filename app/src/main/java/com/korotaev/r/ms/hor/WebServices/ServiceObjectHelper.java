@@ -86,7 +86,7 @@ public class ServiceObjectHelper {
     public static List<Message> getAllMessageByRegion(Context context,
                                                       String currentToken,
                                                       Long regionId,
-                                                      Long lastId,
+                                                      Long startRow,
                                                       int pageSize
                                                       )
     {
@@ -99,7 +99,7 @@ public class ServiceObjectHelper {
                 result = service.getMessageByRegionAndIdGreater(
                         currentToken,
                         regionId, regionId > 0 ? true : false,
-                        lastId, lastId > 0 ? true : false,
+                        startRow, true,
                         pageSize);
 
             } catch (Exception e) {
@@ -111,11 +111,6 @@ public class ServiceObjectHelper {
                 if (isValidResult(result)) {
 
                     messageList.addAll(Arrays.asList(mapper.readValue(result.resultObjectJSON, Message[].class)));
-                    if (!messageList.isEmpty()) {
-                        String val = messageList.get(messageList.size()-1).getId().toString();
-                        Preferences.saveObjInPrefs(context,
-                                Preferences.SAVED_LAST_MSG_ID_IN_REGION,val);
-                    }
                 }
 
             } catch (Exception e) {
@@ -234,6 +229,7 @@ public class ServiceObjectHelper {
                     if (currentUser!=null) {
                         currentUser = mapper.readValue(result.resultObjectJSON, User.class);
                         Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserInfo,result.resultObjectJSON);
+                        Preferences.saveObjInPrefs(context,Preferences.SAVED_LAST_MSG_ROW_IN_REGION,String.valueOf(Preferences.INITIAL_MSG_ROW_IN_REGION));
                         return currentUser;
                     }
                 }

@@ -271,6 +271,7 @@ public class MainActivity extends AppCompatActivity
 
         else if (id == R.id.nav_clear_log) {
             myDBHelper.getHelper().clearLog();
+            myDBHelper.getHelper().clearMessage();
         }
 
         try {

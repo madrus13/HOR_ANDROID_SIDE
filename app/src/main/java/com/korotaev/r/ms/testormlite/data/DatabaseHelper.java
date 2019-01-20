@@ -32,18 +32,11 @@ import java.util.List;
 
 /**
  * Database helper which creates and upgrades the database and provides the DAOs for the app.
- * 
- * @author kevingalligan
  */
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-    /************************************************
-     * Suggested Copy/Paste code. Everything from here to the done block.
-     ************************************************/
-
-    private static final String DATABASE_NAME = "ormDB_23.db";
-    private static final int DATABASE_VERSION = 23;
-
+    public static final int DATABASE_VERSION = 39;
+	private static final String DATABASE_NAME = "ormDB_"+ DATABASE_VERSION +".db";
 
 	private static Dao<Tooltypes		 , Integer> TooltypesDao;
 	private static Dao<Achievmenttype   , Integer> AchievmenttypeDao;
@@ -367,6 +360,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 
+
+
+
 	public void addMessageList(List<Message> msgList)
 	{
 		try {
@@ -378,6 +374,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 				Message finded = MessageDao.queryBuilder().where().eq("id", msg.getId()).queryForFirst();
 				if (finded == null) {
 					MessageDao.create(msg);
+
 				}
 
 			}
@@ -407,7 +404,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return finded.size() > 0 ? finded.get(0) : null;
 	}
 
-	public List<Message> getMessageItemBlock(int startRow, int  size)
+	public List<Message> getMessageItemBlock(Long region, int startRow, int  size)
 	{
 		List<Message> finded = null;
 		try {
@@ -416,7 +413,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			}
 
 
-			finded = MessageDao.queryBuilder().orderBy("uid", false).limit(Long.valueOf(size)).offset(Long.valueOf(startRow)).query();
+			finded = MessageDao.queryBuilder()
+					.orderBy("uid", false)
+					.limit(Long.valueOf(size))
+					.offset(Long.valueOf(startRow))
+					.where().eq("region",region).query();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -424,14 +425,15 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return finded;
 	}
 
-	public int getMessageCount()
+	public int getMessageCount(Long region)
 	{
 		int result = 0;
 		try {
 			if (MessageDao==null) {
 				MessageDao = this.getMessageDao();
 			}
-			result = (int) MessageDao.countOf();
+			result = (int) MessageDao.queryBuilder()
+					.where().eq("region",region).countOf();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

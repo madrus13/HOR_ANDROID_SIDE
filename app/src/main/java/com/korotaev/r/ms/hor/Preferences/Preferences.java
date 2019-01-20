@@ -3,6 +3,7 @@ package com.korotaev.r.ms.hor.Preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.korotaev.r.ms.testormlite.data.DatabaseHelper;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
 import com.korotaev.r.ms.testormlite.data.Entity.Region;
 import com.korotaev.r.ms.testormlite.data.Entity.Tool;
@@ -33,9 +34,10 @@ public  class  Preferences {
     public  static String SAVED_CurrentUserAutos     = "CurrentUserAutos";
     public  static String SAVED_CurrentUserTools     = "CurrentUserTools";
 
-    public  static String SAVED_LAST_MSG_ID_IN_REGION  = "SAVED_LAST_MSG_ID_IN_REGION";
+    public  static String SAVED_LAST_MSG_ROW_IN_REGION  = "SAVED_LAST_MSG_ROW_IN_REGION";
+    public  static int INITIAL_MSG_ROW_IN_REGION  = 0;
 
-    public static String prefName = "myPrefs";
+    public static String prefName = "HORPrefs_" + DatabaseHelper.DATABASE_VERSION;
     static SharedPreferences sPref;
     static ObjectMapper mapper = new ObjectMapper();
 

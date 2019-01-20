@@ -1,12 +1,10 @@
 package com.korotaev.r.ms.hor.AppHelpers.Message;
 
-import android.app.Activity;
 import android.arch.paging.PagedListAdapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,27 +17,25 @@ import com.korotaev.r.ms.testormlite.data.Entity.EntityConstVariables;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
-
 
 public class ormMessageAdapter extends PagedListAdapter<Message, ormMessageViewHolder> {
 
     public  Context context;
     private static MyDBHelper myDBHelper;
-    List<Message> messages = new ArrayList<Message>();
+    private User currentUser;
 
-    public ormMessageAdapter(DiffUtil.ItemCallback<Message> diffUtilCallback, Context context) {
+    public ormMessageAdapter(DiffUtil.ItemCallback<Message> diffUtilCallback, Context context, User currentUser) {
         super(diffUtilCallback);
         this.context = context;
+        this.currentUser = currentUser;
     }
 
+    /*
     public void add(Message message) {
         this.messages.add(message);
         notifyDataSetChanged();
     }
+    */
 
     public void initMydDBHelper()
     {
@@ -77,7 +73,7 @@ public class ormMessageAdapter extends PagedListAdapter<Message, ormMessageViewH
     @Override
     public int getItemViewType(int position) {
         Message message = getItem(position);
-        int result = ViewHelper.SYSTEM_MESSAGE;
+        int result = ViewHelper.OUTPUT_MESSAGE;
         if (message != null) {
             User user = Preferences.loadCurrentUserInfo(context);
 
@@ -104,7 +100,7 @@ public class ormMessageAdapter extends PagedListAdapter<Message, ormMessageViewH
     @Override
     public int getItemCount() {
         initMydDBHelper();
-        return myDBHelper.getHelper().getMessageCount();
+        return myDBHelper.getHelper().getMessageCount(currentUser.getRegion());
     }
 }
 

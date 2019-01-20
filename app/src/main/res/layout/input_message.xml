@@ -40,7 +40,7 @@
         android:padding="8dp"
         android:paddingHorizontal="14dp"
         android:text="@string/input_message_sample_text"
-        android:textSize="14sp" />
+        android:textSize="14dp" />
 
     <TextView
         android:id="@+id/message_time"
@@ -54,5 +54,5 @@
         android:text="@string/message_sample_time"
         android:textAlignment="viewStart"
         android:textColor="@color/colorBackground"
-        android:textSize="12sp" />
+        android:textSize="12dp" />
 </RelativeLayout>

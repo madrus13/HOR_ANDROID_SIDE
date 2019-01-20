@@ -28,8 +28,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.korotaev.r.ms.hor.AppHelpers.Message.MessageStorage;
 import com.korotaev.r.ms.hor.AppHelpers.Message.MessageSourceFactory;
+import com.korotaev.r.ms.hor.AppHelpers.Message.MessageStorage;
 import com.korotaev.r.ms.hor.AppHelpers.Message.ormMessageAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
@@ -48,6 +48,7 @@ import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 
 public class ChatFragment extends Fragment implements ServiceActivity {
 
+    private static final int VIEW_MESSAGE_PAGE_SIZE = 100;
     static boolean  stateFromMe = true;
 
     static boolean  registeredToServiceIntent;
@@ -66,6 +67,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     public static ChatFragment newInstance() {
         return new ChatFragment();
     }
+    User user;
 
     private ImageButton sendMsgButton;
     private EditText messageToSend;
@@ -118,7 +120,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         public void handleMessage(android.os.Message msg) {
 
             msg.getData();
-            if (msg.replyTo == mMessenger) {
+            if (true) { //msg.replyTo == mMessenger
                 switch (msg.what) {
                     case SrvCmd.CMD_RegisterIntentServiceClientResp:
                         ViewHelper.sendComandToIntentService(
@@ -130,19 +132,90 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                                 SrvCmd.CMD_GetMessageByUserRegionReq, null);
                         registeredToServiceIntent = true;
                         break;
-                    case SrvCmd.CMD_EntitySyncResp:
+
+                    case SrvCmd.CMD_GetMessageByUserRegionResp:
+                        initMessageAdapter();
                         break;
 
-                    case SrvCmd.CMD_EntitySetUserInfoResp:
-
+                    case SrvCmd.CMD_InsertMessageResp:
+                        ViewHelper.sendComandToIntentService(
+                                getContext(),
+                                mMessenger,
+                                mService,
+                                null,
+                                null,
+                                SrvCmd.CMD_GetMessageByUserRegionReq, null);
+                        initMessageAdapter();
                         break;
 
                     default:
                         super.handleMessage(msg);
                 }
             }
-
         }
+    }
+
+
+    public void initMessageAdapter()
+    {
+        MessageSourceFactory sourceFactory = new MessageSourceFactory(new MessageStorage(getContext()),user);
+
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setPageSize(VIEW_MESSAGE_PAGE_SIZE)
+                .setEnablePlaceholders(true)
+                .build();
+
+        messageAdapter = new ormMessageAdapter(new DiffUtil.ItemCallback<Message>() {
+            @Override
+            public boolean areItemsTheSame(Message oldItem, Message newItem) {
+                return
+                        oldItem!=null && newItem!=null &&
+                        oldItem.getId() == newItem.getId() &&
+                        oldItem.getUid() == newItem.getUid();
+            }
+
+            @Override
+            public boolean areContentsTheSame(Message oldItem, Message newItem) {
+
+                return  oldItem!=null && newItem!=null &&
+                        oldItem.getId() == newItem.getId() &&
+                        oldItem.getText() == newItem.getText() &&
+                        oldItem.getCreateUserName() == newItem.getCreateUserName() &&
+                        oldItem.getUid() == newItem.getUid();
+            }
+        },getContext(), user);
+
+        int counter = messageAdapter.getItemCount() - 1; //%  VIEW_MESSAGE_PAGE_SIZE
+
+        LiveData<PagedList<Message>> pagedListLiveData = new LivePagedListBuilder<>(sourceFactory, config)
+                .setFetchExecutor(Executors.newSingleThreadExecutor())
+                .setInitialLoadKey(0)
+                .build();
+
+        pagedListLiveData.observe(this, new Observer<PagedList<Message>>() {
+            @Override
+            public void onChanged(@Nullable PagedList<Message> messages) {
+                Log.d(CODE_INFO, "submit PagedList");
+                if (messageAdapter!=null) {
+                    messageAdapter.submitList(messages);
+                    int pos = messagesView.getAdapter().getItemCount() - 1;
+                    messagesView.scrollToPosition(pos > 0 ? pos : 0);
+
+                    messageAdapter.notifyDataSetChanged();
+
+                }
+
+            }
+        });
+        final  LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        //layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+        messagesView.setLayoutManager(layoutManager);
+
+        messagesView.setAdapter(messageAdapter);
+        int pos = messagesView.getAdapter().getItemCount() - 1;
+        messagesView.scrollToPosition(pos > 0 ? pos : 0);
     }
 
 
@@ -152,44 +225,6 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         sendMsgButton = v.findViewById(R.id.send_chat_message_button);
         messageToSend = v.findViewById(R.id.message_to_send);
         messagesView = v.findViewById(R.id.messages_view);
-
-
-        MessageSourceFactory sourceFactory = new MessageSourceFactory(new MessageStorage(getContext()));
-
-        PagedList.Config config = new PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
-                .setPageSize(20)
-                .build();
-
-        LiveData<PagedList<Message>> pagedListLiveData = new LivePagedListBuilder<>(sourceFactory, config)
-                .setFetchExecutor(Executors.newSingleThreadExecutor())
-                .build();
-
-        messageAdapter = new ormMessageAdapter(new DiffUtil.ItemCallback<Message>() {
-            @Override
-            public boolean areItemsTheSame(Message oldItem, Message newItem) {
-                return false;
-            }
-
-            @Override
-            public boolean areContentsTheSame(Message oldItem, Message newItem) {
-                return false;
-            }
-        },getContext());
-
-
-        pagedListLiveData.observe(this, new Observer<PagedList<Message>>() {
-            @Override
-            public void onChanged(@Nullable PagedList<Message> messages) {
-                Log.d(CODE_INFO, "submit PagedList");
-                messageAdapter.submitList(messages);
-            }
-        });
-
-        messagesView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        messagesView.setAdapter(messageAdapter);
-        messageAdapter.notifyDataSetChanged();
-
     }
 
     public void OnClickListenerInit()
@@ -203,8 +238,6 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                 if (messageToSend!=null && !messageToSend.getText().toString().isEmpty()) {
                     messageText = messageToSend.getText().toString();
                     try {
-                        User user = Preferences.loadCurrentUserInfo(getContext());
-
                         Message message = new Message();
                         message.setText(messageText);
                         message.setCreateUser(user.getId());
@@ -255,7 +288,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-
+        user = Preferences.loadCurrentUserInfo(getContext());
         View v = inflater.inflate(R.layout.chat_fragment, container, false);
         initViews(v);
         OnClickListenerInit();

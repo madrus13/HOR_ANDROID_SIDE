@@ -39,6 +39,7 @@ import java.util.List;
 
 public class CmdService extends IntentService {
 
+    private static final int GET_MESSAGE_PAGE_SIZE = 3;
     private static  User user = null;
 
     private SyncTask mSyncTask = null;
@@ -235,7 +236,7 @@ public class CmdService extends IntentService {
             currentToken = Preferences.loadObjInPrefs(CmdService.this,Preferences.SAVED_Session);
 
 
-            /*
+
             User currentUser = ServiceObjectHelper.setCurrentUserInfo(CmdService.this,
                     currentToken,
                     this.region,
@@ -249,7 +250,7 @@ public class CmdService extends IntentService {
                 userId = currentUser.getId();
                 userSpecified = true;
             }
-            */
+
 
             List<Tool> tools = ServiceObjectHelper.setCurrentUserTools(CmdService.this, currentToken,toolTypeIds);
 
@@ -286,33 +287,47 @@ public class CmdService extends IntentService {
         protected Boolean doInBackground(Void... voids) {
 
             ArrayList<com.korotaev.r.ms.testormlite.data.Entity.Message> msgList = new ArrayList<com.korotaev.r.ms.testormlite.data.Entity.Message>();
+            msgList.clear();
 
             currentToken = Preferences.loadObjInPrefs(CmdService.this,Preferences.SAVED_Session);
             User currentUser = ServiceObjectHelper.getCurrentUserInfo(CmdService.this, currentToken);
             boolean isEnd = false;
-            while (isEnd == false) {
+            String val = Preferences.loadObjInPrefs(CmdService.this, Preferences.SAVED_LAST_MSG_ROW_IN_REGION);
+            Long startRow = ParserHelper.TryParse(val);
 
 
-                    String val = Preferences.loadObjInPrefs(CmdService.this, Preferences.SAVED_LAST_MSG_ID_IN_REGION);
-                    Long index = ParserHelper.TryParse(val);
-                    msgList.clear();
+            while (isEnd == false && currentUser!=null && currentUser.getRegion()!=null) {
+
+
                     List<com.korotaev.r.ms.testormlite.data.Entity.Message> retVal = ServiceObjectHelper.getAllMessageByRegion(
                             CmdService.this,
-                            currentToken, currentUser.getRegion(), index, 2);
+                            currentToken, currentUser.getRegion(), startRow, GET_MESSAGE_PAGE_SIZE);
+
                     if (retVal!=null && retVal.size() > 0)
                     {
                         msgList.addAll(retVal);
-                        myDBHelper.getHelper().addMessageList(msgList);
+                        //Next page if
+                        if (retVal.size() == GET_MESSAGE_PAGE_SIZE) {
+                            startRow++;
+                        }
+                        else if (retVal.size() < GET_MESSAGE_PAGE_SIZE) {
+                            isEnd = true;
+                            break;
+                        }
+
+
                     }
                     else {
                         isEnd = true;
                     }
-
-                    myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllMessageByRegion id = " + index );
-                    sendMsgToServiceClients(msg, SrvCmd.CMD_GetMessageByUserRegionResp);
-
-                    //Thread.sleep(10000);
+                    myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllMessageByRegion row = " + startRow );
             }
+
+            myDBHelper.getHelper().addMessageList(msgList);
+            Preferences.saveObjInPrefs(CmdService.this,
+                    Preferences.SAVED_LAST_MSG_ROW_IN_REGION,String.valueOf(startRow));
+            sendMsgToServiceClients(msg, SrvCmd.CMD_GetMessageByUserRegionResp);
+
             return null;
         }
     }
@@ -354,6 +369,8 @@ public class CmdService extends IntentService {
                     file
 
             );
+
+
 
             return null;
         }
