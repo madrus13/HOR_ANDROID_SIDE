@@ -25,6 +25,7 @@ public class ormMessageViewHolder extends ViewHolder {
         if (item == null ) {
 
         } else {
+
             messageBody = itemView.findViewById(R.id.message_body);
             message_time = itemView.findViewById(R.id.message_time);
             name = itemView.findViewById(R.id.name);
@@ -37,12 +38,12 @@ public class ormMessageViewHolder extends ViewHolder {
                     name = itemView.findViewById(R.id.name);
                     if (name!=null) name.setText(item.getCreateUserName());
                     if (message_time!=null && item.getCreationDate()!=null) {
-                        message_time.setText((new SimpleDateFormat("d.M.yy hh:mm")).format(item.getCreationDate()));
+                        message_time.setText((new SimpleDateFormat("hh:mm")).format(item.getCreationDate()));
                     }
                     break;
                 case ViewHelper.OUTPUT_MESSAGE:
                     if (message_time!=null && item.getCreationDate()!=null) {
-                        message_time.setText((new SimpleDateFormat("d.M.yy hh:mm")).format(item.getCreationDate()));
+                        message_time.setText((new SimpleDateFormat("hh:mm")).format(item.getCreationDate()));
                     }
                     break;
                 case ViewHelper.SYSTEM_MESSAGE:

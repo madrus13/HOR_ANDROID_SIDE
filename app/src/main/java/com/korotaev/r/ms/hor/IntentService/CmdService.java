@@ -39,7 +39,7 @@ import java.util.List;
 
 public class CmdService extends IntentService {
 
-    private static final int GET_MESSAGE_PAGE_SIZE = 3;
+    private static final int GET_MESSAGE_PAGE_SIZE = 100;
     private static  User user = null;
 
     private SyncTask mSyncTask = null;

@@ -199,7 +199,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                 Log.d(CODE_INFO, "submit PagedList");
                 if (messageAdapter!=null) {
                     messageAdapter.submitList(messages);
-                    int pos = messagesView.getAdapter().getItemCount() - 1;
+                    int pos = messagesView.getAdapter().getItemCount();
                     messagesView.scrollToPosition(pos > 0 ? pos : 0);
 
                     messageAdapter.notifyDataSetChanged();
@@ -214,7 +214,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         messagesView.setLayoutManager(layoutManager);
 
         messagesView.setAdapter(messageAdapter);
-        int pos = messagesView.getAdapter().getItemCount() - 1;
+        int pos = messagesView.getAdapter().getItemCount();
         messagesView.scrollToPosition(pos > 0 ? pos : 0);
     }
 

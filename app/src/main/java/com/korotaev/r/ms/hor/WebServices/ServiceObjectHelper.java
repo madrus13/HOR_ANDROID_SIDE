@@ -230,6 +230,7 @@ public class ServiceObjectHelper {
                         currentUser = mapper.readValue(result.resultObjectJSON, User.class);
                         Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserInfo,result.resultObjectJSON);
                         Preferences.saveObjInPrefs(context,Preferences.SAVED_LAST_MSG_ROW_IN_REGION,String.valueOf(Preferences.INITIAL_MSG_ROW_IN_REGION));
+
                         return currentUser;
                     }
                 }

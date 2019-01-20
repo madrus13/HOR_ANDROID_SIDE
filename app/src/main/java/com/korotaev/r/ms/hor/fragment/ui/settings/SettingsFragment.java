@@ -161,8 +161,10 @@ public class SettingsFragment extends Fragment
 
                     case SrvCmd.CMD_EntitySetUserInfoResp:
 
-                        if(SettingsFragment.this.getContext()!=null)
+                        if(SettingsFragment.this.getContext()!=null) {
+                            myDBHelper.getHelper().clearMessage();
                             Toast.makeText(SettingsFragment.this.getContext(), R.string.SuccessSave, Toast.LENGTH_SHORT).show();
+                        }
                         break;
 
                     default:
