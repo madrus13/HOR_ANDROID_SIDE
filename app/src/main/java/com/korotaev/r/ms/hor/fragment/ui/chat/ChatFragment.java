@@ -201,9 +201,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                     messageAdapter.submitList(messages);
                     int pos = messagesView.getAdapter().getItemCount();
                     messagesView.scrollToPosition(pos > 0 ? pos : 0);
-
                     messageAdapter.notifyDataSetChanged();
-
                 }
 
             }

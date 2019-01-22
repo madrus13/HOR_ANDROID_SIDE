@@ -19,6 +19,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class ServiceObjectHelper {
@@ -119,6 +120,47 @@ public class ServiceObjectHelper {
         }
         return messageList;
     }
+
+
+    public static List<Message> findMessageByRegionAndCreationDateBetween(Context context,
+                                                      String currentToken,
+                                                      long regionId,
+                                                      Date startDate,
+                                                      Date endDate,
+                                                      int page, int pageSize
+    )
+    {
+        ArrayList<Message> messageList = new ArrayList<Message>();
+
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.findMessageByRegionAndCreationDateBetween(
+                        currentToken,
+                        regionId, regionId > 0 ? true : false,
+                        startDate, true,
+                        endDate, true,
+                        page,  pageSize);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+
+                if (isValidResult(result)) {
+
+                    messageList.addAll(Arrays.asList(mapper.readValue(result.resultObjectJSON, Message[].class)));
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return messageList;
+    }
+
 
     public static List<Region> getAllRegions(Context context, String currentToken)
     {

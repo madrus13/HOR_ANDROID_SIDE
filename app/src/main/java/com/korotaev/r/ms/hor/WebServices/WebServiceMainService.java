@@ -11,6 +11,7 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class WebServiceMainService {
@@ -234,8 +235,98 @@ public class WebServiceMainService {
         soapReq.addProperty("pageSize",pageSize);
         soapEnvelope.setOutputSoapObject(soapReq);
         return soapMethodExecutor(headers, "getMessageByRegionAndIdGreaterRequest");
-
     }
+
+
+    public void findMessageByRegionAndCreationDateBetweenDateAsync(String sessionToken,
+                                                                   long regionId, boolean regionIdSpecified,
+                                                                   Date startDate, boolean startDateSpecified,
+                                                                   Date endDate, boolean endDateSpecified,
+                                                                   int page, int pageSize
+    ) throws Exception{
+        if (this.eventHandler == null)
+            throw new Exception("Async Methods Requires IWsdl2CodeEvents");
+        findMessageByRegionAndCreationDateBetweenDateAsync(
+                sessionToken,
+                regionId,  regionIdSpecified,
+                startDate,  startDateSpecified,
+                endDate,  endDateSpecified,
+                page,  pageSize,null
+                );
+    }
+
+    public void findMessageByRegionAndCreationDateBetweenDateAsync(final String sessionToken,
+                                                                   final long regionId, boolean regionIdSpecified,
+                                                                   final Date startDate, boolean startDateSpecified,
+                                                                   final Date endDate, boolean endDateSpecified,
+                                                                   final int page, final int pageSize,
+                                                                   final List<HeaderProperty> headers) throws Exception{
+
+        new AsyncTask<Void, Void, serviceResult>(){
+            @Override
+            protected void onPreExecute() {
+                eventHandler.Wsdl2CodeStartedRequest();
+            };
+            @Override
+            protected serviceResult doInBackground(Void... params) {
+                return findMessageByRegionAndCreationDateBetween(
+                        sessionToken,
+                        regionId,  regionIdSpecified,
+                        startDate,  startDateSpecified,
+                        endDate,  endDateSpecified,
+                        page,  pageSize,
+                        headers);
+            }
+            @Override
+            protected void onPostExecute(serviceResult result)
+            {
+                eventHandler.Wsdl2CodeEndedRequest();
+                if (result != null){
+                    eventHandler.Wsdl2CodeFinished("getMessageByRegionAndIdGreater", result);
+                }
+            }
+        }.execute();
+    }
+
+    public serviceResult findMessageByRegionAndCreationDateBetween(
+            String sessionToken,
+            long regionId, boolean regionIdSpecified,
+            Date startDate, boolean startDateSpecified,
+            Date endDate, boolean endDateSpecified,
+            int page, int pageSize
+            ){
+        return findMessageByRegionAndCreationDateBetween(
+                 sessionToken,
+                 regionId,  regionIdSpecified,
+                 startDate,  startDateSpecified,
+                 endDate,  endDateSpecified,
+                 page,  pageSize,
+        null);
+    }
+
+    public serviceResult findMessageByRegionAndCreationDateBetween(
+            String sessionToken,
+            long regionId, boolean regionIdSpecified,
+            Date startDate, boolean startDateSpecified,
+            Date endDate, boolean endDateSpecified,
+            int page, int pageSize,
+            List<HeaderProperty> headers){
+
+        soapEnvelope.implicitTypes = true;
+        SoapObject soapReq = new SoapObject("http://Service.ru/","findMessageByRegionAndCreationDateBetweenOrderByIdAsc");
+        soapReq.addProperty("sessionToken",sessionToken);
+        soapReq.addProperty("regionId",regionId);
+        soapReq.addProperty("regionIdSpecified",regionIdSpecified);
+        soapReq.addProperty("startDate",startDate);
+        soapReq.addProperty("startDateSpecified",startDateSpecified);
+        soapReq.addProperty("endDate",endDate);
+        soapReq.addProperty("endDateSpecified",endDateSpecified);
+        soapReq.addProperty("page",page);
+        soapReq.addProperty("pageSize",pageSize);
+        soapEnvelope.setOutputSoapObject(soapReq);
+        return soapMethodExecutor(headers, "findMessageByRegionAndCreationDateBetweenOrderByIdAscRequest");
+    }
+
     
     public void getAllMessageByRequestAsync(String sessionToken,long request,boolean requestSpecified,int startRow, int pageSize) throws Exception{
         if (this.eventHandler == null)
