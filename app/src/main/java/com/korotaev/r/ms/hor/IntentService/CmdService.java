@@ -293,22 +293,22 @@ public class CmdService extends IntentService {
             User currentUser = ServiceObjectHelper.getCurrentUserInfo(CmdService.this, currentToken);
             boolean isEnd = false;
             String val = Preferences.loadObjInPrefs(CmdService.this, Preferences.SAVED_LAST_MSG_ROW_IN_REGION);
-            Long startRow = ParserHelper.TryParse(val);
+            Long offset =  ParserHelper.TryParse(val);
 
-
+            int page = 0;
             while (isEnd == false && currentUser!=null && currentUser.getRegion()!=null) {
 
 
-                    List<com.korotaev.r.ms.testormlite.data.Entity.Message> retVal = ServiceObjectHelper.getAllMessageByRegion(
+                    List<com.korotaev.r.ms.testormlite.data.Entity.Message> retVal = ServiceObjectHelper.findMessageByRegionAndCreationDateBetweenOffset(
                             CmdService.this,
-                            currentToken, currentUser.getRegion(), startRow, GET_MESSAGE_PAGE_SIZE);
+                            currentToken, currentUser.getRegion(), offset.intValue(),page, GET_MESSAGE_PAGE_SIZE);
 
                     if (retVal!=null && retVal.size() > 0)
                     {
                         msgList.addAll(retVal);
                         //Next page if
                         if (retVal.size() == GET_MESSAGE_PAGE_SIZE) {
-                            startRow++;
+                            page++;
                         }
                         else if (retVal.size() < GET_MESSAGE_PAGE_SIZE) {
                             isEnd = true;
@@ -320,12 +320,12 @@ public class CmdService extends IntentService {
                     else {
                         isEnd = true;
                     }
-                    myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllMessageByRegion row = " + startRow );
+                    myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllMessageByRegion row = " + page );
             }
 
             myDBHelper.getHelper().addMessageList(msgList);
             Preferences.saveObjInPrefs(CmdService.this,
-                    Preferences.SAVED_LAST_MSG_ROW_IN_REGION,String.valueOf(startRow));
+                    Preferences.SAVED_LAST_MSG_ROW_IN_REGION,String.valueOf(page));
             sendMsgToServiceClients(msg, SrvCmd.CMD_GetMessageByUserRegionResp);
 
             return null;

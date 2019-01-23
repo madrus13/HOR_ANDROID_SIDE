@@ -162,6 +162,44 @@ public class ServiceObjectHelper {
     }
 
 
+    public static List<Message> findMessageByRegionAndCreationDateBetweenOffset(Context context,
+                                                                          String currentToken,
+                                                                          long regionId,
+                                                                          int offset,
+                                                                          int page, int pageSize
+    )
+    {
+        ArrayList<Message> messageList = new ArrayList<Message>();
+
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.findMessageByRegionAndCreationDateBetweenOffset(
+                        currentToken,
+                        regionId, regionId > 0 ? true : false,
+                        offset,
+                        page,  pageSize);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+
+                if (isValidResult(result)) {
+
+                    messageList.addAll(Arrays.asList(mapper.readValue(result.resultObjectJSON, Message[].class)));
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return messageList;
+    }
+
+
     public static List<Region> getAllRegions(Context context, String currentToken)
     {
         serviceResult result = new serviceResult();
