@@ -32,6 +32,7 @@ import com.korotaev.r.ms.hor.AppHelpers.Message.MessageSourceFactory;
 import com.korotaev.r.ms.hor.AppHelpers.Message.MessageStorage;
 import com.korotaev.r.ms.hor.AppHelpers.Message.ormMessageAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
+import com.korotaev.r.ms.hor.AppHelpers.ParserHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
@@ -55,7 +56,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     Messenger mService = null;
     Messenger mMessenger = new Messenger(new ChatFragment.IncomingHandler());
 
-
+    public static boolean isLoadNewMessagePortion = false;
     private ChatViewModel mViewModel;
     ormMessageAdapter messageAdapter;
     private MyDBHelper myDBHelper = new MyDBHelper(getContext());
@@ -135,6 +136,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 
                     case SrvCmd.CMD_GetMessageByUserRegionResp:
                         initMessageAdapter();
+                        isLoadNewMessagePortion = false;
                         break;
 
                     case SrvCmd.CMD_InsertMessageResp:
@@ -154,6 +156,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
             }
         }
     }
+
 
 
     public void initMessageAdapter()
@@ -186,11 +189,28 @@ public class ChatFragment extends Fragment implements ServiceActivity {
             }
         },getContext(), user);
 
-        int counter = messageAdapter.getItemCount() - 1; //%  VIEW_MESSAGE_PAGE_SIZE
+
 
         LiveData<PagedList<Message>> pagedListLiveData = new LivePagedListBuilder<>(sourceFactory, config)
                 .setFetchExecutor(Executors.newSingleThreadExecutor())
                 .setInitialLoadKey(0)
+                .setBoundaryCallback(new PagedList.BoundaryCallback<Message>() {
+                    @Override
+                    public void onZeroItemsLoaded() {
+                        super.onZeroItemsLoaded();
+                    }
+
+                    @Override
+                    public void onItemAtFrontLoaded(@NonNull Message itemAtFront) {
+                        super.onItemAtFrontLoaded(itemAtFront);
+
+                    }
+
+                    @Override
+                    public void onItemAtEndLoaded(@NonNull Message itemAtEnd) {
+                        super.onItemAtEndLoaded(itemAtEnd);
+                    }
+                })
                 .build();
 
         pagedListLiveData.observe(this, new Observer<PagedList<Message>>() {
@@ -214,9 +234,28 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         messagesView.setAdapter(messageAdapter);
         int pos = messagesView.getAdapter().getItemCount();
         messagesView.scrollToPosition(pos > 0 ? pos : 0);
+
     }
 
+    public void getNextPage()
+    {
+        if (isLoadNewMessagePortion == false) {
+            String val = Preferences.loadObjInPrefs(getContext(), Preferences.SAVED_LAST_MSG_ROW_IN_REGION);
+            Long offset =  ParserHelper.TryParse(val);
+            Preferences.saveObjInPrefs(getContext(),
+                    Preferences.SAVED_LAST_MSG_ROW_IN_REGION,String.valueOf(offset));
 
+
+            ViewHelper.sendComandToIntentService(
+                    getContext(),
+                    mMessenger,
+                    mService,
+                    null,
+                    null,
+                    SrvCmd.CMD_GetMessageByUserRegionReq, null);
+            isLoadNewMessagePortion = true;
+        }
+    }
     public  void initViews(View v)
     {
         myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> initViews" );

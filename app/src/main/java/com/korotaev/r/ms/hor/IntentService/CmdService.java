@@ -139,7 +139,7 @@ public class CmdService extends IntentService {
                 }
                 case SrvCmd.CMD_GetMessageByUserRegionReq:
                 {
-                    myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "START mGetMessageByRegionTask");
+
                     mGetMessageByRegionTask = new GetMessageByRegionTask(msg);
                     mGetMessageByRegionTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     break;
@@ -295,7 +295,7 @@ public class CmdService extends IntentService {
             String val = Preferences.loadObjInPrefs(CmdService.this, Preferences.SAVED_LAST_MSG_ROW_IN_REGION);
             Long offset =  ParserHelper.TryParse(val);
 
-            int page = 0;
+            int page =  offset.intValue();
             while (isEnd == false && currentUser!=null && currentUser.getRegion()!=null) {
 
 
