@@ -192,6 +192,11 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Snackbar snackbar = Snackbar
+                .make(mMainView, "Welcome to HelpOnRoad", Snackbar.LENGTH_LONG);
+
+        snackbar.show();
     }
 
     @Override
