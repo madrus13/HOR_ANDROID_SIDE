@@ -23,6 +23,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -234,7 +235,15 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         messagesView.setAdapter(messageAdapter);
         int pos = messagesView.getAdapter().getItemCount();
         messagesView.scrollToPosition(pos > 0 ? pos : 0);
+        messagesView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                myDBHelper.getHelper().addLog("CFM->onTouch", "MotionEvent: " + motionEvent.toString() +  "action " + motionEvent.getAction());
+                return false;
+            }
+        });
 
+      
     }
 
     public void getNextPage()
