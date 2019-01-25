@@ -17,6 +17,7 @@ import android.os.Messenger;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -165,6 +166,11 @@ public class SettingsFragment extends Fragment
                             myDBHelper.getHelper().clearMessage();
                             Toast.makeText(SettingsFragment.this.getContext(), R.string.SuccessSave, Toast.LENGTH_SHORT).show();
                         }
+
+                        Snackbar snackbar = Snackbar
+                                .make(getActivity().findViewById(R.id.main_layout), "Save success", Snackbar.LENGTH_LONG);
+
+                        snackbar.show();
                         break;
 
                     default:
