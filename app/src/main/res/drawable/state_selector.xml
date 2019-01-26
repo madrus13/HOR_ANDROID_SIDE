@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/colorPrimary" android:state_selected="true"/>
-    <item android:drawable="@color/colorBackground" android:state_activated="true"/>
-    <item android:drawable="@android:color/transparent"/>
+    <item android:state_selected="true" android:drawable="@color/colorPrimary" />
+    <item android:state_activated="true" android:drawable="@color/colorBackground" />
+    <item android:drawable="@android:color/transparent" />
 </selector>

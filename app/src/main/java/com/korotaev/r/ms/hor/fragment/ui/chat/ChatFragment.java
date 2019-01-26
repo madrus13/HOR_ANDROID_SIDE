@@ -16,14 +16,15 @@ import android.os.IBinder;
 import android.os.Messenger;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -61,6 +62,8 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     private ChatViewModel mViewModel;
     ormMessageAdapter messageAdapter;
     private MyDBHelper myDBHelper = new MyDBHelper(getContext());
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private FloatingActionButton fab_date;
 
     public ChatFragment() {
         registeredToServiceIntent = false;
@@ -137,6 +140,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 
                     case SrvCmd.CMD_GetMessageByUserRegionResp:
                         initMessageAdapter();
+                        mSwipeRefreshLayout.setRefreshing(false);
                         isLoadNewMessagePortion = false;
                         break;
 
@@ -235,35 +239,29 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         messagesView.setAdapter(messageAdapter);
         int pos = messagesView.getAdapter().getItemCount();
         messagesView.scrollToPosition(pos > 0 ? pos : 0);
-        messagesView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                myDBHelper.getHelper().addLog("CFM->onTouch", "MotionEvent: " + motionEvent.toString() +  "action " + motionEvent.getAction());
-                return false;
-            }
-        });
+
 
       
     }
 
     public void getNextPage()
     {
-        if (isLoadNewMessagePortion == false) {
-            String val = Preferences.loadObjInPrefs(getContext(), Preferences.SAVED_LAST_MSG_ROW_IN_REGION);
-            Long offset =  ParserHelper.TryParse(val);
-            Preferences.saveObjInPrefs(getContext(),
-                    Preferences.SAVED_LAST_MSG_ROW_IN_REGION,String.valueOf(offset));
+
+        String val = Preferences.loadObjInPrefs(getContext(), Preferences.SAVED_LAST_MSG_ROW_IN_REGION);
+        Long offset =  ParserHelper.TryParse(val);
+        offset++;
+        Preferences.saveObjInPrefs(getContext(),
+                Preferences.SAVED_LAST_MSG_ROW_IN_REGION,String.valueOf(offset));
 
 
-            ViewHelper.sendComandToIntentService(
-                    getContext(),
-                    mMessenger,
-                    mService,
-                    null,
-                    null,
-                    SrvCmd.CMD_GetMessageByUserRegionReq, null);
-            isLoadNewMessagePortion = true;
-        }
+        ViewHelper.sendComandToIntentService(
+                getContext(),
+                mMessenger,
+                mService,
+                null,
+                null,
+                SrvCmd.CMD_GetMessageByUserRegionReq, null);
+
     }
     public  void initViews(View v)
     {
@@ -271,6 +269,9 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         sendMsgButton = v.findViewById(R.id.send_chat_message_button);
         messageToSend = v.findViewById(R.id.message_to_send);
         messagesView = v.findViewById(R.id.messages_view);
+        mSwipeRefreshLayout = v.findViewById(R.id.swipe_view);
+        fab_date = v.findViewById(R.id.fab_date);
+
     }
 
     public void OnClickListenerInit()
@@ -321,9 +322,13 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                         myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> OnClickListenerInit" + ex.toString() );
                     }
                 }
+            }
+        });
 
-
-                //messagesView.setSelection(messagesView.getCount() - 1);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getNextPage();
             }
         });
     }

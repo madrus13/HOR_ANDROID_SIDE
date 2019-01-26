@@ -395,7 +395,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			//queryBuilder.offset(Long.valueOf(startRow)).limit(1L);
 
 			//finded = MessageDao.queryForFirst(queryBuilder.prepare());
-			finded = MessageDao.queryBuilder().limit(1L).offset(Long.valueOf(startRow)).query();
+			finded = MessageDao.queryBuilder().limit(1L)
+					.offset(Long.valueOf(startRow))
+					.orderBy("id", true)
+					.query();
 					//MessageDao.queryBuilder().where().eq("uid", i).queryForFirst();
 
 		} catch (SQLException e) {
@@ -414,7 +417,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 
 			finded = MessageDao.queryBuilder()
-					.orderBy("uid", false)
+					.orderBy("id", true)
 					.limit(Long.valueOf(size))
 					.offset(Long.valueOf(startRow))
 					.where().eq("region",region).query();

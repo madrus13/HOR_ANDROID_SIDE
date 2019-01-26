@@ -295,7 +295,7 @@ public class CmdService extends IntentService {
             String val = Preferences.loadObjInPrefs(CmdService.this, Preferences.SAVED_LAST_MSG_ROW_IN_REGION);
             Long offset =  ParserHelper.TryParse(val);
 
-            int page =  offset.intValue();
+            int page =  0;
             while (isEnd == false && currentUser!=null && currentUser.getRegion()!=null) {
 
 
@@ -324,8 +324,8 @@ public class CmdService extends IntentService {
             }
 
             myDBHelper.getHelper().addMessageList(msgList);
-            Preferences.saveObjInPrefs(CmdService.this,
-                    Preferences.SAVED_LAST_MSG_ROW_IN_REGION,String.valueOf(page));
+            //Preferences.saveObjInPrefs(CmdService.this,
+            //        Preferences.SAVED_LAST_MSG_ROW_IN_REGION,String.valueOf(page));
             sendMsgToServiceClients(msg, SrvCmd.CMD_GetMessageByUserRegionResp);
 
             return null;
