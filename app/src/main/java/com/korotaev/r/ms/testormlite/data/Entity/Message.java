@@ -4,6 +4,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.korotaev.r.ms.testormlite.data.Transactional;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.io.Serializable;
@@ -51,6 +52,8 @@ public class Message implements Serializable {
     @DatabaseField
     private Long request;
     @DatabaseField
+    private Long files;
+    @DatabaseField
     private Long type;
     @DatabaseField
     private Long region;
@@ -64,7 +67,8 @@ public class Message implements Serializable {
     private Messagetype messagetypeByType;
     @DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh = true)
     private Region regionByRegion;
-
+    @JsonIgnore
+    private Files filesByFiles;
 
     public  Message() {
     }
@@ -179,6 +183,16 @@ public class Message implements Serializable {
         this.region = region;
     }
 
+    @Basic
+    @Column(name = "files", nullable = true)
+    public Long getFiles() {
+        return files;
+    }
+
+    public void setFiles(Long files) {
+        this.files = files;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -266,6 +280,18 @@ public class Message implements Serializable {
     public void setRegionByRegion(Region regionByRegion) {
         this.regionByRegion = regionByRegion;
     }
+
+
+    @ManyToOne
+    @JoinColumn(name = "Files", referencedColumnName = "Id", insertable = false, updatable = false)
+    public Files getFilesByFiles() {
+        return filesByFiles;
+    }
+
+    public void setFilesByFiles(Files  filesByFiles) {
+        this.filesByFiles = filesByFiles;
+    }
+
 
     @Id
     @Column(name = "uid", nullable = false)

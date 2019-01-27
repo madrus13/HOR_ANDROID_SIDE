@@ -33,4 +33,13 @@
         android:textAlignment="viewEnd"
         android:textColor="@color/colorBackground"
         android:textSize="10dp" />
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/avatar"
+        android:layout_width="95dp"
+        android:layout_height="75dp"
+        android:layout_below="@+id/message_time"
+        android:layout_alignEnd="@+id/message_body"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="1dp" />
 </RelativeLayout>

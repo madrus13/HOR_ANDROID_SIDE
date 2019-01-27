@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
@@ -23,11 +24,17 @@ public class ormMessageAdapter extends PagedListAdapter<Message, ormMessageViewH
     public  Context context;
     private static MyDBHelper myDBHelper;
     private User currentUser;
+    private ImageLoader mImageLoader;
 
-    public ormMessageAdapter(DiffUtil.ItemCallback<Message> diffUtilCallback, Context context, User currentUser) {
+    public ormMessageAdapter(
+                             DiffUtil.ItemCallback<Message> diffUtilCallback,
+                             Context context,
+                             User currentUser,
+                             ImageLoader mImageLoader) {
         super(diffUtilCallback);
         this.context = context;
         this.currentUser = currentUser;
+        this.mImageLoader = mImageLoader;
     }
 
     /*
@@ -60,7 +67,7 @@ public class ormMessageAdapter extends PagedListAdapter<Message, ormMessageViewH
         }
 
 
-        ormMessageViewHolder holder = new ormMessageViewHolder(convertView);
+        ormMessageViewHolder holder = new ormMessageViewHolder(convertView, mImageLoader);
 
         return holder;
     }

@@ -10,15 +10,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Messenger;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.util.LruCache;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,6 +31,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.Volley;
 import com.korotaev.r.ms.hor.AppHelpers.Message.MessageSourceFactory;
 import com.korotaev.r.ms.hor.AppHelpers.Message.MessageStorage;
 import com.korotaev.r.ms.hor.AppHelpers.Message.ormMessageAdapter;
@@ -63,7 +67,6 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     ormMessageAdapter messageAdapter;
     private MyDBHelper myDBHelper = new MyDBHelper(getContext());
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private FloatingActionButton fab_date;
 
     public ChatFragment() {
         registeredToServiceIntent = false;
@@ -77,6 +80,9 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     private ImageButton sendMsgButton;
     private EditText messageToSend;
     private RecyclerView messagesView;
+
+    private RequestQueue mRequestQueue;
+    private ImageLoader mImageLoader;
 
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
@@ -166,6 +172,24 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 
     public void initMessageAdapter()
     {
+        if (mRequestQueue == null) {
+            mRequestQueue = Volley.newRequestQueue(ChatFragment.this.getContext());
+        }
+
+        if (mImageLoader == null) {
+            mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
+                private final LruCache<String, Bitmap> mCache = new LruCache<String, Bitmap>(10);
+                public void putBitmap(String url, Bitmap bitmap) {
+                    mCache.put(url, bitmap);
+                }
+                public Bitmap getBitmap(String url) {
+                    return mCache.get(url);
+                }
+            });
+        }
+
+
+
         MessageSourceFactory sourceFactory = new MessageSourceFactory(new MessageStorage(getContext()),user);
 
         PagedList.Config config = new PagedList.Config.Builder()
@@ -192,7 +216,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                         oldItem.getCreateUserName() == newItem.getCreateUserName() &&
                         oldItem.getUid() == newItem.getUid();
             }
-        },getContext(), user);
+        },getContext(), user, mImageLoader);
 
 
 
@@ -270,8 +294,6 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         messageToSend = v.findViewById(R.id.message_to_send);
         messagesView = v.findViewById(R.id.messages_view);
         mSwipeRefreshLayout = v.findViewById(R.id.swipe_view);
-        fab_date = v.findViewById(R.id.fab_date);
-
     }
 
     public void OnClickListenerInit()
@@ -344,6 +366,9 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         initViews(v);
         OnClickListenerInit();
 
+
+
+
         Intent i = new Intent(getContext(), CmdService.class);
         FragmentActivity activity;
         if ((activity = getActivity())!=null && registeredToServiceIntent == false) {
@@ -359,6 +384,12 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(ChatViewModel.class);
         // TODO: Use the ViewModel
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        messageToSend.clearFocus();
     }
 
 }

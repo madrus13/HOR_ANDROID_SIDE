@@ -21,6 +21,7 @@
             android:id="@+id/messages_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_margin="4dp"
             android:layout_weight="2"
             android:background="@android:drawable/screen_background_dark_transparent"
             android:divider="#fff" />
@@ -28,7 +29,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="#fff"
         android:orientation="horizontal">
@@ -37,27 +38,26 @@
             android:id="@+id/message_to_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_weight="7"
             android:ems="10"
             android:hint="@string/write_a_message"
             android:inputType="text"
-            android:paddingHorizontal="10dp"
             android:text=""
             android:textColor="@android:color/background_dark"
-            android:textColorHint="@android:color/background_dark" />
+            android:textColorHint="@android:color/background_dark"
+            android:textSize="14dp" />
 
         <ImageButton
             android:id="@+id/send_chat_message_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginHorizontal="10dp"
-            android:layout_weight="1"
+            android:layout_weight="0"
             android:background="@drawable/ic_send_black_24dp"
             android:contentDescription="@string/send"
             android:scaleType="center" />
 
     </LinearLayout>
+
 
 </LinearLayout>

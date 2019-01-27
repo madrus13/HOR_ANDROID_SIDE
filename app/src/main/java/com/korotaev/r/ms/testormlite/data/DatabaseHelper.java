@@ -12,6 +12,7 @@ import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievement;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
+import com.korotaev.r.ms.testormlite.data.Entity.Files;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 import com.korotaev.r.ms.testormlite.data.Entity.Messagetype;
 import com.korotaev.r.ms.testormlite.data.Entity.Region;
@@ -35,7 +36,7 @@ import java.util.List;
  */
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-    public static final int DATABASE_VERSION = 39;
+    public static final int DATABASE_VERSION = 42;
 	private static final String DATABASE_NAME = "ormDB_"+ DATABASE_VERSION +".db";
 
 	private static Dao<Tooltypes		 , Integer> TooltypesDao;
@@ -54,6 +55,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private static Dao<Request          , Integer> RequestDao;
 	private static Dao<Session          , Integer> SessionDao;
 	private static  Dao<TLog             , Integer> TLogDao;
+	private static  Dao<Files             , Integer> FilesDao;
+
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
@@ -147,7 +151,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			Log.e(DatabaseHelper.class.getName(), "Unable to create database", e);
 		}
 
-    }
+		try {
+			TableUtils.createTable(connectionSource, Files.class);
+		} catch (SQLException e) {
+			Log.e(DatabaseHelper.class.getName(), "Unable to create database", e);
+		}
+
+
+	}
 
     @Override
     public void onUpgrade(SQLiteDatabase sqliteDatabase, ConnectionSource connectionSource, int oldVer, int newVer) {
@@ -168,6 +179,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, User.class, true);
             TableUtils.dropTable(connectionSource, Userstatus.class, true);
 			TableUtils.dropTable(connectionSource, TLog.class, true);
+			TableUtils.dropTable(connectionSource, Files.class, true);
             onCreate(sqliteDatabase, connectionSource);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Unable to upgrade database from version " + oldVer + " to new "
@@ -288,6 +300,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TLogDao = getDao(TLog.class);
 		}
 		return TLogDao;
+	}
+
+	public Dao<Files, Integer> getFilesDao() throws SQLException {
+		if (FilesDao == null) {
+			FilesDao = getDao(Files.class);
+		}
+		return FilesDao;
 	}
 
 	//static Dao<TLog, Integer> dao;

@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
@@ -15,9 +17,12 @@ public class ormMessageViewHolder extends ViewHolder {
     public TextView name;
     public TextView messageBody;
     public TextView message_time;
+    public NetworkImageView image;
+    private ImageLoader mImageLoader;
 
-    public ormMessageViewHolder(View itemView) {
+    public ormMessageViewHolder(View itemView,ImageLoader  mImageLoader) {
         super(itemView);
+        this.mImageLoader = mImageLoader;
     }
 
     public void bind(Message item, int viewType) {
@@ -29,6 +34,7 @@ public class ormMessageViewHolder extends ViewHolder {
             messageBody = itemView.findViewById(R.id.message_body);
             message_time = itemView.findViewById(R.id.message_time);
             name = itemView.findViewById(R.id.name);
+            image = itemView.findViewById(R.id.avatar);
 
             if (messageBody!=null) messageBody.setText(item.getText());
 
@@ -45,6 +51,7 @@ public class ormMessageViewHolder extends ViewHolder {
                     if (message_time!=null && item.getCreationDate()!=null) {
                         message_time.setText((new SimpleDateFormat("hh:mm")).format(item.getCreationDate()));
                     }
+                    image.setImageUrl("http://185.246.154.49/files/image.png",mImageLoader);
                     break;
                 case ViewHelper.SYSTEM_MESSAGE:
                     break;
