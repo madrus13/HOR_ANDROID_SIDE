@@ -630,7 +630,7 @@ public class ServiceObjectHelper {
                                               String description,
                                               String fileType,
                                               Long createUser,
-                                              byte[] fileImage)
+                                              VectorByte fileImage)
     {
         serviceResult result = new serviceResult();
 

@@ -43,6 +43,7 @@ import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
+import com.korotaev.r.ms.hor.WebServices.VectorByte;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
 import com.korotaev.r.ms.testormlite.data.ActivityActions;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
@@ -186,7 +187,7 @@ public class SettingsFragment extends Fragment
                                                      long regionId,
                                                      String password,
                                                      String fileName,
-                                                     String file,
+                                                     VectorByte file,
                                                      long transmissionType,
                                                      String nameAuto,
                                                      long haveCable,
@@ -200,7 +201,7 @@ public class SettingsFragment extends Fragment
                 b.putLong("region", regionId );
                 b.putString("password", password);
                 b.putString("fileName", fileName);
-                b.putString("file", file);
+                b.putByteArray("file", file.toBytes());
 
                 b.putLong("transmissionType", transmissionType);
                 b.putString("nameAuto", nameAuto);
@@ -228,14 +229,14 @@ public class SettingsFragment extends Fragment
             Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] imageInByte = baos.toByteArray();
+            VectorByte imageInByte = new VectorByte(baos.toByteArray());
 
             sendSetUserInfoComandToIntentService(
                                                     SrvCmd.CMD_EntitySetUserInfoReq,
                                                     selectedRegion.getId(),
                                                     passwordEdit.getText().toString(),
                                                     "_fname.jpeg" ,
-                                                    imageInByte.toString(),
+                                                    imageInByte,
                                                     selectedtrType.getId(),
                                                     mCarModel.getText().toString(),
                                                     1,

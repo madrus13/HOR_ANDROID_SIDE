@@ -535,7 +535,7 @@ public class WebServiceMainService {
             String description,
             String fileType,
             Long createUser,
-            byte[] fileImage,
+            VectorByte fileImage,
             List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","insertFile");
