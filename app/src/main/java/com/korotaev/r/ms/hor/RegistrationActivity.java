@@ -370,7 +370,7 @@ public class RegistrationActivity extends AppCompatActivity implements ServiceAc
             Boolean resOut = false;
             ViewHelper.showProgress(RegistrationActivity.this,mLoginFormView, mProgressView,true );
 
-            result = service.insertUser(this.mLoginName,this.mRegionId, false,this.mPassword,this.mEmail,this.mPhone );
+            result = service.insertUser(this.mLoginName,this.mRegionId, false,this.mPassword,this.mEmail,this.mPhone, null );
             if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {

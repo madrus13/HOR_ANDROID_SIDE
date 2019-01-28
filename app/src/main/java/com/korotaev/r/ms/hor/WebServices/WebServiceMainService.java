@@ -101,27 +101,28 @@ public class WebServiceMainService {
 
     }
 
-    
-    public serviceResult insertMessage(String sessionToken,String text,long requestId,boolean requestIdSpecified,long regionId,boolean regionIdSpecified,long userRx,boolean userRxSpecified,long typeId,boolean typeIdSpecified,String fileName,VectorByte fileImage){
-        return insertMessage(sessionToken, text, requestId, requestIdSpecified, regionId, regionIdSpecified, userRx, userRxSpecified, typeId, typeIdSpecified, fileName, fileImage, null);
-    }
-    
-    public serviceResult insertMessage(String sessionToken,String text,long requestId,boolean requestIdSpecified,long regionId,boolean regionIdSpecified,long userRx,boolean userRxSpecified,long typeId,boolean typeIdSpecified,String fileName,VectorByte fileImage,List<HeaderProperty> headers){
+
+
+    public serviceResult insertMessage(
+            String sessionToken,
+            String text,
+            long requestId,boolean requestIdSpecified,
+            long regionId,boolean regionIdSpecified,
+            long userRx,boolean userRxSpecified,
+            long typeId,boolean typeIdSpecified,
+            long fileId,
+            String fileName,
+            VectorByte fileImage,
+            List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","insertMessage");
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("text",text);
-
-
         soapReq.addProperty("requestId",requestIdSpecified?requestId:"");
-        //soapReq.addProperty("requestIdSpecified",requestIdSpecified);
         soapReq.addProperty("regionId",regionIdSpecified?regionId:"");
-        //soapReq.addProperty("regionIdSpecified",regionIdSpecified);
         soapReq.addProperty("userRx",userRxSpecified?userRx:"");
-        //soapReq.addProperty("userRxSpecified",userRxSpecified);
         soapReq.addProperty("typeId",typeIdSpecified?typeId:"");
-        //soapReq.addProperty("typeIdSpecified",typeIdSpecified);
-
+        soapReq.addProperty("fileId",fileId);
         soapReq.addProperty("fileName",fileName!=null ? fileName : "");
         soapReq.addProperty("fileImage",fileImage!=null ? fileImage.toString() : "");
         soapEnvelope.setOutputSoapObject(soapReq);
@@ -130,11 +131,7 @@ public class WebServiceMainService {
 
     }
 
-    
-    public serviceResult getMessageByRegionAndIdGreater(String sessionToken,long regionId,boolean regionIdSpecified,long lastId,boolean lastIdSpecified,int pageSize){
-        return getMessageByRegionAndIdGreater(sessionToken, regionId, regionIdSpecified, lastId, lastIdSpecified, pageSize, null);
-    }
-    
+
     public serviceResult getMessageByRegionAndIdGreater(String sessionToken,long regionId,boolean regionIdSpecified,long lastId,boolean lastIdSpecified,int pageSize,List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","getMessageByRegionAndIdGreater");
@@ -149,22 +146,6 @@ public class WebServiceMainService {
     }
 
 
-    public serviceResult findMessageByRegionAndCreationDateBetweenOffset(
-            String sessionToken,
-            long regionId,boolean regionIdSpecified,
-            int offset,
-            int page,
-            int pageSize
-            ){
-        return findMessageByRegionAndCreationDateBetweenOffset(
-                sessionToken,
-                regionId, regionIdSpecified,
-                offset,
-                page,
-                pageSize,
-                null
-        );
-    }
 
     public serviceResult findMessageByRegionAndCreationDateBetweenOffset(
             String sessionToken,
@@ -185,21 +166,7 @@ public class WebServiceMainService {
         return soapMethodExecutor(headers, "findMessageByRegionAndCreationDateBetweenOffsetRequest");
     }
 
-    public serviceResult findMessageByRegionAndCreationDateBetween(
-            String sessionToken,
-            long regionId, boolean regionIdSpecified,
-            Date startDate, boolean startDateSpecified,
-            Date endDate, boolean endDateSpecified,
-            int page, int pageSize
-            ){
-        return findMessageByRegionAndCreationDateBetween(
-                 sessionToken,
-                 regionId,  regionIdSpecified,
-                 startDate,  startDateSpecified,
-                 endDate,  endDateSpecified,
-                 page,  pageSize,
-        null);
-    }
+
 
     public serviceResult findMessageByRegionAndCreationDateBetween(
             String sessionToken,
@@ -226,10 +193,6 @@ public class WebServiceMainService {
     
 
     
-    public serviceResult getAllMessageByRequest(String sessionToken,long request,boolean requestSpecified, int startRow, int pageSize){
-        return getAllMessageByRequest(sessionToken, request, requestSpecified,startRow, pageSize, null);
-    }
-    
     public serviceResult getAllMessageByRequest(String sessionToken,long request,boolean requestSpecified,int startRow, int pageSize,List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","getAllMessageByRequest");
@@ -242,10 +205,7 @@ public class WebServiceMainService {
         return soapMethodExecutor(headers, "getAllMessageByRequestRequest");
     }
 
-    public serviceResult getAllRequestByCreationUser(String sessionToken,long userId,boolean userIdSpecified){
-        return getAllRequestByCreationUser(sessionToken, userId, userIdSpecified, null);
-    }
-    
+
     public serviceResult getAllRequestByCreationUser(String sessionToken,long userId,boolean userIdSpecified,List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","getAllRequestByCreationUser");
@@ -258,10 +218,6 @@ public class WebServiceMainService {
     }
     
 
-    public serviceResult getActiveRequestByCreationUser(String sessionToken,long userId,boolean userIdSpecified){
-        return getActiveRequestByCreationUser(sessionToken, userId, userIdSpecified, null);
-    }
-    
     public serviceResult getActiveRequestByCreationUser(String sessionToken,long userId,boolean userIdSpecified,List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","getActiveRequestByCreationUser");
@@ -273,10 +229,6 @@ public class WebServiceMainService {
         return soapMethodExecutor(headers, "getActiveRequestByCreationUserRequest");
     }
 
-
-    public serviceResult getAllOpenRequestByRegion(String sessionToken,long regionId,boolean regionIdSpecified,String typeIds){
-        return getAllOpenRequestByRegion(sessionToken, regionId, regionIdSpecified, typeIds, null);
-    }
     
     public serviceResult getAllOpenRequestByRegion(String sessionToken,long regionId,boolean regionIdSpecified,String typeIds,List<HeaderProperty> headers){
 
@@ -292,10 +244,6 @@ public class WebServiceMainService {
     
 
     
-    public serviceResult findRequestResolvedByCurrentUserWithTypeFilter(String sessionToken,String typeIds){
-        return findRequestResolvedByCurrentUserWithTypeFilter(sessionToken, typeIds, null);
-    }
-    
     public serviceResult findRequestResolvedByCurrentUserWithTypeFilter(String sessionToken,String typeIds,List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","findRequestResolvedByCurrentUserWithTypeFilter");
@@ -307,11 +255,6 @@ public class WebServiceMainService {
     }
     
 
-    
-    public serviceResult getAllMessageTypes(String sessionToken){
-        return getAllMessageTypes(sessionToken, null);
-    }
-    
     public serviceResult getAllMessageTypes(String sessionToken,List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","getAllMessageTypes");
@@ -322,9 +265,6 @@ public class WebServiceMainService {
     }
     
 
-    public serviceResult getAllRequestType(String sessionToken){
-        return getAllRequestType(sessionToken, null);
-    }
     
     public serviceResult getAllRequestType(String sessionToken,List<HeaderProperty> headers){
 
@@ -336,11 +276,6 @@ public class WebServiceMainService {
     }
     
 
-    
-    public serviceResult getAllTransmissionType(String sessionToken){
-        return getAllTransmissionType(sessionToken, null);
-    }
-    
     public serviceResult getAllTransmissionType(String sessionToken,List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","getAllTransmissionType");
@@ -352,10 +287,6 @@ public class WebServiceMainService {
     
 
     
-    public serviceResult getAllToolType(String sessionToken){
-        return getAllToolType(sessionToken, null);
-    }
-    
     public serviceResult getAllToolType(String sessionToken,List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","getAllToolType");
@@ -364,28 +295,17 @@ public class WebServiceMainService {
 
         return soapMethodExecutor(headers, "getAllToolTypeRequest");
     }
-    
 
-    
-    public serviceResult getAllAchievmenttype(String sessionToken){
-        return getAllAchievmenttype(sessionToken, null);
-    }
-    
+
     public serviceResult getAllAchievmenttype(String sessionToken,List<HeaderProperty> headers){
 
-        //soapEnvelope.dotNet = true;
         SoapObject soapReq = new SoapObject("http://Service.ru/","getAllAchievmenttype");
         soapReq.addProperty("sessionToken",sessionToken);
         soapEnvelope.setOutputSoapObject(soapReq);
 
         return soapMethodExecutor(headers, "getAllAchievmenttypeRequest");
     }
-    
 
-    
-    public serviceResult getAllAchievmentByUser(String sessionToken,long user,boolean userSpecified){
-        return getAllAchievmentByUser(sessionToken, user, userSpecified, null);
-    }
     
     public serviceResult getAllAchievmentByUser(String sessionToken,long user,boolean userSpecified,List<HeaderProperty> headers){
 
@@ -397,12 +317,7 @@ public class WebServiceMainService {
 
         return soapMethodExecutor(headers, "getAllAchievmentByUserRequest");
     }
-    
 
-    
-    public serviceResult getAllToolByUser(String sessionToken,long user,boolean userSpecified){
-        return getAllToolByUser(sessionToken, user, userSpecified, null);
-    }
     
     public serviceResult getAllToolByUser(String sessionToken,long user,boolean userSpecified,List<HeaderProperty> headers){
 
@@ -414,12 +329,7 @@ public class WebServiceMainService {
 
         return soapMethodExecutor(headers, "getAllToolByUserRequest");
     }
-    
 
-    
-    public serviceResult getAllAutoByUser(String sessionToken,long user,boolean userSpecified){
-        return getAllAutoByUser(sessionToken, user, userSpecified, null);
-    }
     
     public serviceResult getAllAutoByUser(String sessionToken,long user,boolean userSpecified,List<HeaderProperty> headers){
 
@@ -433,10 +343,6 @@ public class WebServiceMainService {
     }
 
     
-    public serviceResult getAllRegions(String sessionToken){
-        return getAllRegions(sessionToken, null);
-    }
-    
     public serviceResult getAllRegions(String sessionToken,List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","getAllRegions");
@@ -447,10 +353,6 @@ public class WebServiceMainService {
     }
 
     
-    public serviceResult getUserInfo(String sessionToken){
-        return getUserInfo(sessionToken, null);
-    }
-    
     public serviceResult getUserInfo(String sessionToken,List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","getUserInfo");
@@ -460,10 +362,6 @@ public class WebServiceMainService {
         return soapMethodExecutor(headers, "getUserInfoRequest");
     }
 
-    
-    public serviceResult insertRequest(String sessionToken,String description,double latitude,boolean latitudeSpecified,double longitude,boolean longitudeSpecified,long isResolvedByUserId,boolean isResolvedByUserIdSpecified,long typeId,boolean typeIdSpecified,long regionId,boolean regionIdSpecified,String fileName,VectorByte fileImage){
-        return insertRequest(sessionToken, description, latitude, latitudeSpecified, longitude, longitudeSpecified, isResolvedByUserId, isResolvedByUserIdSpecified, typeId, typeIdSpecified, regionId, regionIdSpecified, fileName, fileImage, null);
-    }
     
     public serviceResult insertRequest(String sessionToken,String description,double latitude,boolean latitudeSpecified,double longitude,boolean longitudeSpecified,long isResolvedByUserId,boolean isResolvedByUserIdSpecified,long typeId,boolean typeIdSpecified,long regionId,boolean regionIdSpecified,String fileName,VectorByte fileImage,List<HeaderProperty> headers){
 
@@ -489,10 +387,6 @@ public class WebServiceMainService {
         return soapMethodExecutor(headers, "insertRequestRequest");
     }
 
-    
-    public serviceResult updateRequest(long id,String sessionToken,String description,double latitude,boolean latitudeSpecified,double longitude,boolean longitudeSpecified,long statusId,boolean statusIdSpecified,long isResolvedByUser,boolean isResolvedByUserSpecified,long typeId,boolean typeIdSpecified,long regionId,boolean regionIdSpecified,String fileName,VectorByte fileImage){
-        return updateRequest(id, sessionToken, description, latitude, latitudeSpecified, longitude, longitudeSpecified, statusId, statusIdSpecified, isResolvedByUser, isResolvedByUserSpecified, typeId, typeIdSpecified, regionId, regionIdSpecified, fileName, fileImage, null);
-    }
     
     public serviceResult updateRequest(long id,String sessionToken,String description,double latitude,boolean latitudeSpecified,double longitude,boolean longitudeSpecified,long statusId,boolean statusIdSpecified,long isResolvedByUser,boolean isResolvedByUserSpecified,long typeId,boolean typeIdSpecified,long regionId,boolean regionIdSpecified,String fileName,VectorByte fileImage,List<HeaderProperty> headers){
 
@@ -520,11 +414,7 @@ public class WebServiceMainService {
 
         return soapMethodExecutor(headers, "updateRequestRequest");
     }
-    
 
-    public serviceResult insertUser(String name,long region,boolean regionSpecified,String password,String email,String phone){
-        return insertUser(name, region, regionSpecified, password, email, phone, null);
-    }
     
     public serviceResult insertUser(String name,long region,boolean regionSpecified,String password,String email,String phone,List<HeaderProperty> headers){
 
@@ -539,11 +429,8 @@ public class WebServiceMainService {
 
         return soapMethodExecutor(headers, "insertUserRequest");
     }
-    
 
-    public serviceResult updateUser(String sessionToken,long region,boolean regionSpecified,String password,String fileName,VectorByte fileImage){
-        return updateUser(sessionToken, region, regionSpecified, password, fileName, fileImage, null);
-    }
+
     
     public serviceResult updateUser(String sessionToken,long region,boolean regionSpecified,String password,String fileName,VectorByte fileImage,List<HeaderProperty> headers){
 
@@ -599,12 +486,7 @@ public class WebServiceMainService {
 
         return soapMethodExecutor(headers, "insertUpdateUserAutoRequest");
     }
-    
 
-    
-    public serviceResult insertUpdateUserTools(String sessionToken,String toolTypeIds){
-        return insertUpdateUserTools(sessionToken, toolTypeIds, null);
-    }
     
     public serviceResult insertUpdateUserTools(String sessionToken,String toolTypeIds,List<HeaderProperty> headers){
 
@@ -615,13 +497,8 @@ public class WebServiceMainService {
 
         return soapMethodExecutor(headers, "insertUpdateUserToolsRequest");
     }
-    
 
-    
-    public serviceResult closeCurrentActiveRequestByCustomUser(String sessionToken,long userId,boolean userIdSpecified){
-        return closeCurrentActiveRequestByCustomUser(sessionToken, userId, userIdSpecified, null);
-    }
-    
+
     public serviceResult closeCurrentActiveRequestByCustomUser(String sessionToken,long userId,boolean userIdSpecified,List<HeaderProperty> headers){
 
         SoapObject soapReq = new SoapObject("http://Service.ru/","closeCurrentActiveRequestByCustomUser");
@@ -632,12 +509,7 @@ public class WebServiceMainService {
 
         return soapMethodExecutor(headers, "closeCurrentActiveRequestByCustomUserRequest");
     }
-    
 
-    
-    public serviceResult closeAllActiveRequestByAuthor(String sessionToken){
-        return closeAllActiveRequestByAuthor(sessionToken, null);
-    }
     
     public serviceResult closeAllActiveRequestByAuthor(String sessionToken,List<HeaderProperty> headers){
 
@@ -645,6 +517,38 @@ public class WebServiceMainService {
         soapReq.addProperty("sessionToken",sessionToken);
         soapEnvelope.setOutputSoapObject(soapReq);
         return soapMethodExecutor(headers, "closeAllActiveRequestByAuthorRequest");
+    }
+
+    public serviceResult getFileById(String sessionToken,long id, List<HeaderProperty> headers){
+
+        SoapObject soapReq = new SoapObject("http://Service.ru/","getFileById");
+        soapReq.addProperty("sessionToken",sessionToken);
+        soapReq.addProperty("id",id);
+        soapEnvelope.setOutputSoapObject(soapReq);
+
+        return soapMethodExecutor(headers, "getFileByIdRequest");
+    }
+
+    public serviceResult insertFile(
+            String sessionToken,
+            String fileName,
+            String description,
+            String fileType,
+            Long createUser,
+            byte[] fileImage,
+            List<HeaderProperty> headers){
+
+        SoapObject soapReq = new SoapObject("http://Service.ru/","insertFile");
+        soapReq.addProperty("sessionToken",sessionToken);
+        soapReq.addProperty("fileName",fileName);
+        soapReq.addProperty("description",description);
+        soapReq.addProperty("fileType",fileType);
+        soapReq.addProperty("createUser",createUser);
+        soapReq.addProperty("fileImage",fileImage!=null ? fileImage.toString() : "");
+
+        soapEnvelope.setOutputSoapObject(soapReq);
+
+        return soapMethodExecutor(headers, "insertFileRequest");
     }
     
 }

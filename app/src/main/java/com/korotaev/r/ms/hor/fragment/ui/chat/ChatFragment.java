@@ -67,6 +67,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     ormMessageAdapter messageAdapter;
     private MyDBHelper myDBHelper = new MyDBHelper(getContext());
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private Long fileIdToUpload = 0L;
 
     public ChatFragment() {
         registeredToServiceIntent = false;
@@ -322,7 +323,8 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                             b.putLong("regionId", user.getRegion());
                         }
                         b.putLong("userRx", 0);
-                        b.putLong("typeId", Long.valueOf(EntityConstVariables.MESSAGE_TYPE_REGION)); //region message
+                        b.putLong("typeId", Long.valueOf(EntityConstVariables.MESSAGE_TYPE_REGION));
+                        b.putLong("fileId", fileIdToUpload);
                         b.putString("fileName",null);
                         b.putByteArray("fileImage",null);
 

@@ -6,6 +6,7 @@ import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievement;
 import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
+import com.korotaev.r.ms.testormlite.data.Entity.Files;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 import com.korotaev.r.ms.testormlite.data.Entity.Messagetype;
 import com.korotaev.r.ms.testormlite.data.Entity.Region;
@@ -63,7 +64,7 @@ public class ServiceObjectHelper {
         if (!currentToken.isEmpty()) {
 
             try {
-                result = service.getAllMessageTypes(currentToken);
+                result = service.getAllMessageTypes(currentToken, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -101,7 +102,7 @@ public class ServiceObjectHelper {
                         currentToken,
                         regionId, regionId > 0 ? true : false,
                         startRow, true,
-                        pageSize);
+                        pageSize, null);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -141,7 +142,7 @@ public class ServiceObjectHelper {
                         regionId, regionId > 0 ? true : false,
                         startDate, true,
                         endDate, true,
-                        page,  pageSize);
+                        page,  pageSize, null);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -179,7 +180,7 @@ public class ServiceObjectHelper {
                         currentToken,
                         regionId, regionId > 0 ? true : false,
                         offset,
-                        page,  pageSize);
+                        page,  pageSize, null);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -204,7 +205,7 @@ public class ServiceObjectHelper {
     {
         serviceResult result = new serviceResult();
          try {
-                result = service.getAllRegions(currentToken);
+                result = service.getAllRegions(currentToken, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -231,7 +232,7 @@ public class ServiceObjectHelper {
         if (!currentToken.isEmpty()) {
 
             try {
-                result = service.getAllAchievmenttype(currentToken);
+                result = service.getAllAchievmenttype(currentToken, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -258,7 +259,7 @@ public class ServiceObjectHelper {
         if (!currentToken.isEmpty()) {
 
             try {
-                result = service.getUserInfo(currentToken);
+                result = service.getUserInfo(currentToken, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -297,7 +298,7 @@ public class ServiceObjectHelper {
                                              regionSpecified,
                                              password,
                                              fileName,
-                                              fileImage);
+                                              fileImage, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -332,7 +333,7 @@ public class ServiceObjectHelper {
         if (!currentToken.isEmpty()) {
 
             try {
-                result = service.insertUpdateUserTools( currentToken, toolTypeIds);
+                result = service.insertUpdateUserTools( currentToken, toolTypeIds, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -360,6 +361,7 @@ public class ServiceObjectHelper {
                                               Long regionId,  boolean regionIdSpecified,
                                               Long userRx,    boolean userRxSpecified,
                                               Long typeId,    boolean typeIdSpecified,
+                                              Long fileId,
                                               String fileName,
                                               VectorByte fileImage)
     {
@@ -375,8 +377,9 @@ public class ServiceObjectHelper {
                         regionId, regionIdSpecified,
                         userRx, userRxSpecified,
                         typeId, typeIdSpecified,
+                        fileId,
                         fileName,
-                        fileImage);
+                        fileImage, null);
 
             } catch (Exception e) {
                 result.isSuccess = false;
@@ -435,7 +438,7 @@ public class ServiceObjectHelper {
         if (!currentToken.isEmpty()) {
 
             try {
-                result = service.getAllAchievmentByUser(currentToken, userId, userSpecified);
+                result = service.getAllAchievmentByUser(currentToken, userId, userSpecified, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -465,7 +468,7 @@ public class ServiceObjectHelper {
         if (!currentToken.isEmpty()) {
 
             try {
-                result = service.getAllToolByUser(currentToken, userId, userSpecified);
+                result = service.getAllToolByUser(currentToken, userId, userSpecified, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -493,7 +496,7 @@ public class ServiceObjectHelper {
         if (!currentToken.isEmpty()) {
 
             try {
-                result = service.getAllAutoByUser(currentToken, userId, userSpecified);
+                result = service.getAllAutoByUser(currentToken, userId, userSpecified, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -520,7 +523,7 @@ public class ServiceObjectHelper {
         if (!currentToken.isEmpty()) {
 
             try {
-                result = service.getAllToolType(currentToken);
+                result = service.getAllToolType(currentToken, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -547,7 +550,7 @@ public class ServiceObjectHelper {
         if (!currentToken.isEmpty()) {
 
             try {
-                result = service.getAllTransmissionType(currentToken);
+                result = service.getAllTransmissionType(currentToken, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -573,7 +576,7 @@ public class ServiceObjectHelper {
         if (!currentToken.isEmpty()) {
 
             try {
-                result = service.getAllRequestType(currentToken);
+                result = service.getAllRequestType(currentToken, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -595,5 +598,60 @@ public class ServiceObjectHelper {
     }
 
 
+    public static Files  getFileById(Context context, String currentToken, long fileId)
+    {
+        Files object;
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.getFileById(currentToken, fileId,  null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+
+                if (isValidResult(result)) {
+                    object =  mapper.readValue(result.resultObjectJSON, Files.class);
+                    return object;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static serviceResult insertFile(Context context,
+                                              String currentToken,
+                                              String fileName,
+                                              String description,
+                                              String fileType,
+                                              Long createUser,
+                                              byte[] fileImage)
+    {
+        serviceResult result = new serviceResult();
+
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.insertFile(
+                       currentToken,
+                        fileName,
+                        description,
+                        fileType,
+                        createUser,
+                        fileImage, null);
+
+            } catch (Exception e) {
+                result.isSuccess = false;
+                result.errorMessage = e.toString();
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
 
 }

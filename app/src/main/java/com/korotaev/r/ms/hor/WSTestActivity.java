@@ -104,7 +104,7 @@ public class WSTestActivity extends AppCompatActivity {
         public void testMessageType(String token, Boolean correctResult) {
             serviceResult result;
             Boolean resOut = false;
-            result = service.getAllMessageTypes(token);
+            result = service.getAllMessageTypes(token, null);
             if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
@@ -130,7 +130,7 @@ public class WSTestActivity extends AppCompatActivity {
         public void testRegions(String token, Boolean correctResult) {
             serviceResult result;
             Boolean resOut = false;
-            result = service.getAllRegions(token);
+            result = service.getAllRegions(token, null);
             if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
@@ -155,7 +155,7 @@ public class WSTestActivity extends AppCompatActivity {
         public void testAchievmenttype(String token, Boolean correctResult) {
             serviceResult result;
             Boolean resOut = false;
-            result = service.getAllAchievmenttype(token);
+            result = service.getAllAchievmenttype(token, null);
             if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
@@ -180,7 +180,7 @@ public class WSTestActivity extends AppCompatActivity {
         public void testRequestType(String token, Boolean correctResult) {
             serviceResult result;
             Boolean resOut = false;
-            result = service.getAllRequestType(token);
+            result = service.getAllRequestType(token, null);
             if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
@@ -205,7 +205,7 @@ public class WSTestActivity extends AppCompatActivity {
         public void testToolType(String token, Boolean correctResult) {
             serviceResult result;
             Boolean resOut = false;
-            result = service.getAllToolType(token);
+            result = service.getAllToolType(token, null);
             if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
@@ -230,7 +230,7 @@ public class WSTestActivity extends AppCompatActivity {
         public void testTransmissionType(String token, Boolean correctResult) {
             serviceResult result;
             Boolean resOut = false;
-            result = service.getAllTransmissionType(token);
+            result = service.getAllTransmissionType(token, null);
             if (result!=null && result.isSuccess) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {

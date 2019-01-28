@@ -351,6 +351,7 @@ public class CmdService extends IntentService {
             Long regionId = this.data.getLong("regionId");
             Long userRx = this.data.getLong("userRx");
             Long typeId = this.data.getLong("typeId");
+            Long fileId = this.data.getLong("fileId");
             String fileName = this.data.getString("fileName");
             byte[] fileImage = this.data.getByteArray("fileImage");
 
@@ -365,6 +366,7 @@ public class CmdService extends IntentService {
                     regionId , regionId > 0 ? true : false,
                     userRx,    userRx > 0 ? true : false,
                     typeId,    typeId > 0  ? true : false,
+                    fileId,
                     fileName,
                     file
 
