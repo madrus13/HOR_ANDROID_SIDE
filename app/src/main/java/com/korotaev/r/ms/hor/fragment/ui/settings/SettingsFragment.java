@@ -228,7 +228,7 @@ public class SettingsFragment extends Fragment
 
             Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             VectorByte imageInByte = new VectorByte(baos.toByteArray());
 
             sendSetUserInfoComandToIntentService(
