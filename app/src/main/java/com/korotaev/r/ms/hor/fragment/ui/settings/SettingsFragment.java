@@ -237,9 +237,10 @@ public class SettingsFragment extends Fragment
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             VectorByte imageInByte = new VectorByte(baos.toByteArray());
 
-            VectorByte.saveFile(
-                    Environment.getDownloadCacheDirectory().getAbsolutePath() +
-                    "/sended_quality_50_" + new Date() +".jpeg", baos);
+            String path = Environment.getDownloadCacheDirectory().getAbsolutePath() +
+                    "/sended_quality_50_" + new Date() +".jpeg";
+            myDBHelper.getHelper().addLog(CODE_INFO, "SF->save path = " + path);
+            VectorByte.saveFile(path, baos);
 
 
             sendSetUserInfoComandToIntentService(
