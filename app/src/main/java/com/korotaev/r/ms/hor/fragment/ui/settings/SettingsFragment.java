@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -236,7 +237,9 @@ public class SettingsFragment extends Fragment
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             VectorByte imageInByte = new VectorByte(baos.toByteArray());
 
-            VectorByte.saveFile("sended_quality_50_" + new Date() +".jpeg", baos);
+            VectorByte.saveFile(
+                    Environment.getDownloadCacheDirectory().getAbsolutePath() +
+                    "/sended_quality_50_" + new Date() +".jpeg", baos);
 
 
             sendSetUserInfoComandToIntentService(
