@@ -440,7 +440,7 @@ public class WebServiceMainService {
         soapReq.addProperty("regionSpecified",regionSpecified);
         soapReq.addProperty("password",password);
         soapReq.addProperty("fileName",fileName);
-        soapReq.addProperty("fileImage",fileImage!=null ? fileImage.toString() : "");
+        soapReq.addProperty("fileImage",fileImage!=null ? fileImage.toString(): "");
         soapEnvelope.setOutputSoapObject(soapReq);
 
         return soapMethodExecutor(headers, "updateUserRequest");

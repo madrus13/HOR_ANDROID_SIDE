@@ -14,6 +14,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.widget.Toast;
 
+import com.korotaev.r.ms.hor.AppHelpers.FileHelper;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ParserHelper;
 import com.korotaev.r.ms.hor.MainActivity;
@@ -119,6 +120,9 @@ public class CmdService extends IntentService {
                     if (file!=null && file.length > 0) {
                         fileImage = new VectorByte(file);
                     }
+                    FileHelper fileHelper = new FileHelper();
+                    fileHelper.createIntStoragePrivatePicture(CmdService.this,"in_cmdService_file_.jpeg", fileImage.toBytes());
+
                     mSetUserInfoTask = new SetUserInfoTask(msg,
                             regionId, true,
                             password,

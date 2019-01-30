@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -36,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.korotaev.r.ms.hor.AppHelpers.AdapterHelper;
+import com.korotaev.r.ms.hor.AppHelpers.FileHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ListViewLoader;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
@@ -57,17 +57,13 @@ import com.korotaev.r.ms.testormlite.data.Entity.User;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
-import static android.content.Context.MODE_WORLD_READABLE;
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_One_Item;
 import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_image;
@@ -237,12 +233,9 @@ public class SettingsFragment extends Fragment
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             VectorByte imageInByte = new VectorByte(baos.toByteArray());
 
-
-            String path = Environment.getDataDirectory().getAbsolutePath() +
-                    "/sended_quality_50_.jpeg";
-            myDBHelper.getHelper().addLog(CODE_INFO, "SF->save path = " + path);
             try {
-                VectorByte.saveFile(path, baos);
+                FileHelper fileHelper = new FileHelper();
+                fileHelper.createIntStoragePrivatePicture(getContext(),"sended_quality_50_.jpeg", imageInByte.toBytes());
             }
             catch (Exception ex)
             {
