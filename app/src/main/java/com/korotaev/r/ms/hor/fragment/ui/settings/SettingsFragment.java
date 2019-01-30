@@ -238,7 +238,7 @@ public class SettingsFragment extends Fragment
             VectorByte imageInByte = new VectorByte(baos.toByteArray());
 
             String path = Environment.getDownloadCacheDirectory().getAbsolutePath() +
-                    "/sended_quality_50_" + new Date() +".jpeg";
+                    "/sended_quality_50_.jpeg";
             myDBHelper.getHelper().addLog(CODE_INFO, "SF->save path = " + path);
             VectorByte.saveFile(path, baos);
 

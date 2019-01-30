@@ -85,6 +85,7 @@ public class VectorByte extends Vector<Byte> implements KvmSerializable {
 
     public static void saveFile(String pathNameTo, ByteArrayOutputStream sourceStream)
     {
+        pathNameTo = pathNameTo.replace(" ", "_").replace(":","_");
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(new File(pathNameTo));
