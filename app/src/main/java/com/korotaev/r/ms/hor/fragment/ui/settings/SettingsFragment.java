@@ -56,13 +56,17 @@ import com.korotaev.r.ms.testormlite.data.Entity.User;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_WORLD_READABLE;
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_One_Item;
 import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_image;
@@ -219,6 +223,7 @@ public class SettingsFragment extends Fragment
     }
 
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -230,6 +235,9 @@ public class SettingsFragment extends Fragment
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             VectorByte imageInByte = new VectorByte(baos.toByteArray());
+
+            VectorByte.saveFile("sended_quality_50_" + new Date() +".jpeg", baos);
+
 
             sendSetUserInfoComandToIntentService(
                                                     SrvCmd.CMD_EntitySetUserInfoReq,

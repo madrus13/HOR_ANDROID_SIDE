@@ -14,6 +14,11 @@ package com.korotaev.r.ms.hor.WebServices;
 //
 import org.ksoap2.serialization.KvmSerializable;
 import org.ksoap2.serialization.PropertyInfo;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Hashtable;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
@@ -77,4 +82,22 @@ public class VectorByte extends Vector<Byte> implements KvmSerializable {
         }
         return bytes;
     }
+
+    public static void saveFile(String pathNameTo, ByteArrayOutputStream sourceStream)
+    {
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(new File(pathNameTo));
+            sourceStream.writeTo(fos);
+        } catch(IOException ioe) {
+            ioe.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
