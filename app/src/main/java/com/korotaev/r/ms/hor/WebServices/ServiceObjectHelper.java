@@ -296,7 +296,7 @@ public class ServiceObjectHelper {
                 result = service.updateUser( currentToken,
                                              region,
                                              regionSpecified,
-                                             password,
+                                             "EMPTY",
                                              fileName,
                                               fileImage, null);
             } catch (Exception e) {

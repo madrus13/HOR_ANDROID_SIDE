@@ -14,14 +14,16 @@ package com.korotaev.r.ms.hor.WebServices;
 //
 
 
+import android.util.Base64;
+
 import org.ksoap2.serialization.KvmSerializable;
 import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapPrimitive;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.util.Base64;
+
 public class VectorByte extends Vector<Byte> implements KvmSerializable {
     
     
@@ -32,11 +34,9 @@ public class VectorByte extends Vector<Byte> implements KvmSerializable {
             String result = soapPrimitive.toString();
             if (result != "") {
                 byte[] bytes = new byte[0];
-                try {
-                    bytes = Base64.getDecoder().decode(result.getBytes("UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+
+                bytes = Base64.decode(result.getBytes(StandardCharsets.UTF_8), Base64.DEFAULT);
+
                 for (final byte b : bytes) {
                     add(b);
                 }
@@ -74,7 +74,7 @@ public class VectorByte extends Vector<Byte> implements KvmSerializable {
     @Override
     public String toString() {
         byte[] byteToString = toBytes();
-        String str =  Base64.getEncoder().encodeToString(byteToString);
+        String str =  Base64.encodeToString(byteToString, Base64.DEFAULT);
 
         return str;
     }
