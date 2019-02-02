@@ -17,4 +17,6 @@ public class AdapterHelper {
         spinner.setPrompt(title);
         spinner.setSelection( selectIndex);
     }
+
+
 }

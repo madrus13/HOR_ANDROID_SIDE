@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -19,7 +18,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.util.LruCache;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,13 +29,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
 import com.korotaev.r.ms.hor.AppHelpers.Message.MessageSourceFactory;
 import com.korotaev.r.ms.hor.AppHelpers.Message.MessageStorage;
 import com.korotaev.r.ms.hor.AppHelpers.Message.ormMessageAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
+import com.korotaev.r.ms.hor.AppHelpers.NetworkImageViewAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.ParserHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
@@ -82,8 +78,8 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     private EditText messageToSend;
     private RecyclerView messagesView;
 
-    private RequestQueue mRequestQueue;
-    private ImageLoader mImageLoader;
+    NetworkImageViewAdapter networkImageViewAdapter;
+
 
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
@@ -173,23 +169,9 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 
     public void initMessageAdapter()
     {
-        if (mRequestQueue == null) {
-            mRequestQueue = Volley.newRequestQueue(ChatFragment.this.getContext());
+        if (networkImageViewAdapter == null) {
+            networkImageViewAdapter = new NetworkImageViewAdapter(ChatFragment.this.getContext());
         }
-
-        if (mImageLoader == null) {
-            mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
-                private final LruCache<String, Bitmap> mCache = new LruCache<String, Bitmap>(10);
-                public void putBitmap(String url, Bitmap bitmap) {
-                    mCache.put(url, bitmap);
-                }
-                public Bitmap getBitmap(String url) {
-                    return mCache.get(url);
-                }
-            });
-        }
-
-
 
         MessageSourceFactory sourceFactory = new MessageSourceFactory(new MessageStorage(getContext()),user);
 
@@ -217,7 +199,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                         oldItem.getCreateUserName() == newItem.getCreateUserName() &&
                         oldItem.getUid() == newItem.getUid();
             }
-        },getContext(), user, mImageLoader);
+        },getContext(), user, networkImageViewAdapter.getmImageLoader());
 
 
 

@@ -35,7 +35,7 @@ public class VectorByte extends Vector<Byte> implements KvmSerializable {
             if (result != "") {
                 byte[] bytes = new byte[0];
 
-                bytes = Base64.decode(result.getBytes(StandardCharsets.UTF_8), Base64.DEFAULT);
+                bytes = Base64.decode(result.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
 
                 for (final byte b : bytes) {
                     add(b);
@@ -74,7 +74,7 @@ public class VectorByte extends Vector<Byte> implements KvmSerializable {
     @Override
     public String toString() {
         byte[] byteToString = toBytes();
-        String str =  Base64.encodeToString(byteToString, Base64.DEFAULT);
+        String str =  Base64.encodeToString(byteToString, Base64.NO_WRAP);
 
         return str;
     }

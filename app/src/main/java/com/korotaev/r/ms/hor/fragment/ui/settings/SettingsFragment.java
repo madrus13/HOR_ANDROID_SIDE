@@ -28,16 +28,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.korotaev.r.ms.hor.AppHelpers.AdapterHelper;
 import com.korotaev.r.ms.hor.AppHelpers.FileHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ListViewLoader;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
+import com.korotaev.r.ms.hor.AppHelpers.NetworkImageViewAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.ChangePasswordActivity;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
@@ -64,6 +65,9 @@ import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.FILE_SERVER_IP;
+import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.F_WEB_FILES_COMMON;
+import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.F_WEB_FILES_USER_AVATAR_PHOTO;
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_One_Item;
 import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_image;
@@ -78,7 +82,6 @@ public class SettingsFragment extends Fragment
     final Messenger mMessenger = new Messenger(new IncomingHandler());
 
     private SettingsViewModel mViewModel;
-    private ImageView imageView;
     private Button loginView;
     private Button phoneView;
     private Button emailView;
@@ -111,11 +114,11 @@ public class SettingsFragment extends Fragment
 
 
     public ArrayList<String> selectedToolsIds = new ArrayList<String>();
-
-
     static ObjectMapper mapper = new ObjectMapper();
-
     private MyDBHelper myDBHelper = new MyDBHelper(SettingsFragment.this.getContext());
+
+    NetworkImageViewAdapter networkImageViewAdapter;
+    public NetworkImageView imageView;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -276,13 +279,21 @@ public class SettingsFragment extends Fragment
         mMainView = (View) v.findViewById(R.id.main_layout);
         mToolType = (TextView) v.findViewById(R.id.toolTypesVal);
         mCarModel = (TextView) v.findViewById(R.id.carModelVal);
-        imageView = (ImageView) v.findViewById(R.id.UserImageView);
+        imageView =  v.findViewById(R.id.UserImageView);
 
         userAutoInit();
         userInfoInit();
         userToolsInit();
-        myDBHelper.getHelper().addLog(CODE_INFO,"initViews->" + ((new Date()).getTime() - startDate.getTime()));
 
+
+        if (networkImageViewAdapter == null) {
+            networkImageViewAdapter = new NetworkImageViewAdapter(SettingsFragment.this.getContext());
+            String realPhotPath =  user.getUserPhotoPath();
+            if (!realPhotPath.isEmpty() && realPhotPath.contains(F_WEB_FILES_USER_AVATAR_PHOTO)) {
+                realPhotPath =  FILE_SERVER_IP + realPhotPath.replace(F_WEB_FILES_COMMON,"");
+                imageView.setImageUrl(realPhotPath, networkImageViewAdapter.getmImageLoader());
+            }
+        }
     }
 
 

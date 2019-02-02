@@ -12,10 +12,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.FILE_SERVER_IP;
+
 public class WebServiceMainService {
     
     public static String NAMESPACE ="http://Service.ru/";
-    public static String url="http://185.246.154.49:8080/samplejpa-46/ws?wsdl"; //?wsdl
+    public static String url = FILE_SERVER_IP + ":8080/samplejpa-46/ws?wsdl";
     public String PREFIX_SERVICE  = "";
     public static int timeOut = 5000;
     public IWsdl2CodeEvents eventHandler;

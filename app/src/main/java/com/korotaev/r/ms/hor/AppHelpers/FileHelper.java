@@ -9,6 +9,11 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class FileHelper {
 
+    public static String FILE_SERVER_IP = "http://185.246.154.49";
+    public static final String F_WEB_FILES_COMMON = "/opt/tomcat/webapps/upload";
+    public static final String F_WEB_FILES_REQUEST_PHOTO = F_WEB_FILES_COMMON + "/request_photo/";
+    public static final String F_WEB_FILES_USER_AVATAR_PHOTO = F_WEB_FILES_COMMON + "/user_ava_photo/";
+    public static final String F_WEB_FILES_MESSAGE_PHOTO = F_WEB_FILES_COMMON + "/message_photo/";
 
     public void createIntStoragePrivatePicture(Context context, String fileName, byte[] sourceStream) {
 
@@ -33,4 +38,6 @@ public class FileHelper {
            // myDBHelper.getHelper().addLog("ExtStr", "Error writing " + file+ " " + e);
         }
     }
+
+
 }

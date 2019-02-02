@@ -12,7 +12,12 @@ import com.korotaev.r.ms.testormlite.data.Entity.Message;
 
 import java.text.SimpleDateFormat;
 
+import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.FILE_SERVER_IP;
+import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.F_WEB_FILES_COMMON;
+import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.F_WEB_FILES_MESSAGE_PHOTO;
+
 public class ormMessageViewHolder extends ViewHolder {
+
     public View avatar;
     public TextView name;
     public TextView messageBody;
@@ -51,7 +56,13 @@ public class ormMessageViewHolder extends ViewHolder {
                     if (message_time!=null && item.getCreationDate()!=null) {
                         message_time.setText((new SimpleDateFormat("hh:mm")).format(item.getCreationDate()));
                     }
-                    image.setImageUrl("http://185.246.154.49/files/image.png",mImageLoader);
+
+                    String realPhotPath =  item.getMessagePhotoPath();
+                    if (!realPhotPath.isEmpty() && realPhotPath.contains(F_WEB_FILES_MESSAGE_PHOTO)) {
+                        realPhotPath =  FILE_SERVER_IP + realPhotPath.replace(F_WEB_FILES_COMMON,"");
+                        image.setImageUrl(realPhotPath,mImageLoader);
+                    }
+
                     break;
                 case ViewHelper.SYSTEM_MESSAGE:
                     break;
