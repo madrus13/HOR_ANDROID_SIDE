@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.toolbox.ImageLoader;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
+import com.korotaev.r.ms.hor.AppHelpers.NetworkImageViewAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
@@ -24,25 +24,18 @@ public class ormMessageAdapter extends PagedListAdapter<Message, ormMessageViewH
     public  Context context;
     private static MyDBHelper myDBHelper;
     private User currentUser;
-    private ImageLoader mImageLoader;
+    private NetworkImageViewAdapter networkImageViewAdapter;
 
     public ormMessageAdapter(
-                             DiffUtil.ItemCallback<Message> diffUtilCallback,
-                             Context context,
-                             User currentUser,
-                             ImageLoader mImageLoader) {
+            DiffUtil.ItemCallback<Message> diffUtilCallback,
+            Context context,
+            User currentUser,
+            NetworkImageViewAdapter networkImageViewAdapter) {
         super(diffUtilCallback);
         this.context = context;
         this.currentUser = currentUser;
-        this.mImageLoader = mImageLoader;
+        this.networkImageViewAdapter = networkImageViewAdapter;
     }
-
-    /*
-    public void add(Message message) {
-        this.messages.add(message);
-        notifyDataSetChanged();
-    }
-    */
 
     public void initMydDBHelper()
     {
@@ -67,7 +60,7 @@ public class ormMessageAdapter extends PagedListAdapter<Message, ormMessageViewH
         }
 
 
-        ormMessageViewHolder holder = new ormMessageViewHolder(convertView, mImageLoader);
+        ormMessageViewHolder holder = new ormMessageViewHolder(convertView, networkImageViewAdapter);
 
         return holder;
     }

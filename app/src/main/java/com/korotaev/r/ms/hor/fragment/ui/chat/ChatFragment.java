@@ -199,7 +199,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                         oldItem.getCreateUserName() == newItem.getCreateUserName() &&
                         oldItem.getUid() == newItem.getUid();
             }
-        },getContext(), user, networkImageViewAdapter.getmImageLoader());
+        },getContext(), user, networkImageViewAdapter);
 
 
 

@@ -65,9 +65,6 @@ import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
-import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.FILE_SERVER_IP;
-import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.F_WEB_FILES_COMMON;
-import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.F_WEB_FILES_USER_AVATAR_PHOTO;
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_One_Item;
 import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_image;
@@ -105,7 +102,7 @@ public class SettingsFragment extends Fragment
     TransmissionType selectedtrType = null;
     public int selectedtrTypeIndex = -1;
 
-    ArrayList<String> dataTools = new ArrayList<String>();
+    ArrayList<String> dataTools = new ArrayList<>();
     public static List<Tooltypes> ALL_TOOL_TYPES_LIST;
 
     public static User user;
@@ -234,6 +231,7 @@ public class SettingsFragment extends Fragment
             Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+
             VectorByte imageInByte = new VectorByte(baos.toByteArray());
 
             try {
@@ -267,18 +265,16 @@ public class SettingsFragment extends Fragment
 
     public  void initViews(View v)
     {
-        Date startDate = new Date();
-
-        loginView = (Button) v.findViewById(R.id.LoginVal);
-        emailView = (Button) v.findViewById(R.id.EmailVal);
-        phoneView = (Button) v.findViewById(R.id.PhoneVal);
-        passwordEdit = (Button) v.findViewById(R.id.change_pass_button);
-        mRegion = (Spinner) v.findViewById(R.id.RegionVal);
-        mTrType = (Spinner) v.findViewById(R.id.TransmissionTypeVal);
-        mProgressView = (View) v.findViewById(R.id.main_activity_progress);
-        mMainView = (View) v.findViewById(R.id.main_layout);
-        mToolType = (TextView) v.findViewById(R.id.toolTypesVal);
-        mCarModel = (TextView) v.findViewById(R.id.carModelVal);
+        loginView = v.findViewById(R.id.LoginVal);
+        emailView = v.findViewById(R.id.EmailVal);
+        phoneView = v.findViewById(R.id.PhoneVal);
+        passwordEdit = v.findViewById(R.id.change_pass_button);
+        mRegion = v.findViewById(R.id.RegionVal);
+        mTrType = v.findViewById(R.id.TransmissionTypeVal);
+        mProgressView =  v.findViewById(R.id.main_activity_progress);
+        mMainView = v.findViewById(R.id.main_layout);
+        mToolType = v.findViewById(R.id.toolTypesVal);
+        mCarModel =  v.findViewById(R.id.carModelVal);
         imageView =  v.findViewById(R.id.UserImageView);
 
         userAutoInit();
@@ -288,11 +284,7 @@ public class SettingsFragment extends Fragment
 
         if (networkImageViewAdapter == null) {
             networkImageViewAdapter = new NetworkImageViewAdapter(SettingsFragment.this.getContext());
-            String realPhotPath =  user.getUserPhotoPath();
-            if (!realPhotPath.isEmpty() && realPhotPath.contains(F_WEB_FILES_USER_AVATAR_PHOTO)) {
-                realPhotPath =  FILE_SERVER_IP + realPhotPath.replace(F_WEB_FILES_COMMON,"");
-                imageView.setImageUrl(realPhotPath, networkImageViewAdapter.getmImageLoader());
-            }
+            networkImageViewAdapter.setImageFromServicePath(user.getUserPhotoPath(), imageView);
         }
     }
 
@@ -304,7 +296,6 @@ public class SettingsFragment extends Fragment
 
         if (auto!=null) {
             mCarModel.setText(auto.getName());
-
         }
     }
 

@@ -4,30 +4,25 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.korotaev.r.ms.hor.AppHelpers.NetworkImageViewAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 
 import java.text.SimpleDateFormat;
 
-import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.FILE_SERVER_IP;
-import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.F_WEB_FILES_COMMON;
-import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.F_WEB_FILES_MESSAGE_PHOTO;
-
 public class ormMessageViewHolder extends ViewHolder {
 
-    public View avatar;
     public TextView name;
     public TextView messageBody;
     public TextView message_time;
     public NetworkImageView image;
-    private ImageLoader mImageLoader;
+    private NetworkImageViewAdapter networkImageViewAdapter;
 
-    public ormMessageViewHolder(View itemView,ImageLoader  mImageLoader) {
+    public ormMessageViewHolder(View itemView, NetworkImageViewAdapter networkImageViewAdapter) {
         super(itemView);
-        this.mImageLoader = mImageLoader;
+        this.networkImageViewAdapter = networkImageViewAdapter;
     }
 
     public void bind(Message item, int viewType) {
@@ -57,12 +52,7 @@ public class ormMessageViewHolder extends ViewHolder {
                         message_time.setText((new SimpleDateFormat("hh:mm")).format(item.getCreationDate()));
                     }
 
-                    String realPhotPath =  item.getMessagePhotoPath();
-                    if (!realPhotPath.isEmpty() && realPhotPath.contains(F_WEB_FILES_MESSAGE_PHOTO)) {
-                        realPhotPath =  FILE_SERVER_IP + realPhotPath.replace(F_WEB_FILES_COMMON,"");
-                        image.setImageUrl(realPhotPath,mImageLoader);
-                    }
-
+                    networkImageViewAdapter.setImageFromServicePath(item.getMessagePhotoPath(), image);
                     break;
                 case ViewHelper.SYSTEM_MESSAGE:
                     break;

@@ -170,7 +170,7 @@ public class ServiceObjectHelper {
                                                                           int page, int pageSize
     )
     {
-        ArrayList<Message> messageList = new ArrayList<Message>();
+        ArrayList<Message> messageList = new ArrayList<>();
 
         serviceResult result = new serviceResult();
         if (!currentToken.isEmpty()) {
@@ -409,7 +409,7 @@ public class ServiceObjectHelper {
                                                         haveCable,
                                                         haveCableSpecified,
                                                         transmissionType,
-                                                        transmissionTypeSpecified);
+                                                        transmissionTypeSpecified, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
