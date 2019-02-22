@@ -410,15 +410,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			if (MessageDao==null) {
 				MessageDao = this.getMessageDao();
 			}
-			//QueryBuilder<Message, Integer> queryBuilder = MessageDao.queryBuilder();
-			//queryBuilder.offset(Long.valueOf(startRow)).limit(1L);
 
-			//finded = MessageDao.queryForFirst(queryBuilder.prepare());
 			finded = MessageDao.queryBuilder().limit(1L)
 					.offset(Long.valueOf(startRow))
 					.orderBy("id", true)
 					.query();
-					//MessageDao.queryBuilder().where().eq("uid", i).queryForFirst();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -447,6 +443,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return finded;
 	}
 
+
 	public int getMessageCount(Long region)
 	{
 		int result = 0;
@@ -462,4 +459,61 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return  result;
 	}
 
+
+	public Request getRequestItem(int startRow)
+	{
+		List<Request> finded = null;
+
+		try {
+			if (RequestDao==null) {
+				RequestDao = this.getRequestDao();
+			}
+
+			finded = RequestDao.queryBuilder().limit(1L)
+					.offset(Long.valueOf(startRow))
+					.orderBy("id", true)
+					.query();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finded.size() > 0 ? finded.get(0) : null;
+	}
+
+
+	public List<Request> getRequestItemBlock(Long region, int startRow, int  size)
+	{
+		List<Request> finded = null;
+		try {
+			if (RequestDao==null) {
+				RequestDao = this.getRequestDao();
+			}
+
+			finded = RequestDao.queryBuilder()
+					.orderBy("id", true)
+					.limit(Long.valueOf(size))
+					.offset(Long.valueOf(startRow))
+					.where().eq("region",region).query();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return finded;
+	}
+
+
+	public int getRequestCount(Long region)
+	{
+		int result = 0;
+		try {
+			if (RequestDao==null) {
+				RequestDao = this.getRequestDao();
+			}
+			result = (int) RequestDao.queryBuilder()
+					.where().eq("region",region).countOf();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return  result;
+	}
 }

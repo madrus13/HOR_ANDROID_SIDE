@@ -409,7 +409,8 @@ public class ServiceObjectHelper {
                                                         haveCable,
                                                         haveCableSpecified,
                                                         transmissionType,
-                                                        transmissionTypeSpecified);
+                                                        transmissionTypeSpecified,
+                                                        null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -505,7 +506,6 @@ public class ServiceObjectHelper {
 
                 if (isValidResult(result)) {
                     autos =  mapper.readValue(result.resultObjectJSON, Auto.class);
-                    //Arrays.asList(mapper.readValue(result.resultObjectJSON, Auto[].class));
                     Preferences.saveObjInPrefs(context, Preferences.SAVED_CurrentUserAutos,result.resultObjectJSON);
                     return autos;
                 }

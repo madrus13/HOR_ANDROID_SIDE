@@ -4,6 +4,7 @@ import android.arch.paging.PositionalDataSource;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.korotaev.r.ms.hor.AppHelpers.Request.CustomStorage;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
@@ -14,9 +15,9 @@ import static android.support.constraint.Constraints.TAG;
 public class MessagePositionalDataSource extends PositionalDataSource<Message> {
 
     User currentUser;
-    private final MessageStorage messageStorage;
+    private final CustomStorage messageStorage;
 
-    public MessagePositionalDataSource(MessageStorage messageStorage, User currentUser) {
+    public MessagePositionalDataSource(CustomStorage messageStorage, User currentUser) {
         this.messageStorage = messageStorage;
         this.currentUser = currentUser;
     }
