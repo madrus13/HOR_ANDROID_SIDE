@@ -57,8 +57,8 @@ public class WebServiceMainService {
 
     public serviceResult soapMethodExecutor(List<HeaderProperty> headers, String methodRequestName)
     {
+        methodRequestName+="Request";
         ArrayList<HeaderProperty> headerProperty = new ArrayList<HeaderProperty>();
-
         headerProperty.add(new HeaderProperty("Content-Type", "text/xml"));
         headerProperty.add(new HeaderProperty("charset", "UTF-8"));
         soapEnvelope.encodingStyle = "UTF-8";
@@ -94,8 +94,8 @@ public class WebServiceMainService {
     }
 
     public serviceResult getSessionToken(String name,String password,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getSessionToken");
+        String methodName = "getSessionToken";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("name",name);
         soapReq.addProperty("password",password);
         soapEnvelope.setOutputSoapObject(soapReq);
@@ -116,8 +116,8 @@ public class WebServiceMainService {
             String fileName,
             VectorByte fileImage,
             List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","insertMessage");
+        String methodName = "insertMessage";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("text",text);
         soapReq.addProperty("requestId",requestIdSpecified?requestId:"");
@@ -129,14 +129,14 @@ public class WebServiceMainService {
         soapReq.addProperty("fileImage",fileImage!=null ? fileImage.toString() : "");
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "insertMessageRequest");
+        return soapMethodExecutor(headers, methodName);
 
     }
 
 
     public serviceResult getMessageByRegionAndIdGreater(String sessionToken,long regionId,boolean regionIdSpecified,long lastId,boolean lastIdSpecified,int pageSize,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getMessageByRegionAndIdGreater");
+        String methodName = "getMessageByRegionAndIdGreater";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("regionId",regionId);
         soapReq.addProperty("regionIdSpecified",regionIdSpecified);
@@ -144,7 +144,7 @@ public class WebServiceMainService {
         soapReq.addProperty("lastIdSpecified",lastIdSpecified);
         soapReq.addProperty("pageSize",pageSize);
         soapEnvelope.setOutputSoapObject(soapReq);
-        return soapMethodExecutor(headers, "getMessageByRegionAndIdGreaterRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
 
@@ -156,8 +156,8 @@ public class WebServiceMainService {
             int page,
             int pageSize,
             List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","findMessageByRegionAndCreationDateBetweenOffset");
+        String methodName = "findMessageByRegionAndCreationDateBetweenOffset";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("regionId",regionId);
         soapReq.addProperty("regionIdSpecified",regionIdSpecified);
@@ -165,7 +165,7 @@ public class WebServiceMainService {
         soapReq.addProperty("page",page);
         soapReq.addProperty("pageSize",pageSize);
         soapEnvelope.setOutputSoapObject(soapReq);
-        return soapMethodExecutor(headers, "findMessageByRegionAndCreationDateBetweenOffsetRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
 
@@ -177,8 +177,8 @@ public class WebServiceMainService {
             Date endDate, boolean endDateSpecified,
             int page, int pageSize,
             List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","findMessageByRegionAndCreationDateBetweenOrderByIdAsc");
+        String methodName = "findMessageByRegionAndCreationDateBetweenOrderByIdAsc";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("regionId",regionId);
         soapReq.addProperty("regionIdSpecified",regionIdSpecified);
@@ -189,185 +189,185 @@ public class WebServiceMainService {
         soapReq.addProperty("page",page);
         soapReq.addProperty("pageSize",pageSize);
         soapEnvelope.setOutputSoapObject(soapReq);
-        return soapMethodExecutor(headers, "findMessageByRegionAndCreationDateBetweenOrderByIdAscRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
     
 
     
     public serviceResult getAllMessageByRequest(String sessionToken,long request,boolean requestSpecified,int startRow, int pageSize,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getAllMessageByRequest");
+        String methodName = "getAllMessageByRequest";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("request",request);
         soapReq.addProperty("requestSpecified",requestSpecified);
         soapReq.addProperty("startRow",startRow);
         soapReq.addProperty("pageSize",pageSize);
         soapEnvelope.setOutputSoapObject(soapReq);
-        return soapMethodExecutor(headers, "getAllMessageByRequestRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
 
     public serviceResult getAllRequestByCreationUser(String sessionToken,long userId,boolean userIdSpecified,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getAllRequestByCreationUser");
+        String methodName = "getAllRequestByCreationUser";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("userId",userId);
         soapReq.addProperty("userIdSpecified",userIdSpecified);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getAllRequestByCreationUserRequest");
+        return soapMethodExecutor(headers, methodName);
     }
     
 
     public serviceResult getActiveRequestByCreationUser(String sessionToken,long userId,boolean userIdSpecified,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getActiveRequestByCreationUser");
+        String methodName = "getActiveRequestByCreationUser";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("userId",userId);
         soapReq.addProperty("userIdSpecified",userIdSpecified);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getActiveRequestByCreationUserRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
     
     public serviceResult getAllOpenRequestByRegion(String sessionToken,long regionId,boolean regionIdSpecified,String typeIds,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getAllOpenRequestByRegion");
+        String methodName = "getAllOpenRequestByRegion";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("regionId",regionId);
         soapReq.addProperty("regionIdSpecified",regionIdSpecified);
         soapReq.addProperty("typeIds",typeIds);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getAllOpenRequestByRegionRequest");
+        return soapMethodExecutor(headers, methodName);
     }
     
 
     
     public serviceResult findRequestResolvedByCurrentUserWithTypeFilter(String sessionToken,String typeIds,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","findRequestResolvedByCurrentUserWithTypeFilter");
+        String methodName = "findRequestResolvedByCurrentUserWithTypeFilter";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("typeIds",typeIds);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "findRequestResolvedByCurrentUserWithTypeFilterRequest");
+        return soapMethodExecutor(headers, methodName);
     }
     
 
     public serviceResult getAllMessageTypes(String sessionToken,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getAllMessageTypes");
+        String methodName = "getAllMessageTypes";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getAllMessageTypesRequest");
+        return soapMethodExecutor(headers, methodName);
     }
     
 
     
     public serviceResult getAllRequestType(String sessionToken,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getAllRequestType");
+        String methodName = "getAllRequestType";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getAllRequestTypeRequest");
+        return soapMethodExecutor(headers, methodName);
     }
     
 
     public serviceResult getAllTransmissionType(String sessionToken,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getAllTransmissionType");
+        String methodName = "getAllTransmissionType";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getAllTransmissionTypeRequest");
+        return soapMethodExecutor(headers, methodName);
     }
     
 
     
     public serviceResult getAllToolType(String sessionToken,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getAllToolType");
+        String methodName = "getAllToolType";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getAllToolTypeRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
 
     public serviceResult getAllAchievmenttype(String sessionToken,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getAllAchievmenttype");
+        String methodName = "getAllAchievmenttype";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getAllAchievmenttypeRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
     
     public serviceResult getAllAchievmentByUser(String sessionToken,long user,boolean userSpecified,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getAllAchievmentByUser");
+        String methodName = "getAllAchievmentByUser";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("user",user);
         soapReq.addProperty("userSpecified",userSpecified);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getAllAchievmentByUserRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
     
     public serviceResult getAllToolByUser(String sessionToken,long user,boolean userSpecified,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getAllToolByUser");
+        String methodName = "getAllToolByUser";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("user",user);
         soapReq.addProperty("userSpecified",userSpecified);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getAllToolByUserRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
     
     public serviceResult getAllAutoByUser(String sessionToken,long user,boolean userSpecified,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getAllAutoByUser");
+        String methodName = "getAllAutoByUser";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("user",user);
         soapReq.addProperty("userSpecified",userSpecified);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getAllAutoByUserRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
     
     public serviceResult getAllRegions(String sessionToken,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getAllRegions");
+        String methodName = "getAllRegions";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getAllRegionsRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
     
     public serviceResult getUserInfo(String sessionToken,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getUserInfo");
+        String methodName = "getUserInfo";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getUserInfoRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
     
     public serviceResult insertRequest(String sessionToken,String description,double latitude,boolean latitudeSpecified,double longitude,boolean longitudeSpecified,long isResolvedByUserId,boolean isResolvedByUserIdSpecified,long typeId,boolean typeIdSpecified,long regionId,boolean regionIdSpecified,String fileName,VectorByte fileImage,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","insertRequest");
+        String methodName = "insertRequest";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         MarshalFloat marshalFloat = new MarshalFloat();
         marshalFloat.register(soapEnvelope);
         soapReq.addProperty("sessionToken",sessionToken);
@@ -386,13 +386,13 @@ public class WebServiceMainService {
         soapReq.addProperty("fileImage",fileImage.toString());
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "insertRequestRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
     
     public serviceResult updateRequest(long id,String sessionToken,String description,double latitude,boolean latitudeSpecified,double longitude,boolean longitudeSpecified,long statusId,boolean statusIdSpecified,long isResolvedByUser,boolean isResolvedByUserSpecified,long typeId,boolean typeIdSpecified,long regionId,boolean regionIdSpecified,String fileName,VectorByte fileImage,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","updateRequest");
+        String methodName = "updateRequest";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         MarshalFloat marshalFloat = new MarshalFloat();
         marshalFloat.register(soapEnvelope);
         soapReq.addProperty("Id",id);
@@ -419,8 +419,8 @@ public class WebServiceMainService {
 
     
     public serviceResult insertUser(String name,long region,boolean regionSpecified,String password,String email,String phone,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","insertUser");
+        String methodName = "insertUser";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("name",name);
         soapReq.addProperty("region",region);
         //soapReq.addProperty("regionSpecified",regionSpecified);
@@ -429,14 +429,14 @@ public class WebServiceMainService {
         soapReq.addProperty("phone",phone);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "insertUserRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
 
     
     public serviceResult updateUser(String sessionToken,long region,boolean regionSpecified,String password,String fileName,VectorByte fileImage,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","updateUser");
+        String methodName = "updateUser";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("region",region);
         soapReq.addProperty("regionSpecified",regionSpecified);
@@ -445,39 +445,24 @@ public class WebServiceMainService {
         soapReq.addProperty("fileImage",fileImage!=null ? fileImage.toString(): "");
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "updateUserRequest");
+        return soapMethodExecutor(headers, methodName);
     }
-
-
-    public void updateUserPasswordAsync(String sessionToken,String password) throws Exception{
-        if (this.eventHandler == null)
-            throw new Exception("Async Methods Requires IWsdl2CodeEvents");
-        updateUserPasswordAsync(sessionToken, password);
-    }
-
-
 
     public serviceResult updateUserPassword(String sessionToken,String password,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","updateUserPassword");
+        String methodName = "updateUserPassword";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("password",password);
 
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "updateUserPasswordRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
-    
-
-    
-    public serviceResult insertUpdateUserAuto(String sessionToken,String name,long haveCable,boolean haveCableSpecified,long transmissionType,boolean transmissionTypeSpecified){
-        return insertUpdateUserAuto(sessionToken, name, haveCable, haveCableSpecified, transmissionType, transmissionTypeSpecified, null);
-    }
     
     public serviceResult insertUpdateUserAuto(String sessionToken,String name,long haveCable,boolean haveCableSpecified,long transmissionType,boolean transmissionTypeSpecified,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","insertUpdateUserAuto");
+        String methodName = "insertUpdateUserAuto";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("name",name);
         soapReq.addProperty("haveCable",haveCable);
@@ -491,19 +476,19 @@ public class WebServiceMainService {
 
     
     public serviceResult insertUpdateUserTools(String sessionToken,String toolTypeIds,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","insertUpdateUserTools");
+        String methodName = "insertUpdateUserTools";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("toolTypeIds",toolTypeIds);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "insertUpdateUserToolsRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
 
     public serviceResult closeCurrentActiveRequestByCustomUser(String sessionToken,long userId,boolean userIdSpecified,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","closeCurrentActiveRequestByCustomUser");
+        String methodName = "closeCurrentActiveRequestByCustomUser";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("UserId",userId);
         soapReq.addProperty("UserIdSpecified",userIdSpecified);
@@ -514,21 +499,21 @@ public class WebServiceMainService {
 
     
     public serviceResult closeAllActiveRequestByAuthor(String sessionToken,List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","closeAllActiveRequestByAuthor");
+        String methodName = "closeAllActiveRequestByAuthor";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapEnvelope.setOutputSoapObject(soapReq);
-        return soapMethodExecutor(headers, "closeAllActiveRequestByAuthorRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
     public serviceResult getFileById(String sessionToken,long id, List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","getFileById");
+        String methodName = "getFileById";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("id",id);
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "getFileByIdRequest");
+        return soapMethodExecutor(headers, methodName);
     }
 
     public serviceResult insertFile(
@@ -539,8 +524,8 @@ public class WebServiceMainService {
             Long createUser,
             VectorByte fileImage,
             List<HeaderProperty> headers){
-
-        SoapObject soapReq = new SoapObject("http://Service.ru/","insertFile");
+        String methodName = "insertFile";
+        SoapObject soapReq = new SoapObject(NAMESPACE,methodName);
         soapReq.addProperty("sessionToken",sessionToken);
         soapReq.addProperty("fileName",fileName);
         soapReq.addProperty("description",description);
@@ -550,7 +535,7 @@ public class WebServiceMainService {
 
         soapEnvelope.setOutputSoapObject(soapReq);
 
-        return soapMethodExecutor(headers, "insertFileRequest");
+        return soapMethodExecutor(headers, methodName);
     }
     
 }
