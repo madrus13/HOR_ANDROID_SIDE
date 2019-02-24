@@ -30,11 +30,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.korotaev.r.ms.hor.AppHelpers.Message.MessageSourceFactory;
-import com.korotaev.r.ms.hor.AppHelpers.Message.MessageStorage;
 import com.korotaev.r.ms.hor.AppHelpers.Message.ormMessageAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.NetworkImageViewAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.ParserHelper;
+import com.korotaev.r.ms.hor.AppHelpers.Request.CustomStorage;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
@@ -48,10 +48,11 @@ import com.korotaev.r.ms.testormlite.data.Entity.User;
 import java.util.concurrent.Executors;
 
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
+import static com.korotaev.r.ms.hor.fragment.ui.chat.ChatViewModel.VIEW_MESSAGE_PAGE_SIZE;
 
 public class ChatFragment extends Fragment implements ServiceActivity {
 
-    private static final int VIEW_MESSAGE_PAGE_SIZE = 100;
+
     static boolean  stateFromMe = true;
 
     static boolean  registeredToServiceIntent;
@@ -173,7 +174,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
             networkImageViewAdapter = new NetworkImageViewAdapter(ChatFragment.this.getContext());
         }
 
-        MessageSourceFactory sourceFactory = new MessageSourceFactory(new MessageStorage(getContext()),user);
+        MessageSourceFactory sourceFactory = new MessageSourceFactory<Message>(new CustomStorage<Message>(getContext()),user);
 
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)

@@ -7,9 +7,9 @@ import com.korotaev.r.ms.testormlite.data.Entity.Message;
 
 import java.util.ArrayList;
 
-public class MessageStorage {
+public class MessageStorageX {
     private static MyDBHelper myDBHelper;
-    public MessageStorage(Context context) {
+    public MessageStorageX(Context context) {
         myDBHelper = new MyDBHelper(context);
     }
 

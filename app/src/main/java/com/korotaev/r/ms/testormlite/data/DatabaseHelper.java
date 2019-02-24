@@ -443,6 +443,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return finded;
 	}
 
+
 	public int getMessageCount(Long region)
 	{
 		int result = 0;
@@ -457,6 +458,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return  result;
 	}
+
 
 	public Request getRequestItem(int startRow)
 	{
@@ -478,6 +480,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return finded.size() > 0 ? finded.get(0) : null;
 	}
 
+
 	public List<Request> getRequestItemBlock(Long region, int startRow, int  size)
 	{
 		List<Request> finded = null;
@@ -485,7 +488,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			if (RequestDao==null) {
 				RequestDao = this.getRequestDao();
 			}
-
 
 			finded = RequestDao.queryBuilder()
 					.orderBy("id", true)
@@ -498,6 +500,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return finded;
 	}
+
 
 	public int getRequestCount(Long region)
 	{
@@ -513,6 +516,4 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return  result;
 	}
-
-
 }

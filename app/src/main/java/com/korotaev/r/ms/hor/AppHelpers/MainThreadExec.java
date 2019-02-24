@@ -1,4 +1,4 @@
-package com.korotaev.r.ms.hor.AppHelpers.Message;
+package com.korotaev.r.ms.hor.AppHelpers;
 
 import android.os.Handler;
 import android.os.Looper;
