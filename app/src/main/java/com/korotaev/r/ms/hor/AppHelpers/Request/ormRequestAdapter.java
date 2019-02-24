@@ -11,26 +11,28 @@ import android.view.ViewGroup;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
+import com.korotaev.r.ms.hor.AppHelpers.NetworkImageViewAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.testormlite.data.Entity.EntityConstVariables;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
+import com.korotaev.r.ms.testormlite.data.Entity.Request;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 
-public class ormRequestAdapter extends PagedListAdapter<Message, ormRequestViewHolder> {
+public class ormRequestAdapter extends PagedListAdapter<Request, ormRequestViewHolder> {
 
     public  Context context;
     private static MyDBHelper myDBHelper;
     private User currentUser;
-    private ImageLoader mImageLoader;
+    private NetworkImageViewAdapter mImageLoader;
 
     public ormRequestAdapter(
-                             DiffUtil.ItemCallback<Message> diffUtilCallback,
+                             DiffUtil.ItemCallback<Request> diffUtilCallback,
                              Context context,
                              User currentUser,
-                             ImageLoader mImageLoader) {
+                             NetworkImageViewAdapter mImageLoader) {
         super(diffUtilCallback);
         this.context = context;
         this.currentUser = currentUser;
@@ -79,19 +81,16 @@ public class ormRequestAdapter extends PagedListAdapter<Message, ormRequestViewH
 
     @Override
     public int getItemViewType(int position) {
-        Message message = getItem(position);
+        Request request = getItem(position);
         int result = ViewHelper.OUTPUT_MESSAGE;
-        if (message != null) {
+        if (request != null) {
             User user = Preferences.loadCurrentUserInfo(context);
 
-            if (user != null && (message.getCreateUser() == user.getId()) && message.getType() == EntityConstVariables.MESSAGE_TYPE_REGION) {
+            if (user != null && (request.getCreationUser() == user.getId()) && request.getType() == EntityConstVariables.MESSAGE_TYPE_REGION) {
                 result = ViewHelper.OUTPUT_MESSAGE;
-            } else {
-                if (user != null && (message.getCreateUser() != user.getId()) && message.getType() == EntityConstVariables.MESSAGE_TYPE_REGION)
-                    result = ViewHelper.INPUT_MESSAGE;
             }
         }
-        if (message.getType() == EntityConstVariables.MESSAGE_TYPE_BROADCAST) {
+        if (request.getType() == EntityConstVariables.MESSAGE_TYPE_BROADCAST) {
             result = ViewHelper.SYSTEM_MESSAGE;
         }
         return result;
@@ -99,9 +98,9 @@ public class ormRequestAdapter extends PagedListAdapter<Message, ormRequestViewH
 
     @Nullable
     @Override
-    protected Message getItem(int position) {
+    protected Request getItem(int position) {
         initMydDBHelper();
-        return myDBHelper.getHelper().getMessageItem(position);
+        return myDBHelper.getHelper().getRequestItem(position);
     }
 
     @Override

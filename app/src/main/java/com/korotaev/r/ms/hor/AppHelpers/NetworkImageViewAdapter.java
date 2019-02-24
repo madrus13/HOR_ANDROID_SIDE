@@ -57,7 +57,7 @@ public class NetworkImageViewAdapter
 
     public void setImageFromServicePath(String PathFromService, NetworkImageView imageView)
     {
-        if (!PathFromService.isEmpty() &&
+        if (PathFromService!=null && !PathFromService.isEmpty() &&
                 (
                     PathFromService.contains(F_WEB_FILES_USER_AVATAR_PHOTO)  ||
                     PathFromService.contains(F_WEB_FILES_MESSAGE_PHOTO)      ||
