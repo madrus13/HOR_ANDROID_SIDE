@@ -23,7 +23,7 @@ public class CustomStorage<T> {
         ArrayList<T> msgList = new ArrayList<T>();
 
         if (this.getClass().equals(Request.class)) {
-            msgList.addAll((Collection<? extends T>) myDBHelper.getHelper().getRequestItemBlock(region,requestedStartPosition,requestedLoadSize));
+            boolean b = msgList.addAll((Collection<? extends T>) myDBHelper.getHelper().getRequestItemBlock(region, requestedStartPosition, requestedLoadSize));
         }
         if (this.getClass().equals(Message.class)) {
             msgList.addAll((Collection<? extends T>) myDBHelper.getHelper().getMessageItemBlock(region,requestedStartPosition,requestedLoadSize));
