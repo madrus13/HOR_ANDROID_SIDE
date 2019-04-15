@@ -1,4 +1,4 @@
-package com.korotaev.r.ms.hor.AppHelpers.Request;
+package com.korotaev.r.ms.hor.AppHelpers.Common;
 
 import android.content.Context;
 

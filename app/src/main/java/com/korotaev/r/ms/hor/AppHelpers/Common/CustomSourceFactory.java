@@ -1,11 +1,13 @@
-package com.korotaev.r.ms.hor.AppHelpers.Request;
+package com.korotaev.r.ms.hor.AppHelpers.Common;
 
 import android.arch.paging.DataSource;
 
+import com.korotaev.r.ms.hor.AppHelpers.Common.CustomPositionalDataSource;
+import com.korotaev.r.ms.hor.AppHelpers.Common.CustomStorage;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
-public class CustomSourceFactory extends DataSource.Factory<Integer, Message> {
+public class CustomSourceFactory<T> extends DataSource.Factory<Integer, T> {
 
     private final CustomStorage customStorage;
     private final User currentUser;
@@ -16,6 +18,6 @@ public class CustomSourceFactory extends DataSource.Factory<Integer, Message> {
 
     @Override
     public DataSource create() {
-        return new CustomPositionalDataSource(customStorage,currentUser);
+        return new CustomPositionalDataSource<T>(customStorage,currentUser);
     }
 }

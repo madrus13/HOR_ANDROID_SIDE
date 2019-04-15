@@ -29,12 +29,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.korotaev.r.ms.hor.AppHelpers.Message.MessageSourceFactory;
+import com.korotaev.r.ms.hor.AppHelpers.Common.CustomSourceFactory;
 import com.korotaev.r.ms.hor.AppHelpers.Message.ormMessageAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.NetworkImageViewAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.ParserHelper;
-import com.korotaev.r.ms.hor.AppHelpers.Request.CustomStorage;
+import com.korotaev.r.ms.hor.AppHelpers.Common.CustomStorage;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
@@ -174,7 +174,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
             networkImageViewAdapter = new NetworkImageViewAdapter(ChatFragment.this.getContext());
         }
 
-        MessageSourceFactory sourceFactory = new MessageSourceFactory<Message>(new CustomStorage<Message>(getContext()),user);
+        CustomSourceFactory sourceFactory = new CustomSourceFactory<Message>(new CustomStorage<Message>(getContext()),user);
 
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
