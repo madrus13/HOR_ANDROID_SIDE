@@ -174,7 +174,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
             networkImageViewAdapter = new NetworkImageViewAdapter(ChatFragment.this.getContext());
         }
 
-        CustomSourceFactory sourceFactory = new CustomSourceFactory<Message>(new CustomStorage<Message>(getContext()),user);
+        CustomSourceFactory sourceFactory = new CustomSourceFactory<Message>(new CustomStorage<Message>(getContext(), Message.class),user);
 
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)

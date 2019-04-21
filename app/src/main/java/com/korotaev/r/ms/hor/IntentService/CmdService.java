@@ -117,11 +117,11 @@ public class CmdService extends IntentService {
                     long haveCable = (long) data.get("haveCable");
                     String toolTypeIds = (String) data.get("toolTypeIds");
                     VectorByte fileImage = null;
+                    FileHelper fileHelper = new FileHelper();
                     if (file!=null && file.length > 0) {
                         fileImage = new VectorByte(file);
+                        fileHelper.createIntStoragePrivatePicture(CmdService.this,"in_cmdService_file_.jpeg", fileImage.toBytes());
                     }
-                    FileHelper fileHelper = new FileHelper();
-                    fileHelper.createIntStoragePrivatePicture(CmdService.this,"in_cmdService_file_.jpeg", fileImage.toBytes());
 
                     mSetUserInfoTask = new SetUserInfoTask(msg,
                             regionId, true,

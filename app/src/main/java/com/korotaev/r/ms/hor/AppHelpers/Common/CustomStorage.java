@@ -12,20 +12,20 @@ import java.util.Collection;
 public class CustomStorage<T> {
 
     private static MyDBHelper myDBHelper;
+    private Class<T> tClass;
 
-    public CustomStorage(Context context) {
+    public CustomStorage(Context context, Class<T> tClass) {
         myDBHelper = new MyDBHelper(context);
+        this.tClass = tClass;
     }
-
-
 
     public ArrayList<T> getData(Long region, int requestedStartPosition, int requestedLoadSize) {
         ArrayList<T> msgList = new ArrayList<T>();
 
-        if (this.getClass().equals(Request.class)) {
+        if (tClass.equals(Request.class)) {
             boolean b = msgList.addAll((Collection<? extends T>) myDBHelper.getHelper().getRequestItemBlock(region, requestedStartPosition, requestedLoadSize));
         }
-        if (this.getClass().equals(Message.class)) {
+        if (tClass.equals(Message.class)) {
             msgList.addAll((Collection<? extends T>) myDBHelper.getHelper().getMessageItemBlock(region,requestedStartPosition,requestedLoadSize));
         }
 

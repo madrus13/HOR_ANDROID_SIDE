@@ -202,8 +202,9 @@ public class SettingsFragment extends Fragment
                 b.putLong("region", regionId );
                 b.putString("password", password);
                 b.putString("fileName", fileName);
-                b.putByteArray("file", file.toBytes());
-
+                if (file!=null) {
+                    b.putByteArray("file", file.toBytes());
+                }
                 b.putLong("transmissionType", transmissionType);
                 b.putString("nameAuto", nameAuto);
                 b.putLong("haveCable", haveCable);
@@ -230,11 +231,11 @@ public class SettingsFragment extends Fragment
 
             Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-
-            VectorByte imageInByte = new VectorByte(baos.toByteArray());
+            VectorByte imageInByte =null;
 
             try {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                imageInByte = new VectorByte(baos.toByteArray());
                 FileHelper fileHelper = new FileHelper();
                 fileHelper.createIntStoragePrivatePicture(getContext(),"sended_quality_50_.jpeg", imageInByte.toBytes());
             }
