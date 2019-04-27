@@ -7,7 +7,7 @@
     android:paddingStart="15dp"
     android:paddingEnd="60dp">
 
-    <View
+    <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/avatar"
         android:layout_width="34dp"
         android:layout_height="34dp"
