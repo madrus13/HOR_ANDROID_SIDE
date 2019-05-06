@@ -13,6 +13,11 @@ android {
             enabled = true
         }
     }
+
+    repositories {
+        mavenCentral()
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -59,6 +64,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
     implementation 'android.arch.paging:runtime:1.0.1'
     implementation 'com.android.volley:volley:1.1.0'
+
+    // Основная библиотека MapKit.
+    implementation 'com.yandex.android:mapkit:3.3.1'
+    // Дополнительные модули MapKit.
+    // Удалите зависимости если ваше приложение не использует их.
+    implementation 'com.yandex.android:directions:3.3.1'
+    implementation 'com.yandex.android:places:3.3.1'
+    implementation 'com.yandex.android:search:3.3.1'
+    implementation 'com.yandex.android:transport:3.3.1'
 }
 apply plugin: 'com.google.gms.google-services'
 

@@ -18,10 +18,16 @@ import android.view.ViewGroup;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
 import com.korotaev.r.ms.hor.fragment.ui.chat.ChatFragment;
+import com.yandex.mapkit.Animation;
+import com.yandex.mapkit.MapKitFactory;
+import com.yandex.mapkit.geometry.Point;
+import com.yandex.mapkit.map.CameraPosition;
+import com.yandex.mapkit.mapview.MapView;
 
 public class RequestFragment extends Fragment implements ServiceActivity {
 
     private RequestViewModel mViewModel;
+    private MapView mapview;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -31,6 +37,19 @@ public class RequestFragment extends Fragment implements ServiceActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_map:
                    // mTextMessage.setText(R.string.title_home);
+
+
+                    MapKitFactory.setApiKey("05ea3e08-5f07-4187-ab71-8dac80e995df");
+                    MapKitFactory.initialize(getContext());
+
+                    // Укажите имя activity вместо map.
+                    //setContentView(getActivity());
+
+                    mapview.getMap().move(
+                            new CameraPosition(new Point(55.751574, 37.573856), 11.0f, 0.0f, 0.0f),
+                            new Animation(Animation.Type.SMOOTH, 0),
+                            null);
+
                     return true;
                 case R.id.navigation_active_request:
                     //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new RequestFragment()).commit();
@@ -54,6 +73,8 @@ public class RequestFragment extends Fragment implements ServiceActivity {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
        View v =  inflater.inflate(R.layout.request_fragment, container, false);
+
+        mapview = (MapView)v.findViewById(R.id.mapview);
 
         BottomNavigationView navigation = (BottomNavigationView) v.findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

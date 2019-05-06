@@ -34,7 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.NetworkImageView;
-import com.korotaev.r.ms.hor.AppHelpers.AdapterHelper;
+import com.korotaev.r.ms.hor.AppHelpers.SpinnerAdapterHelper;
 import com.korotaev.r.ms.hor.AppHelpers.FileHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ListViewLoader;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
@@ -431,7 +431,7 @@ public class SettingsFragment extends Fragment
             }
             currentIndex++;
         }
-        AdapterHelper.adapterSimpleDataInit(this.getContext(),mRegion,getString(R.string.regionSpinnerTitle), dataRegions,selectedRegionIndex);
+        SpinnerAdapterHelper.adapterSimpleDataInit(this.getContext(),mRegion,getString(R.string.regionSpinnerTitle), dataRegions,selectedRegionIndex);
 
         myDBHelper.getHelper().addLog(CODE_INFO,"initRegionView->" + ((new Date()).getTime() - startDate.getTime()));
     }
@@ -468,7 +468,7 @@ public class SettingsFragment extends Fragment
                 currentIndex++;
             }
 
-            AdapterHelper.adapterSimpleDataInit(this.getContext(), mTrType,getString(R.string.trTypeSpinnerTitle), dataTrType,selectedtrTypeIndex);
+            SpinnerAdapterHelper.adapterSimpleDataInit(this.getContext(), mTrType,getString(R.string.trTypeSpinnerTitle), dataTrType,selectedtrTypeIndex);
 
         } catch (IOException e) {
             e.printStackTrace();

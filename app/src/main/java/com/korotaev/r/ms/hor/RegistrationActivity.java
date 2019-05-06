@@ -1,7 +1,6 @@
 package com.korotaev.r.ms.hor;
 
 import android.annotation.TargetApi;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ComponentName;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -30,7 +29,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.korotaev.r.ms.hor.AppHelpers.AdapterHelper;
+import com.korotaev.r.ms.hor.AppHelpers.SpinnerAdapterHelper;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.WebServices.WebServiceMainService;
@@ -144,7 +143,7 @@ public class RegistrationActivity extends AppCompatActivity implements ServiceAc
             dataRegions.add(item.getName());
         }
 
-        AdapterHelper.adapterSimpleDataInit(
+        SpinnerAdapterHelper.adapterSimpleDataInit(
                 this,
                 mRegion,
                 getString(R.string.regionSpinnerTitle),
