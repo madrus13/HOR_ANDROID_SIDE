@@ -11,9 +11,13 @@
             android:icon="@drawable/ic_menu_help"
             android:title="@string/Your_help" />
         <item
-            android:id="@+id/nav_requests"
+            android:id="@+id/nav_requests_on_map"
             android:icon="@drawable/ic_menu_request"
-            android:title="@string/Requests" />
+            android:title="@string/Requests_on_map" />
+        <item
+            android:id="@+id/nav_active_requests_list"
+            android:icon="@drawable/ic_menu_request"
+            android:title="@string/Active_RequestsList" />
         <item
             android:id="@+id/nav_chat"
             android:icon="@drawable/ic_menu_chat"

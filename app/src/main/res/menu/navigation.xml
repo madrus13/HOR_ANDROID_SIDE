@@ -9,7 +9,7 @@
     <item
         android:id="@+id/navigation_active_request"
         android:icon="@drawable/ic_menu_request"
-        android:title="@string/Requests" />
+        android:title="@string/Requests_on_map" />
 
     <item
         android:id="@+id/navigation_common_chat"

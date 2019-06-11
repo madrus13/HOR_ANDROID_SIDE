@@ -38,9 +38,10 @@ import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
 import com.korotaev.r.ms.hor.fragment.ui.about.AboutFragment;
 import com.korotaev.r.ms.hor.fragment.ui.achievment.AchievmentFragment;
+import com.korotaev.r.ms.hor.fragment.ui.active_request_list.ActiveRequestListFragment;
 import com.korotaev.r.ms.hor.fragment.ui.chat.ChatFragment;
 import com.korotaev.r.ms.hor.fragment.ui.help.HelpFragment;
-import com.korotaev.r.ms.hor.fragment.ui.request.RequestFragment;
+import com.korotaev.r.ms.hor.fragment.ui.request.RequestOnMapFragment;
 import com.korotaev.r.ms.hor.fragment.ui.settings.SettingsFragment;
 import com.korotaev.r.ms.testormlite.data.ActivityActions;
 import com.korotaev.r.ms.testormlite.data.Entity.TLog;
@@ -255,9 +256,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
            // startActivity(new Intent(MainActivity.this, SettingActivity.class));
             fragmentClass = SettingsFragment.class;
-        } else if (id == R.id.nav_requests) {
-            fragmentClass = RequestFragment.class;
-        } else if (id == R.id.nav_achievments) {
+        } else if (id == R.id.nav_requests_on_map) {
+            fragmentClass = RequestOnMapFragment.class;
+        } else if (id == R.id.nav_active_requests_list) {
+            fragmentClass = ActiveRequestListFragment.class;
+        }
+        else if (id == R.id.nav_achievments) {
             fragmentClass = AchievmentFragment.class;
         }  else if (id == R.id.nav_about_program) {
             fragmentClass = AboutFragment.class;

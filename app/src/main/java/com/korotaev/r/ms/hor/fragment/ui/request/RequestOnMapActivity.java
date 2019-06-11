@@ -5,15 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.korotaev.r.ms.hor.R;
 
-public class RequestActivity extends AppCompatActivity {
+public class RequestOnMapActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.request_activity);
+        setContentView(R.layout.request_on_map_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, RequestFragment.newInstance())
+                    .replace(R.id.container, RequestOnMapFragment.newInstance())
                     .addToBackStack("myStack")
                     .commitNow();
         }

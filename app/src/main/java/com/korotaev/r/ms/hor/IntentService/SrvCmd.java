@@ -17,6 +17,9 @@ public class SrvCmd {
     public  static final int	CMD_GetMessageByUserRegionReq  = 13;
     public  static final int	CMD_GetMessageByUserRegionResp = 14;
 
+    public  static final int	CMD_GetActiveRequestByUserRegionReq  = 15;
+    public  static final int	CMD_GetActiveRequestByUserRegionResp = 16;
+
     public  static String CODE_INFO = "INF";
     public  static String CODE_ERR  = "ERR";
     public  static String CODE_WRN  = "WRN";

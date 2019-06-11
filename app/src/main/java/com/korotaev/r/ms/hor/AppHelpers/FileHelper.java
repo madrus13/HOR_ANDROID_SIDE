@@ -14,6 +14,7 @@ public class FileHelper {
     public static final String F_WEB_FILES_REQUEST_PHOTO = F_WEB_FILES_COMMON + "/request_photo/";
     public static final String F_WEB_FILES_USER_AVATAR_PHOTO = F_WEB_FILES_COMMON + "/user_ava_photo/";
     public static final String F_WEB_FILES_MESSAGE_PHOTO = F_WEB_FILES_COMMON + "/message_photo/";
+    public static final String MAPKIT_API_KEY = "05ea3e08-5f07-4187-ab71-8dac80e995df";
 
     public void createIntStoragePrivatePicture(Context context, String fileName, byte[] sourceStream) {
 

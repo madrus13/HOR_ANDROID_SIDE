@@ -1,4 +1,4 @@
-package com.korotaev.r.ms.hor.fragment.ui.chat;
+package com.korotaev.r.ms.hor.fragment.ui.active_request_list;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
@@ -30,11 +30,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.korotaev.r.ms.hor.AppHelpers.Common.CustomSourceFactory;
-import com.korotaev.r.ms.hor.AppHelpers.Message.ormMessageAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.NetworkImageViewAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.ParserHelper;
 import com.korotaev.r.ms.hor.AppHelpers.Common.CustomStorage;
+import com.korotaev.r.ms.hor.AppHelpers.Request.ormRequestAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.IntentService.CmdService;
 import com.korotaev.r.ms.hor.IntentService.SrvCmd;
@@ -42,7 +42,7 @@ import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
 import com.korotaev.r.ms.testormlite.data.Entity.EntityConstVariables;
-import com.korotaev.r.ms.testormlite.data.Entity.Message;
+import com.korotaev.r.ms.testormlite.data.Entity.Request;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
 import java.util.concurrent.Executors;
@@ -50,7 +50,7 @@ import java.util.concurrent.Executors;
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
 import static com.korotaev.r.ms.hor.fragment.ui.chat.ChatViewModel.VIEW_MESSAGE_PAGE_SIZE;
 
-public class ChatFragment extends Fragment implements ServiceActivity {
+public class ActiveRequestListFragment extends Fragment implements ServiceActivity {
 
 
     static boolean  stateFromMe = true;
@@ -60,18 +60,18 @@ public class ChatFragment extends Fragment implements ServiceActivity {
     Messenger mMessenger = new Messenger(new IncomingHandler());
 
     public static boolean isLoadNewMessagePortion = false;
-    private ChatViewModel mViewModel;
-    ormMessageAdapter messageAdapter;
+    private ActiveRequestListViewModel mViewModel;
+    ormRequestAdapter requestAdapter;
     private MyDBHelper myDBHelper = new MyDBHelper(getContext());
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private Long fileIdToUpload = 0L;
 
-    public ChatFragment() {
+    public ActiveRequestListFragment() {
         registeredToServiceIntent = false;
     }
 
-    public static ChatFragment newInstance() {
-        return new ChatFragment();
+    public static ActiveRequestListFragment newInstance() {
+        return new ActiveRequestListFragment();
     }
     User user;
 
@@ -135,12 +135,12 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                                 mService,
                                 null,
                                 null,
-                                SrvCmd.CMD_GetMessageByUserRegionReq, null);
+                                SrvCmd.CMD_GetActiveRequestByUserRegionReq, null);
                         registeredToServiceIntent = true;
                         break;
 
-                    case SrvCmd.CMD_GetMessageByUserRegionResp:
-                        initMessageAdapter();
+                    case SrvCmd.CMD_GetActiveRequestByUserRegionResp:
+                        initAdapter();
                         mSwipeRefreshLayout.setRefreshing(false);
                         isLoadNewMessagePortion = false;
                         break;
@@ -153,7 +153,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                                 null,
                                 null,
                                 SrvCmd.CMD_GetMessageByUserRegionReq, null);
-                        initMessageAdapter();
+                        initAdapter();
                         break;
 
                     default:
@@ -165,13 +165,13 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 
 
 
-    public void initMessageAdapter()
+    public void initAdapter()
     {
         if (networkImageViewAdapter == null) {
             networkImageViewAdapter = new NetworkImageViewAdapter(this.getContext());
         }
 
-        CustomSourceFactory sourceFactory = new CustomSourceFactory<Message>(new CustomStorage<Message>(getContext(), Message.class),user);
+        CustomSourceFactory sourceFactory = new CustomSourceFactory<Request>(new CustomStorage<>(getContext(), Request.class),user);
 
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
@@ -179,74 +179,67 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                 .setEnablePlaceholders(true)
                 .build();
 
-        messageAdapter = new ormMessageAdapter(new DiffUtil.ItemCallback<Message>() {
+        requestAdapter = new ormRequestAdapter(new DiffUtil.ItemCallback<Request>() {
             @Override
-            public boolean areItemsTheSame(Message oldItem, Message newItem) {
+            public boolean areItemsTheSame(Request oldItem, Request newItem) {
                 return
                         oldItem!=null && newItem!=null &&
-                        oldItem.getId() == newItem.getId() &&
-                        oldItem.getUid() == newItem.getUid();
+                                oldItem.getId() == newItem.getId();
             }
 
             @Override
-            public boolean areContentsTheSame(Message oldItem, Message newItem) {
+            public boolean areContentsTheSame(Request oldItem, Request newItem) {
 
                 return  oldItem!=null && newItem!=null &&
-                        oldItem.getId() == newItem.getId() &&
-                        oldItem.getText() == newItem.getText() &&
-                        oldItem.getCreateUserName() == newItem.getCreateUserName() &&
-                        oldItem.getUid() == newItem.getUid();
+                        oldItem.getId().equals(newItem.getId());
             }
         },getContext(), user, networkImageViewAdapter);
 
 
 
-        LiveData<PagedList<Message>> pagedListLiveData = new LivePagedListBuilder<>(sourceFactory, config)
+        LiveData<PagedList<Request>> pagedListLiveData = new LivePagedListBuilder<>(sourceFactory, config)
                 .setFetchExecutor(Executors.newSingleThreadExecutor())
                 .setInitialLoadKey(0)
-                .setBoundaryCallback(new PagedList.BoundaryCallback<Message>() {
+                .setBoundaryCallback(new PagedList.BoundaryCallback<Request>() {
                     @Override
                     public void onZeroItemsLoaded() {
                         super.onZeroItemsLoaded();
                     }
 
                     @Override
-                    public void onItemAtFrontLoaded(@NonNull Message itemAtFront) {
+                    public void onItemAtFrontLoaded(@NonNull Request itemAtFront) {
                         super.onItemAtFrontLoaded(itemAtFront);
 
                     }
 
                     @Override
-                    public void onItemAtEndLoaded(@NonNull Message itemAtEnd) {
+                    public void onItemAtEndLoaded(@NonNull Request itemAtEnd) {
                         super.onItemAtEndLoaded(itemAtEnd);
                     }
                 })
                 .build();
 
-        pagedListLiveData.observe(this, new Observer<PagedList<Message>>() {
-            @Override
-            public void onChanged(@Nullable PagedList<Message> messages) {
-                Log.d(CODE_INFO, "submit PagedList");
-                if (messageAdapter!=null) {
-                    messageAdapter.submitList(messages);
-                    int pos = messagesView.getAdapter().getItemCount();
-                    messagesView.scrollToPosition(pos > 0 ? pos : 0);
-                    messageAdapter.notifyDataSetChanged();
-                }
-
+        pagedListLiveData.observe(this, requests -> {
+            Log.d(CODE_INFO, "submit PagedList");
+            if (requestAdapter !=null) {
+                requestAdapter.submitList(requests);
+                int pos = messagesView.getAdapter().getItemCount();
+                messagesView.scrollToPosition(pos > 0 ? pos : 0);
+                requestAdapter.notifyDataSetChanged();
             }
+
         });
         final  LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         //layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         messagesView.setLayoutManager(layoutManager);
 
-        messagesView.setAdapter(messageAdapter);
+        messagesView.setAdapter(requestAdapter);
         int pos = messagesView.getAdapter().getItemCount();
         messagesView.scrollToPosition(pos > 0 ? pos : 0);
 
 
-      
+
     }
 
     public void getNextPage()
@@ -288,11 +281,8 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                 if (messageToSend!=null && !messageToSend.getText().toString().isEmpty()) {
                     messageText = messageToSend.getText().toString();
                     try {
-                        Message message = new Message();
-                        message.setText(messageText);
-                        message.setCreateUser(user.getId());
-                        message.setRegion(user.getRegion());
-                        message.setType(Long.valueOf(EntityConstVariables.MESSAGE_TYPE_REGION));
+                        Request request = new Request();
+                        // TODO ADD заполнение REQUEST
 
                         stateFromMe = !stateFromMe;
 
@@ -317,7 +307,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
                                 null,
                                 SrvCmd.CMD_InsertMessageReq, b);
 
-                        //messageAdapter.ad(message);
+                        //requestAdapter.ad(message);
                         //messagesView.setsele(messagesView.getCount() - 1);
                         messageToSend.setText("");
                     }
@@ -354,18 +344,17 @@ public class ChatFragment extends Fragment implements ServiceActivity {
         Intent i = new Intent(getContext(), CmdService.class);
         FragmentActivity activity;
         if ((activity = getActivity())!=null && registeredToServiceIntent == false) {
-             activity.bindService(i,  this, Context.BIND_AUTO_CREATE);
+            activity.bindService(i,  this, Context.BIND_AUTO_CREATE);
         }
 
 
         return v;
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(ChatViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(ActiveRequestListViewModel.class);
         // TODO: Use the ViewModel
     }
 

@@ -17,17 +17,27 @@ import android.view.ViewGroup;
 
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
+import com.korotaev.r.ms.hor.fragment.ui.active_request_list.ActiveRequestListFragment;
 import com.korotaev.r.ms.hor.fragment.ui.chat.ChatFragment;
 import com.yandex.mapkit.Animation;
 import com.yandex.mapkit.MapKitFactory;
 import com.yandex.mapkit.geometry.Point;
+import com.yandex.mapkit.layers.ObjectEvent;
 import com.yandex.mapkit.map.CameraPosition;
 import com.yandex.mapkit.mapview.MapView;
+import com.yandex.mapkit.user_location.UserLocationLayer;
+import com.yandex.mapkit.user_location.UserLocationObjectListener;
+import com.yandex.mapkit.user_location.UserLocationView;
 
-public class RequestFragment extends Fragment implements ServiceActivity {
+import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.MAPKIT_API_KEY;
 
-    private RequestViewModel mViewModel;
-    private MapView mapview;
+public class RequestOnMapFragment extends Fragment implements ServiceActivity, UserLocationObjectListener {
+
+    private RequestOnMapViewModel mViewModel;
+
+    private final Point TARGET_LOCATION = new Point(59.945933, 30.320045);
+    private MapView mapView;
+    private UserLocationLayer userLocationLayer;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -36,23 +46,18 @@ public class RequestFragment extends Fragment implements ServiceActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_map:
-                   // mTextMessage.setText(R.string.title_home);
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new RequestOnMapFragment()).commit();
 
-
-                    MapKitFactory.setApiKey("05ea3e08-5f07-4187-ab71-8dac80e995df");
-                    MapKitFactory.initialize(getContext());
-
-                    // Укажите имя activity вместо map.
-                    //setContentView(getActivity());
-
-                    mapview.getMap().move(
-                            new CameraPosition(new Point(55.751574, 37.573856), 11.0f, 0.0f, 0.0f),
-                            new Animation(Animation.Type.SMOOTH, 0),
+                    mapView.getMap().move(
+                            new CameraPosition(TARGET_LOCATION, 14.0f, 0.0f, 0.0f),
+                            new Animation(Animation.Type.SMOOTH, 5),
                             null);
+                    MapKitFactory.getInstance().onStart();
+                    mapView.onStart();
 
                     return true;
                 case R.id.navigation_active_request:
-                    //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new RequestFragment()).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new ActiveRequestListFragment()).commit();
                     //mTextMessage.setText(R.string.title_dashboard);
                     return true;
                 case R.id.navigation_common_chat:
@@ -64,20 +69,27 @@ public class RequestFragment extends Fragment implements ServiceActivity {
         }
     };
 
-    public static RequestFragment newInstance() {
-        return new RequestFragment();
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    public static RequestOnMapFragment newInstance() {
+        return new RequestOnMapFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-       View v =  inflater.inflate(R.layout.request_fragment, container, false);
 
-        mapview = (MapView)v.findViewById(R.id.mapview);
 
-        BottomNavigationView navigation = (BottomNavigationView) v.findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        MapKitFactory.setApiKey(MAPKIT_API_KEY);
+        MapKitFactory.initialize(getContext());       
+		View v =  inflater.inflate(R.layout.request_on_map_fragment, container, false);
+        super.onCreate(savedInstanceState);
+
+        mapView = (MapView) getActivity().findViewById(R.id.mapview);
 
         return v;
     }
@@ -85,7 +97,7 @@ public class RequestFragment extends Fragment implements ServiceActivity {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(RequestViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(RequestOnMapViewModel.class);
         // TODO: Use the ViewModel
     }
 
@@ -121,6 +133,21 @@ public class RequestFragment extends Fragment implements ServiceActivity {
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
+
+    }
+
+    @Override
+    public void onObjectAdded(@NonNull UserLocationView userLocationView) {
+
+    }
+
+    @Override
+    public void onObjectRemoved(@NonNull UserLocationView userLocationView) {
+
+    }
+
+    @Override
+    public void onObjectUpdated(@NonNull UserLocationView userLocationView, @NonNull ObjectEvent objectEvent) {
 
     }
 }
