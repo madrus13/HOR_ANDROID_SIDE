@@ -48,7 +48,7 @@ import com.korotaev.r.ms.testormlite.data.Entity.User;
 import java.util.concurrent.Executors;
 
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
-import static com.korotaev.r.ms.hor.fragment.ui.chat.ChatViewModel.VIEW_MESSAGE_PAGE_SIZE;
+import static com.korotaev.r.ms.hor.fragment.ui.chat.ChatViewModel.VIEW_DATA_PAGE_SIZE;
 
 public class ChatFragment extends Fragment implements ServiceActivity {
 
@@ -175,7 +175,7 @@ public class ChatFragment extends Fragment implements ServiceActivity {
 
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
-                .setPageSize(VIEW_MESSAGE_PAGE_SIZE)
+                .setPageSize(VIEW_DATA_PAGE_SIZE)
                 .setEnablePlaceholders(true)
                 .build();
 

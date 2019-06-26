@@ -1,7 +1,6 @@
 package com.korotaev.r.ms.hor.fragment.ui.active_request_list;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
@@ -48,7 +47,7 @@ import com.korotaev.r.ms.testormlite.data.Entity.User;
 import java.util.concurrent.Executors;
 
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
-import static com.korotaev.r.ms.hor.fragment.ui.chat.ChatViewModel.VIEW_MESSAGE_PAGE_SIZE;
+import static com.korotaev.r.ms.hor.fragment.ui.chat.ChatViewModel.VIEW_DATA_PAGE_SIZE;
 
 public class ActiveRequestListFragment extends Fragment implements ServiceActivity {
 
@@ -175,7 +174,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
 
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
-                .setPageSize(VIEW_MESSAGE_PAGE_SIZE)
+                .setPageSize(VIEW_DATA_PAGE_SIZE)
                 .setEnablePlaceholders(true)
                 .build();
 
