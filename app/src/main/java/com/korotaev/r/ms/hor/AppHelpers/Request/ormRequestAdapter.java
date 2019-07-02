@@ -67,6 +67,9 @@ public class ormRequestAdapter extends PagedListAdapter<Request, ormRequestViewH
         } else if (viewType == ViewHelper.SYSTEM_MESSAGE) {
             convertView =  LayoutInflater.from(parent.getContext()).inflate(R.layout.system_message, parent, false);
         }
+        else {
+            convertView =  LayoutInflater.from(parent.getContext()).inflate(R.layout.system_message, parent, false);
+        }
 
 
         ormRequestViewHolder holder = new ormRequestViewHolder(convertView, mImageLoader);
@@ -89,10 +92,15 @@ public class ormRequestAdapter extends PagedListAdapter<Request, ormRequestViewH
             if (user != null && (request.getCreationUser() == user.getId()) && request.getType() == EntityConstVariables.MESSAGE_TYPE_REGION) {
                 result = ViewHelper.OUTPUT_MESSAGE;
             }
+
+            if (request.getType() == EntityConstVariables.MESSAGE_TYPE_BROADCAST) {
+                result = ViewHelper.SYSTEM_MESSAGE;
+            }
         }
-        if (request.getType() == EntityConstVariables.MESSAGE_TYPE_BROADCAST) {
-            result = ViewHelper.SYSTEM_MESSAGE;
+        else {
+            result = ViewHelper.SYSTEM_EXCEPTION;
         }
+
         return result;
     }
 

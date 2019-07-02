@@ -76,7 +76,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
 
     private ImageButton sendMsgButton;
     private EditText messageToSend;
-    private RecyclerView messagesView;
+    private RecyclerView requestView;
 
     NetworkImageViewAdapter networkImageViewAdapter;
 
@@ -215,8 +215,8 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
             Log.d(CODE_INFO, "submit PagedList");
             if (requestAdapter !=null) {
                 requestAdapter.submitList(requests);
-                int pos = messagesView.getAdapter().getItemCount();
-                messagesView.scrollToPosition(pos > 0 ? pos : 0);
+                int pos = requestView.getAdapter().getItemCount();
+                requestView.scrollToPosition(pos > 0 ? pos : 0);
                 requestAdapter.notifyDataSetChanged();
             }
 
@@ -224,11 +224,11 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
         final  LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         //layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
-        messagesView.setLayoutManager(layoutManager);
+        requestView.setLayoutManager(layoutManager);
 
-        messagesView.setAdapter(requestAdapter);
-        int pos = messagesView.getAdapter().getItemCount();
-        messagesView.scrollToPosition(pos > 0 ? pos : 0);
+        requestView.setAdapter(requestAdapter);
+        int pos = requestView.getAdapter().getItemCount();
+        requestView.scrollToPosition(pos > 0 ? pos : 0);
 
 
 
@@ -258,7 +258,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
         myDBHelper.getHelper().addLog(CODE_INFO, "ARF -> initViews" );
         sendMsgButton = v.findViewById(R.id.send_chat_message_button);
         messageToSend = v.findViewById(R.id.message_to_send);
-        messagesView = v.findViewById(R.id.messages_view);
+        requestView = v.findViewById(R.id.messages_view);
         mSwipeRefreshLayout = v.findViewById(R.id.swipe_view);
     }
 
@@ -300,7 +300,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
                                 SrvCmd.CMD_InsertMessageReq, b);
 
                         //requestAdapter.ad(message);
-                        //messagesView.setsele(messagesView.getCount() - 1);
+                        //requestView.setsele(requestView.getCount() - 1);
                         messageToSend.setText("");
                     }
                     catch (Exception ex)

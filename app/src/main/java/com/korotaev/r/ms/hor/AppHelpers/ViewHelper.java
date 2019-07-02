@@ -18,8 +18,10 @@ public class ViewHelper {
     public final static int INPUT_MESSAGE = 0;
     public final static int OUTPUT_MESSAGE = 1;
     public final static int SYSTEM_MESSAGE = 3;
-
     public final static int COMMON_ACTIVE_REQUEST = 4;
+
+    public final static int SYSTEM_EXCEPTION= 1000;
+
     /**
      * Shows the progress UI and hides the login form.
      */
