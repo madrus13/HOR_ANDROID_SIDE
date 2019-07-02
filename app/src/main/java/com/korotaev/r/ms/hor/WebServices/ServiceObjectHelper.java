@@ -10,6 +10,7 @@ import com.korotaev.r.ms.testormlite.data.Entity.Files;
 import com.korotaev.r.ms.testormlite.data.Entity.Message;
 import com.korotaev.r.ms.testormlite.data.Entity.Messagetype;
 import com.korotaev.r.ms.testormlite.data.Entity.Region;
+import com.korotaev.r.ms.testormlite.data.Entity.Request;
 import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Tool;
 import com.korotaev.r.ms.testormlite.data.Entity.Tooltypes;
@@ -200,6 +201,41 @@ public class ServiceObjectHelper {
         return messageList;
     }
 
+
+    public static List<Request> getAllOpenRequestByRegion(Context context,
+                                                                                String currentToken,
+                                                                                long regionId,
+                                                                                String typeIds
+    )
+    {
+        ArrayList<Request> requestList = new ArrayList<>();
+
+        serviceResult result = new serviceResult();
+        if (!currentToken.isEmpty()) {
+
+            try {
+                result = service.getAllOpenRequestByRegion(
+                        currentToken,
+                        regionId, regionId > 0 ? true : false,
+                        typeIds, null);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+
+                if (isValidResult(result)) {
+
+                    requestList.addAll(Arrays.asList(mapper.readValue(result.resultObjectJSON, Request[].class)));
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return requestList;
+    }
 
     public static List<Region> getAllRegions(Context context, String currentToken)
     {

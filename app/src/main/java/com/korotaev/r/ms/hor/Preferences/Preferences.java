@@ -37,6 +37,9 @@ public  class  Preferences {
     public  static String SAVED_LAST_MSG_ROW_IN_REGION  = "SAVED_LAST_MSG_ROW_IN_REGION";
     public  static int INITIAL_MSG_ROW_IN_REGION  = 0;
 
+    public  static String SAVED_LAST_REQ_ROW_IN_REGION  = "SAVED_LAST_REQ_ROW_IN_REGION";
+    public  static int INITIAL_REQ_ROW_IN_REGION  = 0;
+
     public static String prefName = "HORPrefs_" + DatabaseHelper.DATABASE_VERSION;
     static SharedPreferences sPref;
     static ObjectMapper mapper = new ObjectMapper();

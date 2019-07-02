@@ -28,6 +28,7 @@ import com.korotaev.r.ms.testormlite.data.Entity.Achievmenttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Auto;
 import com.korotaev.r.ms.testormlite.data.Entity.Messagetype;
 import com.korotaev.r.ms.testormlite.data.Entity.Region;
+import com.korotaev.r.ms.testormlite.data.Entity.Request;
 import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
 import com.korotaev.r.ms.testormlite.data.Entity.Tool;
 import com.korotaev.r.ms.testormlite.data.Entity.Tooltypes;
@@ -48,6 +49,9 @@ public class CmdService extends IntentService {
 
     private GetMessageByRegionTask mGetMessageByRegionTask = null;
     private InsertMessageTask mInsertMessageTask = null;
+
+    private GetActiveRequestByRegionTask mGetActiveRequestByRegionTask = null;
+    private InsertMessageTask mInsertActiveRequestTask = null;
 
     /** For showing and hiding our notification. */
     NotificationManager mNM;
@@ -148,6 +152,14 @@ public class CmdService extends IntentService {
                     mGetMessageByRegionTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     break;
                 }
+                case SrvCmd.CMD_GetActiveRequestByUserRegionReq:
+                {
+
+                    mGetActiveRequestByRegionTask= new GetActiveRequestByRegionTask(msg);
+                    mGetActiveRequestByRegionTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    break;
+                }
+
                 default:
                     super.handleMessage(msg);
             }
@@ -377,6 +389,43 @@ public class CmdService extends IntentService {
             );
 
 
+
+            return null;
+        }
+    }
+
+    public class GetActiveRequestByRegionTask extends AsyncTask<Void, Void, Boolean> {
+        Message msg;
+        public GetActiveRequestByRegionTask(Message msg) {
+            this.msg = msg;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            ArrayList<Request> reqList = new ArrayList<>();
+            reqList.clear();
+
+            currentToken = Preferences.loadObjInPrefs(CmdService.this,Preferences.SAVED_Session);
+            User currentUser = ServiceObjectHelper.getCurrentUserInfo(CmdService.this, currentToken);
+
+            String val = Preferences.loadObjInPrefs(CmdService.this, Preferences.SAVED_LAST_REQ_ROW_IN_REGION);
+
+            if (currentUser!=null && currentUser.getRegion()!=null) {
+
+
+                List<Request> retVal = ServiceObjectHelper.getAllOpenRequestByRegion(
+                        CmdService.this,
+                        currentToken, currentUser.getRegion(), "");
+
+                if (retVal!=null) {
+                    myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllOpenRequestByRegion count" + retVal.size() );
+                }
+
+            }
+
+            myDBHelper.getHelper().addRequestList(reqList);
+            sendMsgToServiceClients(msg, SrvCmd.CMD_GetActiveRequestByUserRegionResp);
 
             return null;
         }

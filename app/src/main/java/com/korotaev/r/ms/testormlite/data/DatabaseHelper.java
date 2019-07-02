@@ -402,6 +402,26 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 	}
 
+	public void addRequestList(List<Request> reqList)
+	{
+		try {
+			if (RequestDao==null) {
+				RequestDao = this.getRequestDao();
+			}
+			for (Request msg: reqList
+			) {
+				Request finded = RequestDao.queryBuilder().where().eq("id", msg.getId()).queryForFirst();
+				if (finded == null) {
+					RequestDao.create(msg);
+
+				}
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public Message getMessageItem(int startRow)
 	{
 		List<Message> finded = null;

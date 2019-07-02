@@ -144,14 +144,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
                         isLoadNewMessagePortion = false;
                         break;
 
-                    case SrvCmd.CMD_InsertMessageResp:
-                        ViewHelper.sendComandToIntentService(
-                                getContext(),
-                                mMessenger,
-                                mService,
-                                null,
-                                null,
-                                SrvCmd.CMD_GetMessageByUserRegionReq, null);
+                    case SrvCmd.CMD_InsertActiveRequestResp:
                         initAdapter();
                         break;
 
@@ -244,11 +237,11 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
     public void getNextPage()
     {
 
-        String val = Preferences.loadObjInPrefs(getContext(), Preferences.SAVED_LAST_MSG_ROW_IN_REGION);
+        String val = Preferences.loadObjInPrefs(getContext(), Preferences.SAVED_LAST_REQ_ROW_IN_REGION);
         Long offset =  ParserHelper.TryParse(val);
         offset++;
         Preferences.saveObjInPrefs(getContext(),
-                Preferences.SAVED_LAST_MSG_ROW_IN_REGION,String.valueOf(offset));
+                Preferences.SAVED_LAST_REQ_ROW_IN_REGION,String.valueOf(offset));
 
 
         ViewHelper.sendComandToIntentService(
@@ -257,12 +250,12 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
                 mService,
                 null,
                 null,
-                SrvCmd.CMD_GetMessageByUserRegionReq, null);
+                SrvCmd.CMD_GetActiveRequestByUserRegionReq, null);
 
     }
     public  void initViews(View v)
     {
-        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> initViews" );
+        myDBHelper.getHelper().addLog(CODE_INFO, "ARF -> initViews" );
         sendMsgButton = v.findViewById(R.id.send_chat_message_button);
         messageToSend = v.findViewById(R.id.message_to_send);
         messagesView = v.findViewById(R.id.messages_view);
@@ -271,7 +264,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
 
     public void OnClickListenerInit()
     {
-        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> OnClickListenerInit" );
+        myDBHelper.getHelper().addLog(CODE_INFO, "ARF -> OnClickListenerInit" );
         sendMsgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -312,7 +305,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
                     }
                     catch (Exception ex)
                     {
-                        myDBHelper.getHelper().addLog(CODE_INFO, "CHF -> OnClickListenerInit" + ex.toString() );
+                        myDBHelper.getHelper().addLog(CODE_INFO, "ARF -> OnClickListenerInit" + ex.toString() );
                     }
                 }
             }
