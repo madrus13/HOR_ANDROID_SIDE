@@ -9,5 +9,5 @@ import android.view.View;
 public interface ServiceActivity extends ServiceConnection,LoaderManager.LoaderCallbacks<Cursor> {
     void initViews(View v);
     void OnClickListenerInit();
-    class IncomingHandler extends Handler{};
+    class IncomingHandler extends Handler{}
 }

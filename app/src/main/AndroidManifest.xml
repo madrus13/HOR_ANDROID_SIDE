@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".fragment.ui.active_request_list.ActiveRequestListActivity"></activity>
+        <activity android:name=".fragment.ui.fragment.ui.new_request.NewRequestActivity"></activity>
+        <activity android:name=".fragment.ui.active_request_list.ActiveRequestListActivity" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation"

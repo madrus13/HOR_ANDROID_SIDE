@@ -326,7 +326,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
                              @Nullable Bundle savedInstanceState) {
 
         user = Preferences.loadCurrentUserInfo(getContext());
-        View v = inflater.inflate(R.layout.chat_fragment, container, false);
+        View v = inflater.inflate(R.layout.active_request_list_fragment, container, false);
         initViews(v);
         OnClickListenerInit();
 

@@ -1,20 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activerequestlist"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragment.ui.request.RequestOnMapActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/chat"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_weight="2"
+android:clipToPadding="false"
+android:focusableInTouchMode="true"
+android:orientation="vertical"
+tools:context=".fragment.ui.fragment.ui.new_request.NewRequestActivity">
 
-    <TextView
-        android:id="@+id/message"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_view"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_weight="8">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/messages_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
+        android:layout_weight="2"
+        android:background="@android:drawable/screen_background_dark_transparent"
+        android:divider="#fff" />
+</android.support.v4.widget.SwipeRefreshLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:background="#fff"
+    android:orientation="horizontal">
+
+    <EditText
+        android:id="@+id/message_to_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ActiveRequestListFragment"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_weight="7"
+        android:ems="10"
+        android:hint="@string/write_a_message"
+        android:inputType="text"
+        android:text=""
+        android:textColor="@android:color/background_dark"
+        android:textColorHint="@android:color/background_dark"
+        android:textSize="14dp" />
 
-</android.support.constraint.ConstraintLayout>
+    <ImageButton
+        android:id="@+id/send_chat_message_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="0"
+        android:background="@drawable/ic_send_black_24dp"
+        android:contentDescription="@string/send"
+        android:scaleType="center" />
+
+</LinearLayout>
+
+
+</LinearLayout>
