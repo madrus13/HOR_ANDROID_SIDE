@@ -40,7 +40,6 @@ import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
-import com.korotaev.r.ms.testormlite.data.Entity.EntityConstVariables;
 import com.korotaev.r.ms.testormlite.data.Entity.Request;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
@@ -265,51 +264,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
     public void OnClickListenerInit()
     {
         myDBHelper.getHelper().addLog(CODE_INFO, "ARF -> OnClickListenerInit" );
-        sendMsgButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String messageText = "";
 
-                if (messageToSend!=null && !messageToSend.getText().toString().isEmpty()) {
-                    messageText = messageToSend.getText().toString();
-                    try {
-                        Request request = new Request();
-                        // TODO ADD заполнение REQUEST
-
-                        stateFromMe = !stateFromMe;
-
-                        Bundle b = new Bundle();
-                        b.putString("text",messageText);
-                        b.putLong("requestId", 0);
-                        if (user!=null && user.getRegion() > 0) {
-                            b.putLong("regionId", user.getRegion());
-                        }
-                        b.putLong("userRx", 0);
-                        b.putLong("typeId", Long.valueOf(EntityConstVariables.MESSAGE_TYPE_REGION));
-                        b.putLong("fileId", fileIdToUpload);
-                        b.putString("fileName",null);
-                        b.putByteArray("fileImage",null);
-
-
-                        ViewHelper.sendComandToIntentService(
-                                getContext(),
-                                mMessenger,
-                                mService,
-                                null,
-                                null,
-                                SrvCmd.CMD_InsertMessageReq, b);
-
-                        //requestAdapter.ad(message);
-                        //requestView.setsele(requestView.getCount() - 1);
-                        messageToSend.setText("");
-                    }
-                    catch (Exception ex)
-                    {
-                        myDBHelper.getHelper().addLog(CODE_INFO, "ARF -> OnClickListenerInit" + ex.toString() );
-                    }
-                }
-            }
-        });
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -353,7 +308,9 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
     @Override
     public void onPause() {
         super.onPause();
-        messageToSend.clearFocus();
+        if (messageToSend!=null) {
+            messageToSend.clearFocus();
+        }
     }
 
 }
