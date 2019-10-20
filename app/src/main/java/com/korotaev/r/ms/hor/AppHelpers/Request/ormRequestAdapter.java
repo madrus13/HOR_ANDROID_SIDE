@@ -25,18 +25,26 @@ public class ormRequestAdapter extends PagedListAdapter<Request, ormRequestViewH
 
     public  Context context;
     private static MyDBHelper myDBHelper;
+    private  Integer itemType;
     private User currentUser;
+
+
+
+
     private NetworkImageViewAdapter mImageLoader;
 
     public ormRequestAdapter(
                              DiffUtil.ItemCallback<Request> diffUtilCallback,
                              Context context,
                              User currentUser,
-                             NetworkImageViewAdapter mImageLoader) {
+                             NetworkImageViewAdapter mImageLoader,
+                             Integer itemType
+                             ) {
         super(diffUtilCallback);
         this.context = context;
         this.currentUser = currentUser;
         this.mImageLoader = mImageLoader;
+        this.itemType = itemType;
     }
 
     /*
@@ -53,6 +61,8 @@ public class ormRequestAdapter extends PagedListAdapter<Request, ormRequestViewH
         }
     }
 
+
+
     @NonNull
     @Override
     public ormRequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -66,7 +76,10 @@ public class ormRequestAdapter extends PagedListAdapter<Request, ormRequestViewH
             convertView =  LayoutInflater.from(parent.getContext()).inflate(R.layout.input_message, parent, false);
         } else if (viewType == ViewHelper.SYSTEM_MESSAGE) {
             convertView =  LayoutInflater.from(parent.getContext()).inflate(R.layout.system_message, parent, false);
+        }  else if (viewType == ViewHelper.COMMON_ACTIVE_REQUEST) {
+            convertView =  LayoutInflater.from(parent.getContext()).inflate(R.layout.common_message, parent, false);
         }
+
         else {
             convertView =  LayoutInflater.from(parent.getContext()).inflate(R.layout.system_message, parent, false);
         }
@@ -86,20 +99,28 @@ public class ormRequestAdapter extends PagedListAdapter<Request, ormRequestViewH
     public int getItemViewType(int position) {
         Request request = getItem(position);
         int result = ViewHelper.OUTPUT_MESSAGE;
-        if (request != null) {
-            User user = Preferences.loadCurrentUserInfo(context);
+        if (this.itemType == null) {
+            if (request != null) {
+                User user = Preferences.loadCurrentUserInfo(context);
 
-            if (user != null && (request.getCreationUser() == user.getId()) && request.getType() == EntityConstVariables.MESSAGE_TYPE_REGION) {
-                result = ViewHelper.OUTPUT_MESSAGE;
+                if (user != null && (request.getCreationUser() == user.getId()) && request.getType() == EntityConstVariables.MESSAGE_TYPE_REGION) {
+                    result = ViewHelper.OUTPUT_MESSAGE;
+                }
+
+                if (request.getType() == EntityConstVariables.MESSAGE_TYPE_BROADCAST) {
+                    result = ViewHelper.SYSTEM_MESSAGE;
+                }
             }
-
-            if (request.getType() == EntityConstVariables.MESSAGE_TYPE_BROADCAST) {
-                result = ViewHelper.SYSTEM_MESSAGE;
+            else {
+                result = ViewHelper.SYSTEM_EXCEPTION;
             }
         }
         else {
-            result = ViewHelper.SYSTEM_EXCEPTION;
+            result = itemType;
         }
+
+
+
 
         return result;
     }

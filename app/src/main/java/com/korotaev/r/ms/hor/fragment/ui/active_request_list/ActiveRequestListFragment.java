@@ -51,8 +51,6 @@ import static com.korotaev.r.ms.hor.fragment.ui.chat.ChatViewModel.VIEW_DATA_PAG
 public class ActiveRequestListFragment extends Fragment implements ServiceActivity {
 
 
-    static boolean  stateFromMe = true;
-
     static boolean  registeredToServiceIntent;
     Messenger mService = null;
     Messenger mMessenger = new Messenger(new IncomingHandler());
@@ -184,7 +182,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
                 return  oldItem!=null && newItem!=null &&
                         oldItem.getId().equals(newItem.getId());
             }
-        },getContext(), user, networkImageViewAdapter);
+        },getContext(), user, networkImageViewAdapter, ViewHelper.COMMON_ACTIVE_REQUEST);
 
 
 
