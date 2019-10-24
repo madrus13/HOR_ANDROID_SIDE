@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
 
     android:layout_height="wrap_content"
@@ -9,19 +11,18 @@
     android:paddingVertical="4dp"
     android:paddingStart="4dp"
     android:paddingEnd="4dp"
-    android:textAlignment="center">
+    android:textAlignment="center" tools:targetApi="o">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/common_message_style"
+        android:background="@drawable/ic_launcher_background"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/message_body"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
 
 
             android:elevation="2dp"
@@ -29,17 +30,30 @@
             android:text="@string/system_message"
             android:textAlignment="center"
             android:textColor="#fff"
-            android:textSize="10sp" />
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/message_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="22dp"
+            tools:layout_conversion_absoluteWidth="122dp" />
 
         <TextView
             android:id="@+id/message_time"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/message_body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/message_sample_time"
             android:textAlignment="center"
             android:textColor="@color/colorText"
-            android:textSize="10sp" />
-    </LinearLayout>
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.932"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/message_body"
+            tools:layout_conversion_absoluteHeight="14dp"
+            tools:layout_conversion_absoluteWidth="122dp" />
+    </android.support.constraint.ConstraintLayout>
 
 </RelativeLayout>

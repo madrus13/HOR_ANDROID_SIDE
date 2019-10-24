@@ -135,7 +135,7 @@ public class ormRequestAdapter extends PagedListAdapter<Request, ormRequestViewH
     @Override
     public int getItemCount() {
         initMydDBHelper();
-        return myDBHelper.getHelper().getMessageCount(currentUser.getRegion());
+        return myDBHelper.getHelper().getRequestCount(currentUser.getRegion());
     }
 }
 

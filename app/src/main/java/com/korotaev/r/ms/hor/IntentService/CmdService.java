@@ -414,12 +414,12 @@ public class CmdService extends IntentService {
             if (currentUser!=null && currentUser.getRegion()!=null) {
 
 
-                List<Request> retVal = ServiceObjectHelper.getAllOpenRequestByRegion(
+                reqList.addAll( ServiceObjectHelper.getAllOpenRequestByRegion(
                         CmdService.this,
-                        currentToken, currentUser.getRegion(), "");
+                        currentToken, currentUser.getRegion(), ""));
 
-                if (retVal!=null) {
-                    myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllOpenRequestByRegion count" + retVal.size() );
+                if (reqList!=null) {
+                    myDBHelper.getHelper().addLog(SrvCmd.CODE_INFO, "getAllOpenRequestByRegion count" + reqList.size() );
                 }
 
             }
