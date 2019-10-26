@@ -10,6 +10,8 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -46,6 +48,7 @@ public class Requesttype implements Serializable {
     private Collection<Request> requestsById;
 
     public Requesttype() {
+
     }
 
     @Id

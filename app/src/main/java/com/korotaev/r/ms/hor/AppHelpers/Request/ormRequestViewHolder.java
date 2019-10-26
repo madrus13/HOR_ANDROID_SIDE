@@ -9,6 +9,7 @@ import com.korotaev.r.ms.hor.AppHelpers.NetworkImageViewAdapter;
 import com.korotaev.r.ms.hor.AppHelpers.ViewHelper;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.testormlite.data.Entity.Request;
+import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
 
 import java.text.SimpleDateFormat;
 
@@ -36,25 +37,17 @@ public class ormRequestViewHolder extends ViewHolder {
             name = itemView.findViewById(R.id.name);
             image = itemView.findViewById(R.id.avatar);
 
-            //if (messageBody!=null) messageBody.setText(item.getText());
-
             switch (viewType)
             {
-                case ViewHelper.INPUT_MESSAGE:
-                    name = itemView.findViewById(R.id.name);
-                    //if (name!=null) name.setText(item.getCreateUserName());
-                    if (message_time!=null && item.getCreationDate()!=null) {
-                        message_time.setText((new SimpleDateFormat("hh:mm")).format(item.getCreationDate()));
-                    }
-                    break;
-                case ViewHelper.OUTPUT_MESSAGE:
-                    if (message_time!=null && item.getCreationDate()!=null) {
-                        message_time.setText((new SimpleDateFormat("hh:mm")).format(item.getCreationDate()));
-                    }
+                case ViewHelper.COMMON_ACTIVE_REQUEST:
 
-                    //networkImageViewAdapter.setImageFromServicePath(item.getMessagePhotoPath(), image);
-                    break;
-                case ViewHelper.SYSTEM_MESSAGE:
+                    if (messageBody!=null)  {
+                        Requesttype type = item.getRequesttypeByType();
+                        messageBody.setText(item.getDescription() + " ");
+                    }
+                    if (message_time!=null && item.getCreationDate()!=null) {
+                        message_time.setText((new SimpleDateFormat("hh:mm")).format(item.getCreationDate()));
+                    }
                     break;
                 default:
                     break;
