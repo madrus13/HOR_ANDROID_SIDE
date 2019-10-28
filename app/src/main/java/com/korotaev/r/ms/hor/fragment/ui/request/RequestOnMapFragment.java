@@ -57,7 +57,7 @@ public class RequestOnMapFragment extends Fragment implements ServiceActivity, U
 
                     return true;
                 case R.id.navigation_active_request:
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new ActiveRequestListFragment()).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new ActiveRequestListFragment()).commitNow();
                     //mTextMessage.setText(R.string.title_dashboard);
                     return true;
                 case R.id.navigation_common_chat:

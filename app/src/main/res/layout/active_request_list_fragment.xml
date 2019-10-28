@@ -1,31 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/chat"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_weight="2"
-android:clipToPadding="false"
-android:focusableInTouchMode="true"
-android:orientation="vertical"
-tools:context=".fragment.ui.fragment.ui.new_request.NewRequestActivity">
-
-<android.support.v4.widget.SwipeRefreshLayout
-    android:id="@+id/swipe_view"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chat"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:layout_weight="8">
+    android:layout_height="wrap_content"
+    android:layout_weight="2"
+    android:clipToPadding="false"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context=".fragment.ui.fragment.ui.new_request.NewRequestActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/messages_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_view"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_margin="4dp"
-        android:layout_weight="2"
-        android:background="@android:drawable/screen_background_dark_transparent"
-        android:divider="#fff" />
-</android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/messages_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/screen_background_dark_transparent"
+            android:divider="#fff" />
 
 
-</LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addNewRequestFloatButton"
+        android:layout_width="88dp"
+        android:layout_height="105dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@android:drawable/presence_busy"
+        app:backgroundTint="#00FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/swipe_view"
+        app:layout_constraintEnd_toEndOf="@+id/swipe_view" />
+
+</android.support.constraint.ConstraintLayout>

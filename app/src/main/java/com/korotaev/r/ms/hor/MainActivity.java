@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity
         if (fragment!=null)
         {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.container, fragment).commitNow();
             item.setChecked(true);
             setTitle(item.getTitle());
         }

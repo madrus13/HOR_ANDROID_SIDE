@@ -15,9 +15,12 @@ import android.os.IBinder;
 import android.os.Messenger;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,6 +43,9 @@ import com.korotaev.r.ms.hor.IntentService.SrvCmd;
 import com.korotaev.r.ms.hor.Preferences.Preferences;
 import com.korotaev.r.ms.hor.R;
 import com.korotaev.r.ms.hor.fragment.ui.ServiceActivity;
+import com.korotaev.r.ms.hor.fragment.ui.fragment.ui.new_request.NewRequestActivity;
+
+import com.korotaev.r.ms.hor.fragment.ui.fragment.ui.new_request.NewRequestFragment;
 import com.korotaev.r.ms.testormlite.data.Entity.Request;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
 
@@ -74,6 +80,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
     private ImageButton sendMsgButton;
     private EditText messageToSend;
     private RecyclerView requestView;
+    private FloatingActionButton addNewRequestFloatButton;
 
     NetworkImageViewAdapter networkImageViewAdapter;
 
@@ -99,6 +106,11 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
     }
 
     @Override
+    public void onBindingDied(ComponentName name) {
+
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return null;
     }
@@ -112,6 +124,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+
 
     /**
      * Handler of incoming messages from service.
@@ -220,7 +233,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
         });
         final  LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         //layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
+        layoutManager.setStackFromEnd(false);
         requestView.setLayoutManager(layoutManager);
 
         requestView.setAdapter(requestAdapter);
@@ -257,6 +270,7 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
         messageToSend = v.findViewById(R.id.message_to_send);
         requestView = v.findViewById(R.id.messages_view);
         mSwipeRefreshLayout = v.findViewById(R.id.swipe_view);
+        addNewRequestFloatButton = v.findViewById(R.id.addNewRequestFloatButton);
     }
 
     public void OnClickListenerInit()
@@ -264,11 +278,10 @@ public class ActiveRequestListFragment extends Fragment implements ServiceActivi
         myDBHelper.getHelper().addLog(CODE_INFO, "ARF -> OnClickListenerInit" );
 
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getNextPage();
-            }
+        mSwipeRefreshLayout.setOnRefreshListener(() -> getNextPage());
+
+        addNewRequestFloatButton.setOnClickListener(view -> {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,new NewRequestFragment()).commit();
         });
     }
 
