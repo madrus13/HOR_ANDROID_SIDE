@@ -80,9 +80,9 @@
     <string name="tool_types">Tool types</string>
     <string name="region">Region</string>
     <string name="title_activity_request_main" translatable="false">RequestMainActivity</string>
-    <string name="title_home" translatable="false">Home</string>
+    <string name="title_home">Home</string>
     <string name="title_dashboard" translatable="false">Dashboard</string>
-    <string name="title_notifications" translatable="false">Notifications</string>
+    <string name="title_notifications">Notifications</string>
     <string name="error_passwords_not_repeated">Passwords not equal</string>
     <string name="send">Send</string>
     <string name="write_a_message">Write a message...</string>
@@ -94,4 +94,5 @@
     <string name="from">From</string>
     <string name="system_message" translatable="false">system_message_sample</string>
     <string name="Active_RequestsList">Active request list</string>
+    <string name="DecsriptSituation">Situation descript</string>
 </resources>
