@@ -34,15 +34,27 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addNewRequestFloatButton"
-        android:layout_width="88dp"
-        android:layout_height="105dp"
+        android:layout_width="57dp"
+        android:layout_height="61dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
-        android:focusable="true"
-        android:src="@android:drawable/presence_busy"
-        app:backgroundTint="#00FFFFFF"
+        android:src="@drawable/search_layer_pin_selected_default"
+        app:backgroundTint="#00000000"
         app:layout_constraintBottom_toBottomOf="@+id/swipe_view"
-        app:layout_constraintEnd_toEndOf="@+id/swipe_view" />
+        app:layout_constraintEnd_toEndOf="@+id/swipe_view"
+        android:focusable="true" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/bottomAppBar"/>
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBarOld"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabCradleMargin="4dp"/>
 
 </android.support.constraint.ConstraintLayout>
