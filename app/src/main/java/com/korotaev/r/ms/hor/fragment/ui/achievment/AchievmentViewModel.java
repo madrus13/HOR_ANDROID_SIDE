@@ -1,6 +1,6 @@
 package com.korotaev.r.ms.hor.fragment.ui.achievment;
 
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel;
 
 public class AchievmentViewModel extends ViewModel {
     // TODO: Implement the ViewModel

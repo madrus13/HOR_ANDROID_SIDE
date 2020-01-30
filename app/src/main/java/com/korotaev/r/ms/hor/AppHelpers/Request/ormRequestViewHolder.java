@@ -1,8 +1,9 @@
 package com.korotaev.r.ms.hor.AppHelpers.Request;
 
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.korotaev.r.ms.hor.AppHelpers.NetworkImageViewAdapter;
@@ -13,7 +14,7 @@ import com.korotaev.r.ms.testormlite.data.Entity.Requesttype;
 
 import java.text.SimpleDateFormat;
 
-public class ormRequestViewHolder extends ViewHolder {
+public class ormRequestViewHolder extends RecyclerView.ViewHolder {
 
     public TextView name;
     public TextView messageBody;

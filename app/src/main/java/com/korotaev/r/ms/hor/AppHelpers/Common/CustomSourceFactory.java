@@ -1,6 +1,7 @@
 package com.korotaev.r.ms.hor.AppHelpers.Common;
 
-import android.arch.paging.DataSource;
+
+import androidx.paging.DataSource;
 
 import com.korotaev.r.ms.hor.AppHelpers.Common.CustomPositionalDataSource;
 import com.korotaev.r.ms.hor.AppHelpers.Common.CustomStorage;

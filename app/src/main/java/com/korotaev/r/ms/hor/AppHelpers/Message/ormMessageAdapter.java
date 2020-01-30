@@ -1,13 +1,15 @@
 package com.korotaev.r.ms.hor.AppHelpers.Message;
 
-import android.arch.paging.PagedListAdapter;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.util.DiffUtil;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 
 import com.korotaev.r.ms.hor.AppHelpers.MyDBHelper;
 import com.korotaev.r.ms.hor.AppHelpers.NetworkImageViewAdapter;

@@ -2,7 +2,9 @@ package com.korotaev.r.ms.hor.AppHelpers;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v4.util.LruCache;
+
+
+import androidx.collection.LruCache;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;

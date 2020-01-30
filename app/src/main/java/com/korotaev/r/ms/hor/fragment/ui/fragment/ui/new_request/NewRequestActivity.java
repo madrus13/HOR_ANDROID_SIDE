@@ -1,7 +1,9 @@
 package com.korotaev.r.ms.hor.fragment.ui.fragment.ui.new_request;
 
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.korotaev.r.ms.hor.R;
 

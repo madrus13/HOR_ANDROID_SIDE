@@ -1,7 +1,9 @@
 package com.korotaev.r.ms.hor.fragment.ui.chat;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.korotaev.r.ms.hor.R;
 

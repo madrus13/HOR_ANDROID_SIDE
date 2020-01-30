@@ -1,16 +1,15 @@
 package com.korotaev.r.ms.hor.AppHelpers.Common;
 
-import android.arch.paging.PositionalDataSource;
-import android.support.annotation.NonNull;
+
 import android.util.Log;
 
-import com.korotaev.r.ms.hor.AppHelpers.Common.CustomStorage;
-import com.korotaev.r.ms.testormlite.data.Entity.Message;
+import androidx.annotation.NonNull;
+import androidx.paging.PositionalDataSource;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
-
 import java.util.ArrayList;
 
-import static android.support.constraint.Constraints.TAG;
+import static androidx.constraintlayout.widget.Constraints.TAG;
+
 
 public class CustomPositionalDataSource<T> extends PositionalDataSource<T> {
 
