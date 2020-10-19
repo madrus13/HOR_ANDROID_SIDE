@@ -66,9 +66,7 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 import static com.korotaev.r.ms.hor.IntentService.SrvCmd.CODE_INFO;
-import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_One_Item;
-import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_image;
-import static com.korotaev.r.ms.testormlite.data.ActivityActions.Pick_tools;
+import static com.korotaev.r.ms.testormlite.data.ActivityActions.*;
 
 public class SettingsFragment extends Fragment
         implements NavigationView.OnNavigationItemSelectedListener, ServiceActivity, View.OnClickListener  {

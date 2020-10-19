@@ -6,7 +6,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.korotaev.r.ms.testormlite.data.DatabaseHelper;
 
 public class MyDBHelper {
-    private DatabaseHelper databaseHelper = null;
+    private static DatabaseHelper databaseHelper = null;
     private Context context;
 
     public MyDBHelper(Context context) {
