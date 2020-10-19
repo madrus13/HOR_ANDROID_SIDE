@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -251,6 +252,10 @@ public class MainActivity extends AppCompatActivity
         Class fragmentClass = null;
 
         int id = item.getItemId();
+
+        //Hide keyboard on change navi item
+        InputMethodManager imm = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
 
         if (id == R.id.nav_your_help) {
             fragmentClass = HelpFragment.class;
