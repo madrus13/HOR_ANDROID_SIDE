@@ -17,7 +17,7 @@ import static com.korotaev.r.ms.hor.AppHelpers.FileHelper.FILE_SERVER_IP;
 public class WebServiceMainService {
     
     public static String NAMESPACE ="http://Service.ru/";
-    public static String url = FILE_SERVER_IP + ":8080/samplejpa-48/ws?wsdl";
+    public static String url = FILE_SERVER_IP + ":9090/samplejpa-48/ws?wsdl";
     public String PREFIX_SERVICE  = "";
     public static int timeOut = 5000;
     public IWsdl2CodeEvents eventHandler;

@@ -21,6 +21,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,6 +51,7 @@ import com.korotaev.r.ms.hor.fragment.ui.settings.SettingsFragment;
 import com.korotaev.r.ms.testormlite.data.ActivityActions;
 import com.korotaev.r.ms.testormlite.data.Entity.TLog;
 import com.korotaev.r.ms.testormlite.data.Entity.User;
+import com.yandex.runtime.logging.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -211,6 +213,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        Log.e("APP", "onPause");
+        super.onPause();
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -223,6 +231,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        Log.e("APP", "onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.main, menu);
 
         return true;
@@ -230,6 +239,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.e("APP", "onOptionsItemSelected");
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
